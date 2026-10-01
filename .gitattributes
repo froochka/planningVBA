@@ -1,0 +1,11 @@
+# Classeurs Excel : binaires, jamais fusionnes par Git
+*.xlsm binary
+*.xlsx binary
+*.xlam binary
+*.xlsb binary
+*.frx  binary
+
+# Code VBA extrait : texte UTF-8, fins de ligne Windows a l'extraction
+*.bas text eol=crlf
+*.cls text eol=crlf
+*.frm text eol=crlf

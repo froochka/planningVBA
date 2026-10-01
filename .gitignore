@@ -1,0 +1,7 @@
+# Fichiers de verrouillage temporaires d'Excel
+~$*
+# Systeme
+Thumbs.db
+desktop.ini
+.DS_Store
+__pycache__/
