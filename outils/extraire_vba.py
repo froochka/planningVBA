@@ -3,7 +3,7 @@
 Produit le meme format que la macro ExporterVBA (outils/VbaSync.bas) :
 un fichier par module, en UTF-8, sans les en-tetes "Attribute VB_...".
 
-Usage : python outils/extraire_vba.py planning.xlsm [dossier_src]
+Usage : python outils/extraire_vba.py VBA_maquette_SGO.xlsm [dossier_src]
 Prerequis : pip install oletools
 """
 import pathlib

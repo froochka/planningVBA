@@ -1,6 +1,6 @@
 # Consignes pour Claude
 
-Projet : classeur Excel `.xlsm` avec macros VBA, versionné sur Git. Utilisateur francophone : répondre en français.
+Projet : classeur Excel `VBA_maquette_SGO.xlsm` (à la racine) avec macros VBA, versionné sur Git. Utilisateur francophone : répondre en français.
 
 - Le code VBA de référence est dans `src/` (UTF-8, sans en-têtes `Attribute VB_...`, un fichier par module). On modifie le code **uniquement là**.
 - Ne pas modifier le `.xlsm` pour changer du code : l'utilisateur réimporte `src/` avec la macro `ImporterVBA` (`outils/VbaSync.bas`).

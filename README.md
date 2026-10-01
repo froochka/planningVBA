@@ -1,10 +1,12 @@
-# planningVBA
+# VBA_maquette_SGO
+
+Dépôt `planningVBA`, classeur versionné : `VBA_maquette_SGO.xlsm`, à la racine du dépôt.
 
 Classeur Excel `.xlsm` versionné sur Git. Le code VBA est extrait en fichiers texte dans `src/` pour qu'on puisse le relire, le comparer et le modifier sur GitHub.
 
 ```
 planningVBA/
-├── planning.xlsm        ← le classeur (feuilles, données, mise en page des formulaires)
+├── VBA_maquette_SGO.xlsm ← le classeur (feuilles, données, mise en page des formulaires)
 ├── src/                 ← le code VBA en texte : c'est LA référence pour le code
 │   ├── Module1.bas      (modules standards)
 │   ├── ThisWorkbook.cls (classeur, feuilles, modules de classe)
@@ -32,7 +34,7 @@ Les macros `ImporterVBA` et `ExporterVBA` sont alors disponibles dans tous vos c
 
 ### Récupérer des modifications (faites par Claude ou un collègue)
 1. `git pull`
-2. Ouvrir `planning.xlsm`, puis `Alt+F8` → **ImporterVBA**
+2. Ouvrir `VBA_maquette_SGO.xlsm`, puis `Alt+F8` → **ImporterVBA**
 3. Tester
 4. Si tout va bien : enregistrer le classeur, puis `git commit` + `git push` (pour que le `.xlsm` du dépôt soit à jour)
 
@@ -46,7 +48,7 @@ Les macros `ImporterVBA` et `ExporterVBA` sont alors disponibles dans tous vos c
 Git ne peut pas fusionner deux versions d'un `.xlsm`. Il faut donc :
 - toujours faire `git pull` **avant** d'ouvrir le classeur ;
 - éviter que deux personnes modifient le classeur en même temps ;
-- en cas de conflit, garder l'une des deux versions (`git checkout --theirs planning.xlsm` ou `--ours`), puis lancer **ImporterVBA** pour réappliquer le code de `src/`.
+- en cas de conflit, garder l'une des deux versions (`git checkout --theirs VBA_maquette_SGO.xlsm` ou `--ours`), puis lancer **ImporterVBA** pour réappliquer le code de `src/`.
 
 ## Limites à connaître
 - Les fichiers de `src/` contiennent **uniquement le code**. Les attributs cachés (`VB_PredeclaredId`, descriptions de procédures…) et la **mise en page des UserForms** restent dans le `.xlsm`.
