@@ -126,6 +126,22 @@ mon_dico_dir("Non standardisé") = "Non standardisé"
     ListBox1.AddItem "DAI"
     ListBox1.AddItem "DAV"
     ListBox1.AddItem "DS"
-    
 
+    Call OrdreTabulation
+
+End Sub
+
+' Ordre de passage avec la touche Tab entre les zones de saisie.
+' Chaque TextBox est seule dans son propre cadre (Frame) : c'est donc l'ordre
+' des cadres, et non celui des TextBox, qui determine le passage de l'une a l'autre.
+Private Sub OrdreTabulation()
+    Dim noms As Variant, i As Long
+    noms = Array("TextBox4", "TextBox8", "TextBox6", "TextBox10", "TextBox7", "TextBox5")
+    For i = 0 To UBound(noms)
+        With Me.Controls(noms(i))
+            .TabStop = True
+            .TabIndex = 0               ' premiere position dans son cadre
+            .Parent.TabIndex = i        ' position du cadre dans le cadre englobant
+        End With
+    Next i
 End Sub
