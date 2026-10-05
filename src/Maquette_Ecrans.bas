@@ -65,7 +65,7 @@ Private Sub ConstruireEcranSaisie(f As Object)
     ok = ChrW(&H2713): enCours = ChrW(&H25CF): partiel = ChrW(&H25D0)
     vide = ChrW(&H25CB): fille = ChrW(&H21B3)
 
-    DimensionnerForm f, 0.95, 780, 500, 1500, 900
+    DimensionnerForm f, 0.95, 760, 420, 1500, 900
     W = f.InsideWidth: H = f.InsideHeight
     hEntete = 52: hPied = 34
     yCorps = hEntete + M
@@ -148,6 +148,11 @@ Private Sub ConstruireEcranSaisie(f As Object)
     ' --- Zone 3 : la question et sa réponse ----------------------------------
     Set fr = Cadre(f, "fraDetail", "Question El84b", xDet, yCorps, wDet, hCorps)
     iw = fr.InsideWidth - 2 * M: ih = fr.InsideHeight
+    If ih < 330 Then            ' petit écran : la zone défile au lieu d'être tronquée
+        fr.ScrollBars = 2       ' fmScrollBarsVertical
+        fr.ScrollHeight = 330
+        ih = 330: iw = iw - 14
+    End If
     Lbl fr, "lblTypeQ", "Question fille de El84 (réponse « Oui »)  ·  Liste à choix unique", _
         M, 4, iw, 13, False, 8, RGB(110, 110, 110)
     Lbl fr, "lblLibelle", "Si oui, quel est le nombre de reconductions possibles ?", _
