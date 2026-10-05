@@ -8,9 +8,9 @@ Option Explicit
 '   Alt+F8 > MaquetteEcranSaisie : fenêtre principale (navigation + questions + réponse)
 '   Alt+F8 > MaquettePageGarde   : page de garde (offre, standards, lots)
 '
-' Le UserForm est créé temporairement puis supprimé à la fermeture (croix) :
-' le classeur n'est pas modifié. Nécessite "Accès approuvé au modèle d'objet
-' du projet VBA" (déjà activé pour VbaSync).
+' Un UserForm vide « frmMaquetteTmp » est ajouté au classeur au premier lancement
+' et réutilisé ensuite. Avant d'enregistrer le classeur : Alt+F8 > MaquetteNettoyer.
+' Nécessite "Accès approuvé au modèle d'objet du projet VBA" (déjà activé pour VbaSync).
 '
 ' La fenêtre principale se dimensionne sur la fenêtre Excel (95 %) et ses trois
 ' zones se répartissent la largeur disponible : redimensionnez Excel puis
@@ -35,7 +35,6 @@ Public Sub MaquetteEcranSaisie()
 fin:
     If Err.Number <> 0 Then MsgBox "Erreur maquette : " & Err.Description, vbExclamation
     Set f = Nothing
-    SupprimerForm
 End Sub
 
 Public Sub MaquettePageGarde()
@@ -48,7 +47,6 @@ Public Sub MaquettePageGarde()
 fin:
     If Err.Number <> 0 Then MsgBox "Erreur maquette : " & Err.Description, vbExclamation
     Set f = Nothing
-    SupprimerForm
 End Sub
 
 ' -----------------------------------------------------------------------------
@@ -270,15 +268,22 @@ End Sub
 ' -----------------------------------------------------------------------------
 ' Création / suppression du UserForm temporaire
 ' -----------------------------------------------------------------------------
+' Le UserForm vide est créé une seule fois puis réutilisé : VBA ne sait pas
+' recréer un formulaire supprimé dans la même session (erreur « Objet
+' spécifié introuvable »). Les contrôles sont ajoutés à l'exécution et
+' disparaissent à la fermeture ; le formulaire, lui, reste vide.
 Private Function CreerForm(titre As String) As Object
     Dim comp As Object, frm As Object
-    SupprimerForm
-    On Error GoTo erreur
-    Set comp = ThisWorkbook.VBProject.VBComponents.Add(3)   ' vbext_ct_MSForm
-    comp.Name = NOM_FORM
     On Error Resume Next
-    comp.Properties("StartUpPosition") = 0                  ' position manuelle (centrée sur Excel)
+    Set comp = ThisWorkbook.VBProject.VBComponents(NOM_FORM)
     On Error GoTo erreur
+    If comp Is Nothing Then
+        Set comp = ThisWorkbook.VBProject.VBComponents.Add(3)   ' vbext_ct_MSForm
+        comp.Name = NOM_FORM
+        On Error Resume Next
+        comp.Properties("StartUpPosition") = 0              ' position manuelle (centrée sur Excel)
+        On Error GoTo erreur
+    End If
     Set frm = VBA.UserForms.Add(NOM_FORM)
     frm.Caption = titre
     frm.BackColor = RGB(243, 243, 243)
@@ -286,16 +291,21 @@ Private Function CreerForm(titre As String) As Object
     Exit Function
 erreur:
     MsgBox "Impossible de créer la maquette : " & Err.Description & vbCrLf & vbCrLf & _
-           "Vérifiez l'accès approuvé au modèle d'objet du projet VBA.", vbExclamation
+           "Fermez le classeur sans l'enregistrer, rouvrez-le et relancez la macro.", vbExclamation
     Set CreerForm = Nothing
-    SupprimerForm
 End Function
 
-Private Sub SupprimerForm()
+' Retire le formulaire vide de la maquette du classeur (à lancer avant d'enregistrer).
+Public Sub MaquetteNettoyer()
     Dim comp As Object
     On Error Resume Next
     Set comp = ThisWorkbook.VBProject.VBComponents(NOM_FORM)
-    If Not comp Is Nothing Then ThisWorkbook.VBProject.VBComponents.Remove comp
+    If comp Is Nothing Then
+        MsgBox "Rien à nettoyer.", vbInformation
+    Else
+        ThisWorkbook.VBProject.VBComponents.Remove comp
+        MsgBox "Formulaire de maquette supprimé.", vbInformation
+    End If
 End Sub
 
 ' Taille proportionnelle à la fenêtre Excel, bornée, et centrée dessus
