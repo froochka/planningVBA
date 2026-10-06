@@ -1,12 +1,14 @@
 Option Explicit
 
 ' =============================================================================
-' Maquette visuelle des écrans (v3, sans interaction, données d'exemple réelles).
+' Maquette visuelle des écrans (v4, sans interaction, données d'exemple réelles).
 ' Uniquement des contrôles MSForms standards : Label, Frame, ListBox, ComboBox,
 ' TextBox, OptionButton, TabStrip, MultiPage. Aucun ActiveX, aucune image :
 ' les icônes viennent de la police Windows « Segoe MDL2 Assets ».
 '
-'   Alt+F8 > MaquetteEcranSaisie : fenêtre principale (chapitres > thèmes > sous-thèmes > question)
+'   Alt+F8 > MaquetteCasStandard : question avec standard, réponse non conforme (cas 2)
+'   Alt+F8 > MaquetteCasSpecifique : question spécifique, différente de l'offre précédente (cas 4)
+'   (MaquetteEcranSaisie = MaquetteCasStandard)
 '   Alt+F8 > MaquetteRecherche   : même fenêtre, panneau de résultats de recherche ouvert
 '   Alt+F8 > MaquettePageGarde   : page de garde (offre, standards, lots)
 '   Alt+F8 > MaquetteNettoyer    : à lancer avant d'enregistrer le classeur
@@ -40,6 +42,7 @@ Private cTexte As Long, cGris As Long, cVert As Long, cOrange As Long
 Private cStdFond As Long, cStdBarre As Long, cOngletFond As Long
 
 Private etape As String          ' pour situer une éventuelle erreur
+Private casSp As Boolean         ' exemple affiché : question spécifique (Sp) ou avec standard
 
 Private Sub InitCouleurs()
     cBandeau = RGB(22, 54, 92)
@@ -60,10 +63,23 @@ End Sub
 ' Points d'entrée
 ' -----------------------------------------------------------------------------
 Public Sub MaquetteEcranSaisie()
+    MaquetteCasStandard
+End Sub
+
+' Question avec standard, réponse non conforme : cas 2 (justification de la dérogation)
+Public Sub MaquetteCasStandard()
+    casSp = False
+    AfficherEcranSaisie False
+End Sub
+
+' Question spécifique à l'offre (Sp), différente de l'offre précédente : cas 4
+Public Sub MaquetteCasSpecifique()
+    casSp = True
     AfficherEcranSaisie False
 End Sub
 
 Public Sub MaquetteRecherche()
+    casSp = False
     AfficherEcranSaisie True
 End Sub
 
@@ -102,7 +118,7 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     Dim x0 As Single, wZone As Single, xIn As Single, yIn As Single, wIn As Single
     Dim wQ As Single, y2 As Single, yBas As Single, xD As Single, wD As Single, hD As Single
     Dim pw As Single, ph As Single, iw As Single, y As Single, wR As Single, wTiers As Single
-    Dim xEnr As Single, wRes As Single
+    Dim xEnr As Single, wRes As Single, phPage As Single
     Dim c As Object, lst As Object, ts As Object, mp As Object, pg As Object, fr As Object
     Dim chap As Variant, etat As Variant, pct As Variant, i As Long
     Dim ok As String, enCours As String, partiel As String, vide As String, fille As String
@@ -217,11 +233,11 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     Lbl f, "lblCompteur", "5 affichées · 1 masquée", xIn, y2 + 51, wQ, LigneH(-2), False, TAILLE_BASE - 2, cGris
     Set lst = Liste(f, "lstQuestions", xIn, y2 + 68, wQ, yBas - 36 - (y2 + 68), "16;44;" & CLng(wQ - 16 - 44 - 6))
     AjouterLigne lst, ok, "El78f", "Dérogation au principe de non exclusivité ?"
-    AjouterLigne lst, enCours, "El78b", "Adhésion via formulaire sur ugap.fr ?"
+    AjouterLigne lst, IIf(casSp, "!", enCours), "El78b", "Adhésion via formulaire sur ugap.fr ?"
     AjouterLigne lst, vide, "El78c", "Qui effectue les marchés subséquents ?"
-    AjouterLigne lst, vide, "El78d", "Volume estimé des marchés par an ?"
+    AjouterLigne lst, IIf(casSp, enCours, vide), "El78d", "Volume estimé des marchés par an ?"
     AjouterLigne lst, "!", "El78e", "Modalités de passation des marchés subséquents"
-    lst.ListIndex = 1
+    lst.ListIndex = IIf(casSp, 3, 1)
     BtnPlat f, "btnSousThemeStd", "Appliquer le standard aux non répondues", xIn, yBas - 28, wQ, 28, 0, ICO_COCHE
 
     ' --- Détail de la question : MultiPage ------------------------------------
@@ -234,54 +250,106 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     Loop
     mp.Pages(0).Caption = "Réponse"
     mp.Pages(1).Caption = "Standards"
-    mp.Pages(2).Caption = "Commentaires (1)"
+    mp.Pages(2).Caption = "Commentaires (2)"
     mp.Pages(3).Caption = "Historique"
     mp.Value = 0
     pw = wD - 6: ph = hD - 30
 
-    ' Page 1 : Réponse
+    ' Page 1 : Réponse (les 4 cas du mode opératoire : conformité calculée,
+    ' différence avec l'offre précédente pour les questions Sp, justification)
     etape = "page Réponse"
     Set pg = mp.Pages(0)
+    phPage = ph
     iw = Borne(pw - 2 * M, 200, 640)      ' largeur de lecture limitée sur grand écran
-    If ph < 380 Then                      ' petit écran : la page défile au lieu d'être tronquée
-        pg.ScrollBars = 2: pg.ScrollHeight = 380
-        ph = 380: iw = Borne(pw - 2 * M - 14, 200, 640)
+    If ph < IIf(casSp, 520, 440) Then     ' petit écran : la page défile au lieu d'être tronquée
+        pg.ScrollBars = 2: pg.ScrollHeight = IIf(casSp, 520, 440)
+        ph = IIf(casSp, 520, 440): iw = Borne(pw - 2 * M - 14, 200, 640)
     End If
     Set c = Lbl(pg, "lblFondPage", "", 0, 0, pw, ph)
     c.BackStyle = 1: c.BackColor = cBlanc
-    Lbl pg, "lblTypeQ", "El78b  ·  Liste à choix unique  ·  affichée car El77 = « Offre non exécutée »", _
-        M, 8, iw, LigneH(-2), False, TAILLE_BASE - 2, cGris
-    Lbl pg, "lblLibelle", "L’adhésion ou la renonciation se fera-t-elle via un formulaire d’enquête sur ugap.fr ?", _
-        M, 26, iw, 3 * LigneH(2), True, TAILLE_BASE + 2
+    If casSp Then
+        Lbl pg, "lblTypeQ", "El78d  ·  Texte libre  ·  affichée car El77 contient « Offre non exécutée »", _
+            M, 8, iw, LigneH(-2), False, TAILLE_BASE - 2, cGris
+        Lbl pg, "lblLibelle", "Quel est le volume estimé des marchés par an ?", M, 26, iw, 3 * LigneH(2), True, TAILLE_BASE + 2
+    Else
+        Lbl pg, "lblTypeQ", "El78b  ·  Liste à choix unique  ·  affichée car El77 contient « Offre non exécutée »", _
+            M, 8, iw, LigneH(-2), False, TAILLE_BASE - 2, cGris
+        Lbl pg, "lblLibelle", "L’adhésion ou la renonciation se fera-t-elle via un formulaire d’enquête sur ugap.fr ?", _
+            M, 26, iw, 3 * LigneH(2), True, TAILLE_BASE + 2
+    End If
     y = 26 + 3 * LigneH(2) + 10
     Set c = Lbl(pg, "lblStdFond", "", M, y, iw, 64)
-    c.BackStyle = 1: c.BackColor = cStdFond
+    c.BackStyle = 1: c.BackColor = IIf(casSp, cFond, cStdFond)
     Set c = Lbl(pg, "lblStdBarre", "", M, y, 4, 64)
-    c.BackStyle = 1: c.BackColor = cStdBarre
-    Lbl pg, "lblStdTitre", "STANDARD APPLICABLE  ·  Établissement (E)", M + 14, y + 7, iw - 172, LigneH(-2), _
-        True, TAILLE_BASE - 2, cOrange
-    Lbl pg, "lblStdValeur", "Non, absence de formulaire sur ugap.fr", M + 14, y + 24, iw - 172, 2 * LigneH(), True
-    BtnPlat pg, "btnReprendreStd", "Reprendre le standard", M + iw - 152, y + 19, 144, 26, 0
+    c.BackStyle = 1: c.BackColor = IIf(casSp, cGris, cStdBarre)
+    If casSp Then
+        Lbl pg, "lblStdTitre", "AUCUN STANDARD  ·  Spécifique à l'offre (Sp)", M + 14, y + 7, iw - 28, LigneH(-2), _
+            True, TAILLE_BASE - 2, cGris
+        Lbl pg, "lblStdValeur", "Réponse propre à cette offre. Indiquez si elle diffère de l'offre précédente.", _
+            M + 14, y + 24, iw - 28, 2 * LigneH()
+    Else
+        Lbl pg, "lblStdTitre", "STANDARD APPLICABLE  ·  Établissement (E)", M + 14, y + 7, iw - 172, LigneH(-2), _
+            True, TAILLE_BASE - 2, cOrange
+        Lbl pg, "lblStdValeur", "Non, absence de formulaire sur ugap.fr", M + 14, y + 24, iw - 172, 2 * LigneH(), True
+        BtnPlat pg, "btnReprendreStd", "Reprendre le standard", M + iw - 152, y + 19, 144, 26, 0
+    End If
     y = y + 64 + 18
     SectionTitre pg, "secReponse", "RÉPONSE", M, y, iw
     y = y + 26
-    Opt pg, "optRep1", "Oui, adhésion ou renonciation sur formulaire ugap.fr", M, y, iw, 22, False, "grpReponse"
-    Opt pg, "optRep2", "Non, absence de formulaire sur ugap.fr", M, y + 26, iw, 22, True, "grpReponse"
-    y = y + 52 + 14
-    SectionTitre pg, "secConformite", "CONFORMITÉ AU STANDARD", M, y, iw
+    If casSp Then
+        Set c = Txt(pg, "txtReponse", "Environ 120 marchés subséquents par an, répartis sur les 3 lots.", M, y, iw, 48)
+        c.MultiLine = True
+        y = y + 48 + 14
+    Else
+        Opt pg, "optRep1", "Oui, adhésion ou renonciation sur formulaire ugap.fr", M, y, iw, 22, True, "grpReponse"
+        Opt pg, "optRep2", "Non, absence de formulaire sur ugap.fr", M, y + 26, iw, 22, False, "grpReponse"
+        y = y + 52 + 14
+    End If
+
+    ' Conformité : calculée par l'outil, jamais saisie
+    If casSp Then
+    Set c = Lbl(pg, "lblConformiteFond", "", M, y, iw, 26)
+    c.BackStyle = 1: c.BackColor = IIf(casSp, RGB(232, 240, 250), RGB(253, 236, 234))
+    If casSp Then
+        Set c = Lbl(pg, "lblConformite", ChrW(&H25C6) & "  Spécifique à l'offre   ·   cas " & ChrW(&H2463) & " : différent de l'offre précédente", _
+                    M + 8, y + (26 - LigneH(-1)) / 2, iw - 16, LigneH(-1), True, TAILLE_BASE - 1, cAction)
+    Else
+        Set c = Lbl(pg, "lblConformite", ChrW(&H2717) & "  Non conforme au standard   ·   cas " & ChrW(&H2461) & " : justification obligatoire", _
+                    M + 8, y + (26 - LigneH(-1)) / 2, iw - 16, LigneH(-1), True, TAILLE_BASE - 1, RGB(176, 42, 30))
+    End If
+    c.Font.Name = POLICE_SYMB
+    Lbl pg, "lblConformiteInfo", IIf(casSp, "Statut calculé automatiquement : aucun standard pour cette question.", _
+        "Conformité calculée automatiquement en comparant la réponse au standard."), _
+        M, y + 29, iw, LigneH(-2), False, TAILLE_BASE - 2, cGris
+    y = y + 50
+
+    If casSp Then
+        SectionTitre pg, "secDifference", "DIFFÉRENCE AVEC L'OFFRE PRÉCÉDENTE", M, y, iw
+        y = y + 26
+        Opt pg, "optIdentique", "Identique", M, y, 120, 22, False, "grpDifference"
+        Opt pg, "optDifferent", "Différente", M + 130, y, 120, 22, True, "grpDifference"
+        Lbl pg, "lblDiffInfo", "Par défaut « Identique » : à vérifier.", M + 260, y + 4, iw - 260, _
+            LigneH(-2), False, TAILLE_BASE - 2, cGris
+        y = y + 36
+    End If
+
+    SectionTitre pg, "secJustif", IIf(casSp, "JUSTIFICATION DU CAS DIFFÉRENCIANT", _
+                 "JUSTIFICATION DE LA DÉROGATION AU STANDARD"), M, y, iw
     y = y + 26
-    wTiers = iw / 3
-    Opt pg, "optConforme", "Conforme", M, y, wTiers, 22, True, "grpConformite"
-    Opt pg, "optSpecificite", "Spécificité (à justifier)", M + wTiers, y, wTiers + 24, 22, False, "grpConformite"
-    Opt pg, "optNonConcerne", "Non concerné", M + 2 * wTiers + 24, y, wTiers - 24, 22, False, "grpConformite"
-    y = y + 30
-    Lbl pg, "lblNoteJustif", "La zone de justification apparaît quand « Spécificité » est cochée.", _
-        M, y, iw, LigneH(-2), False, TAILLE_BASE - 2, cGris
+    Set c = Txt(pg, "txtJustif", IIf(casSp, "Passage de 80 à 120 marchés par an : intégration du lot 3 (maintenance).", _
+                "Obligatoire : expliquez pourquoi la réponse s'écarte du standard."), _
+                M, y, iw, Borne(ph - y - 52, 40, 120))
+    c.MultiLine = True
+    c.BorderColor = cStdBarre
+    If Not casSp Then c.ForeColor = cGris
+
     Lbl pg, "lblRaccourci", "Ctrl+Entrée", M, ph - 30, 100, LigneH(-2), False, TAILLE_BASE - 2, cGris
+    BtnPlat pg, "btnNonConcerne", "Non concerné", M + iw - 176 - 8 - 128, ph - 40, 128, 30, 0
     BtnPlat pg, "btnValiderSuivante", "Valider et suivante", M + iw - 176, ph - 40, 176, 30, 1, ICO_SUIVANT
 
     ' Page 2 : Standards
     etape = "page Standards"
+    ph = phPage
     Set pg = mp.Pages(1)
     iw = pw - 2 * M
     Set c = Lbl(pg, "lblFondPage2", "", 0, 0, pw, ph)
@@ -290,36 +358,72 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
         M, 8, iw, 2 * LigneH(-1), False, TAILLE_BASE - 1, cGris
     Set lst = Liste(pg, "lstStandards", M, 40, iw, 6 * LigneH() + 8, "120;" & CLng(iw - 126))
     lst.Font.Name = POLICE
-    AjouterLigne lst, "Établissement (E)", "Non, absence de formulaire sur ugap.fr"
-    AjouterLigne lst, "Direction DAI", "(pas de standard direction)"
-    AjouterLigne lst, "Univers Logiciels", "(pas de standard univers)"
-    AjouterLigne lst, "Niveau applicable", "E  ->  Établissement"
+    If casSp Then
+        AjouterLigne lst, "Établissement (E)", "(pas de standard)"
+        AjouterLigne lst, "Direction DAI", "(pas de standard)"
+        AjouterLigne lst, "Univers Logiciels", "(pas de standard)"
+        AjouterLigne lst, "Niveau applicable", "Sp  ->  Spécifique à l'offre"
+    Else
+        AjouterLigne lst, "Établissement (E)", "Non, absence de formulaire sur ugap.fr"
+        AjouterLigne lst, "Direction DAI", "(pas de standard direction)"
+        AjouterLigne lst, "Univers Logiciels", "(pas de standard univers)"
+        AjouterLigne lst, "Niveau applicable", "E  ->  Établissement"
+        AjouterLigne lst, "Opérateur standard", "contient (la réponse doit contenir le standard)"
+    End If
     AjouterLigne lst, "Alimente le CCAP", "Non"
     lst.ListIndex = 0
 
-    ' Page 3 : Commentaires
+    ' Page 3 : Commentaires (officiels / intra, nature, destinataire, réponse, statut)
     etape = "page Commentaires"
     Set pg = mp.Pages(2)
+    If ph < 330 Then
+        pg.ScrollBars = 2: pg.ScrollHeight = 330: ph = 330
+    End If
     Set c = Lbl(pg, "lblFondPage3", "", 0, 0, pw, ph)
     c.BackStyle = 1: c.BackColor = cBlanc
-    Set lst = Liste(pg, "lstCommentaires", M, 8, iw, Borne(ph - 130, 50, 400), "70;74;" & CLng(iw - 150))
+    hD = Borne(ph - 8 - 210, 50, 260)       ' hauteur de la liste
+    Set lst = Liste(pg, "lstCommentaires", M, 8, iw, hD, _
+                    "58;66;48;84;" & CLng(Borne(iw - 58 - 66 - 48 - 84 - 56 - 12, 60, 900)) & ";56")
     lst.Font.Name = POLICE
-    AjouterLigne lst, "05/10 10:40", "J. Martin", "Vérifier avec la DAI si le formulaire est prévu en 2027."
-    SectionTitre pg, "secNouveauCom", "NOUVEAU COMMENTAIRE", M, ph - 118, iw
-    Set c = Txt(pg, "txtNouveauCom", "", M, ph - 92, iw, 50)
+    AjouterLigne lst, "05/10 10:40", "P. Durand", "Officiel", "Question", _
+                 "Le formulaire ugap.fr est-il prévu en 2027 ?", "Ouvert"
+    AjouterLigne lst, "05/10 11:02", "J. Martin", "Intra", "Remarque", "Voir avec la DAI avant le COPIL.", "Traité"
+    lst.ListIndex = 0
+    y = 8 + hD + 12
+    Lbl pg, "lblReponseCom", "Réponse au commentaire sélectionné", M, y + 3, iw - 130, LigneH(), True
+    Combo pg, "cboStatutCom", M + iw - 120, y, 120, 22, Array("Ouvert", "En cours", "Traité", "Clos"), 0
+    y = y + 26
+    Set c = Txt(pg, "txtReponseCom", "Pas prévu à ce stade : point à inscrire au COPIL.", M, y, iw, 34)
     c.MultiLine = True
-    BtnPlat pg, "btnAjouterCom", "Ajouter", M + iw - 100, ph - 36, 100, 26, 1
+    y = y + 34 + 16
+    SectionTitre pg, "secNouveauCom", "NOUVEAU COMMENTAIRE", M, y, iw
+    y = y + 26
+    Combo pg, "cboTypeCom", M, y, 96, 22, Array("Officiel", "Intra"), 0
+    Combo pg, "cboNatureCom", M + 102, y, 170, 22, _
+          Array("Remarque", "Question", "Recommandation", "Demande de modification"), 0
+    Set c = Txt(pg, "txtDestinataire", "Adressé à…", M + 278, y, iw - 278, 22)
+    c.ForeColor = cGris
+    y = y + 28
+    Set c = Txt(pg, "txtNouveauCom", "", M, y, iw, 40)
+    c.MultiLine = True
+    BtnPlat pg, "btnAjouterCom", "Ajouter", M + iw - 100, y + 46, 100, 26, 1
 
     ' Page 4 : Historique
     etape = "page Historique"
+    ph = phPage
     Set pg = mp.Pages(3)
     Set c = Lbl(pg, "lblFondPage4", "", 0, 0, pw, ph)
     c.BackStyle = 1: c.BackColor = cBlanc
     Set lst = Liste(pg, "lstHistorique", M, 8, iw, ph - 16, "70;74;" & CLng(iw - 150))
     lst.Font.Name = POLICE
-    AjouterLigne lst, "05/10 10:42", "J. Martin", "Réponse : « Non, absence de formulaire sur ugap.fr »"
-    AjouterLigne lst, "05/10 10:42", "J. Martin", "Standard repris"
-    AjouterLigne lst, "02/10 16:05", "P. Durand", "Question affichée (El77 = « Offre non exécutée »)"
+    If casSp Then
+        AjouterLigne lst, "05/10 10:50", "J. Martin", "Différence : « Identique » -> « Différente »"
+        AjouterLigne lst, "05/10 10:49", "J. Martin", "Réponse saisie"
+    Else
+        AjouterLigne lst, "05/10 10:42", "J. Martin", "Réponse : « Oui, adhésion… » (non conforme)"
+        AjouterLigne lst, "02/10 16:10", "Système", "Réponse pré-remplie avec le standard"
+    End If
+    AjouterLigne lst, "02/10 16:05", "Système", "Question affichée (El77 contient « Offre non exécutée »)"
 
     ' --- Pied de page ---------------------------------------------------------
     etape = "pied de page"

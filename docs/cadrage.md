@@ -238,7 +238,7 @@ Les UserForms ont une taille fixe en points. Sur un portable dont l'affichage Wi
 
 ### P11 🔶 Administration
 
-- **Accès** : le menu Admin n'apparaît que pour les identifiants Windows déclarés dans une liste d'administrateurs. Précision honnête : la protection VBA est faible. La vraie sécurité vient du fait que les acheteurs ne reçoivent que la version publiée.
+- **Accès** (révisé le 06/10) : l'administration est un **complément séparé, `SGO_Admin.xlam`**, remis aux seuls administrateurs. Il partage avec `SGO.xlam` un socle de code commun : référentiel, moteur de conditions, calcul du standard et de la conformité. Les acheteurs n'ont donc pas le code d'administration, ce qui est plus sûr qu'un accès réservé dans le même outil. Les deux outils ne sont pas développés en parallèle (voir `docs/iterations.md`).
 - **Fonctions** :
   - questions : création, modification, désactivation, déplacement ;
   - chapitres, thèmes et sous-thèmes ;
