@@ -153,14 +153,12 @@ Vous m'avez demandé une proposition. La voici :
 
 **Masquer ou griser ?** Je recommande de **masquer** les filles dans la liste de saisie, avec un compteur (« 12 questions, dont 3 masquées ») et un filtre « Afficher les masquées » qui les montre grisées, en lecture seule.
 
-❓ **Sens de `100-Parametres` à confirmer.** On y trouve 302 conditions `<>` et 2 conditions `=`.
-- Pour `El100` (« **Si non**, préciser… »), la règle est `El99 <> Non`. J'en déduis que `<>` signifie « **masquer si** la réponse est différente de ». La règle se lit donc : « afficher El100 si El99 = Non ».
-- Avec cette lecture, les deux règles `=` paraissent incohérentes :
-  - `El174` est masquée si `El164a` (« Ce chapitre est-il applicable ») = `Oui` ;
-  - `El78a` est masquée si `El77` = `Offre non exécutée`.
-  
-  S'agit-il d'erreurs de saisie ?
-- Par ailleurs, 18 questions ont **plusieurs** conditions. Doivent-elles toutes être vraies (ET), ou une seule suffit-elle (OU) ?
+✅ **Sens de `100-Parametres` : tranché par le mode opératoire administrateur et le code d'origine** (voir `docs/analyse_existant.md`). Mon hypothèse de la version 0.1 était fausse.
+- `<>` signifie « **la réponse contient** le critère », sans tenir compte des majuscules. Le code d'origine fait `InStr(LCase(réponse), LCase(critère)) > 0`.
+  Exemple : El100 s'affiche si la réponse à El99 contient « Non ».
+- `=` signifie « la réponse est **exactement égale** au critère ». Les deux règles `=` (El174, El78a) sont donc cohérentes.
+- Une question fille masquée reçoit la réponse « Non concerné pour l'offre ». Une question non applicable à la direction ou à l'univers reçoit « Non concerné pour la direction/univers ».
+- ❓ La règle d'administration impose **une seule condition par question fille**. Il existe pourtant 18 exceptions, comme El78c, conditionnée par El71 et par El77. Je propose que **toutes les conditions** doivent être remplies (ET). À confirmer.
 
 ### P6 🔶 Changement de la page de garde (direction, univers)
 
