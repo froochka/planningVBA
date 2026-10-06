@@ -149,7 +149,7 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     c.BackStyle = 1: c.BackColor = cBandeau
     Lbl f, "lblTitre", "Élaboration du DCO", M + 4, 6, 300, LigneH(4), True, TAILLE_BASE + 4, cBlanc
     wR = Borne(W * 0.3, 240, 320)
-    Lbl f, "lblContexte", "Offre 2026-123 · Logiciels de gestion   |   DAI · Univers Logiciels · Lot : tous", _
+    Lbl f, "lblContexte", "Offre 2026-123 · Logiciels de gestion   |   DAI · Univers Logiciels", _
         M + 4, 33, W - M - wR - 2 * M - 120 - (M + 4), LigneH(-1), False, TAILLE_BASE - 1, RGB(200, 216, 234)
     BtnPlat f, "btnPageGarde", "Page de garde", W - M - wR - M - 120, 30, 120, 20, 2, ICO_CRAYON
     Set c = Txt(f, "txtRecherche", IIf(avecRecherche, "reconduction", "Rechercher une question (El84, reconduction…)"), _
@@ -476,7 +476,7 @@ End Sub
 ' Page de garde : reprend les champs de UserForm1 validé avec le chef de projet
 ' (6 noms de l'équipe, direction achat, standards de direction et d'univers,
 ' « Conserver les réponses déjà saisies ») + N° et libellé de la procédure
-' (page de garde de l'outil d'origine). Les lots sont une proposition.
+' (page de garde de l'outil d'origine). Les lots viendront plus tard, après la saisie.
 ' -----------------------------------------------------------------------------
 Private Sub ConstruirePageGarde(f As Object)
     Dim W As Single, H As Single, c As Object, lst As Object
@@ -484,7 +484,7 @@ Private Sub ConstruirePageGarde(f As Object)
     Dim libelles As Variant, valeurs As Variant
 
     etape = "page de garde"
-    f.Width = 780: f.Height = 470
+    f.Width = 780: f.Height = 450
     CentrerSurExcel f
     f.BackColor = cBlanc
     W = f.InsideWidth: H = f.InsideHeight
@@ -521,7 +521,7 @@ Private Sub ConstruirePageGarde(f As Object)
         y = y + 30
     Next i
 
-    ' --- Colonne droite : standards + lots -------------------------------------
+    ' --- Colonne droite : standards -------------------------------------
     y = 58
     SectionTitre f, "secStandards", "STANDARDS APPLICABLES", xD, y, wCol
     y = y + 26
@@ -544,17 +544,6 @@ Private Sub ConstruirePageGarde(f As Object)
         "une analyse d'impact est présentée avant d'appliquer le changement.", _
         xD, y, wCol, 2 * LigneH(-2) + 2, False, TAILLE_BASE - 2, cGris
 
-    y = y + 42
-    SectionTitre f, "secLots", "LOTS (MARCHÉS)  ·  proposition, à valider", xD, y, wCol
-    y = y + 26
-    Set lst = Liste(f, "lstLots", xD, y, wCol - 96, 84, "40;" & CLng(wCol - 96 - 46))
-    lst.Font.Name = POLICE
-    AjouterLigne lst, "Lot 1", "Gestion financière"
-    AjouterLigne lst, "Lot 2", "Ressources humaines"
-    AjouterLigne lst, "Lot 3", "Maintenance et support"
-    BtnPlat f, "btnAjouterLot", "Ajouter", xD + wCol - 88, y, 88, 24, 0
-    BtnPlat f, "btnModifierLot", "Modifier", xD + wCol - 88, y + 30, 88, 24, 0
-    BtnPlat f, "btnSupprimerLot", "Supprimer", xD + wCol - 88, y + 60, 88, 24, 0
 
     ' --- Boutons ----------------------------------------------------------------
     BtnPlat f, "btnAnnuler", "Annuler", W - M - 4 - 238, H - 40, 110, 30, 0

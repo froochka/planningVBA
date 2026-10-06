@@ -49,15 +49,14 @@ Ce fichier sert aussi de point de reprise d'une session à l'autre.
     - 6 noms de l'équipe projet, dans l'ordre de tabulation validé ;
     - direction achat, standard de direction, standard d'univers ;
     - « Conserver les réponses déjà saisies », Valider / Annuler.
-    - Les lots y figurent comme proposition. Le bouton ADMIN est retiré : l'administration sera un outil séparé.
-- **Hypothèses en attendant les réponses** :
-  - Q1 lots : pas de saisie par lot dans l'écran pour l'instant ;
-  - Q13 relecteurs : ils commentent dans l'outil.
-- **À valider avec le chef de projet** : le bloc Réponse, la page Commentaires, les réponses à Q1, Q11 et Q13.
+    - Le bouton ADMIN est retiré : l'administration sera un outil séparé.
+- **Décision (Q1, lots)** : les lots ne sont **pas** dans la page de garde ni dans la saisie des questions. Dans l'outil d'origine, une macro génère une feuille avec une ligne par lot, à partir du nombre de lots. Ce sera **intégré après la saisie des questions**, dans une itération ultérieure. Les lots sont retirés de la maquette.
+- **Hypothèse en attendant la réponse** : Q13 relecteurs, ils commentent dans l'outil.
+- **À valider avec le chef de projet** : le bloc Réponse, la page Commentaires, les réponses à Q11 et Q13.
 
 ## Prochaines itérations (indicatif)
 | N° | Contenu |
 |---|---|
 | 5 | Maquette de l'écran **Revue** (les 5 synthèses) |
 | 6 | **Preuve de concept** : `.xlam` minimal qui lit les questions et les standards et calcule standard et conformité ; test d'installation sur un poste verrouillé de la DSI |
-| 7+ | Écran de saisie branché sur les vraies données, enregistrement, commentaires, revue… puis `SGO_Admin.xlam` |
+| 7+ | Écran de saisie branché sur les vraies données, enregistrement, commentaires, revue, **puis les lots** (feuille Détail des lots générée à partir du nombre de lots)… puis `SGO_Admin.xlam` |

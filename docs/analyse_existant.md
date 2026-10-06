@@ -191,7 +191,7 @@ SGO.xlam  (code + écrans + référentiel versionné)
 
 | # | Question | État |
 |---|---|---|
-| Q1 | Lots : saisie par lot ? | **En partie résolue** : l'annexe Détail des lots a une ligne par lot, alimentée par environ 27 questions du DCO. À confirmer : ces questions doivent-elles se répondre **par lot** dans l'écran ? |
+| Q1 | Lots : saisie par lot ? | **Tranchée** : les lots seront traités après la saisie des questions (feuille Détail des lots générée à partir du nombre de lots), dans une itération ultérieure |
 | Q3 | Sens des colonnes | **Résolue** (2.1 à 2.3) |
 | Q5 | Opérateurs | **Résolue** (2.4). Reste à confirmer le ET pour les conditions multiples |
 | Q6 | Conformité | **Résolue** : calculée automatiquement |

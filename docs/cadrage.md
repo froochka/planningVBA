@@ -277,7 +277,7 @@ planningVBA/
 
 | # | Question |
 |---|---|
-| Q1 | **Lots** : les réponses se font-elles par lot ou pour toute l'offre ? Seulement certaines questions, ou certains chapitres, sont-ils par lot ? Combien de lots en général ? Je relie cette question aux 30 questions de mode « Annexe 10 – Détail lots ». |
+| Q1 | ✅ **Lots, tranché le 06/10** : pas de lots dans la page de garde ni dans la saisie des questions. Comme dans l'outil d'origine, une feuille Détail des lots sera générée à partir du nombre de lots, **après** la saisie des questions, dans une itération ultérieure. |
 | Q2 | Existe-t-il des **dossiers déjà remplis** dans l'ancien format (`3-Elaboration.O`) qu'il faudra **importer** ? |
 | Q3 | Que signifient les colonnes **« Cas le plus fréquent dans l'établissement »**, **« Différence vs précédent »**, **« Opérateur standard »** (valeurs `=`, `D`, `U`, `Sp`…) et **« Alimente CCAP »** ? Que doit en faire l'outil ? |
 | Q4 | Comment se saisissent les modes **« Annexe 10 – … »** et **« Cartographie ORECA »** ? Est-ce un tableau à remplir ? |
