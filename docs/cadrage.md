@@ -65,7 +65,9 @@ Une **fonction d'administration** permet de faire évoluer le référentiel (que
 | Modèle `.xltm` | Simple à distribuer | Chaque dossier embarque **sa propre copie du code** : une correction n'atteint pas les dossiers existants |
 | `.xlsm` sur Teams | Rien à installer | **Le VBA ne fonctionne pas dans Excel Online**. Il faut ouvrir dans l'application de bureau, et le code est dupliqué dans chaque fichier |
 
-⚠️ **Risque principal : la politique de la DSI.** Depuis 2022, Office bloque les macros des fichiers venant d'Internet, de Teams ou d'un mail (« Mark of the Web »). Il faut vérifier auprès de la DSI :
+✅ **Mise à jour (06/10/2026) : le complément `.xlam` sera validé par la DSI.** Les points ci-dessous restent à traiter avec elle lors de l'installation.
+
+**Risque initial : la politique de la DSI.** Depuis 2022, Office bloque les macros des fichiers venant d'Internet, de Teams ou d'un mail (« Mark of the Web »). Il faut vérifier auprès de la DSI :
 1. qu'un utilisateur peut installer un complément dans `%APPDATA%\Microsoft\AddIns` ;
 2. si ce dossier est un **emplacement approuvé**, ou si l'on peut en déclarer un ;
 3. si une **signature de code** est possible (certificat interne).
@@ -284,9 +286,10 @@ planningVBA/
 | Q5 | Sens des opérateurs dans `100-Parametres` (voir P5). |
 | Q6 | Conformité calculée ou déclarée (voir P7). |
 | Q7 | Matériel des acheteurs : modèles de portables, résolutions, version d'Office (Microsoft 365 ?). |
-| Q8 | Réponses de la DSI sur le déploiement du `.xlam` (voir P1). |
+| Q8 | ✅ **Tranché le 06/10** : le `.xlam` sera validé par la DSI (voir P1). Restent à préciser avec elle : dossier d'installation, emplacement approuvé, signature. |
 | Q9 | Où seront stockés les dossiers : Teams/SharePoint synchronisé, lecteur réseau, poste local ? |
 | Q10 | **Date de la démo** aux acheteurs. |
+| Q13 | ✅ **Tranché le 06/10** : pas de fonction relecteur dans l'outil. Les commentaires se limitent à une zone simple de 5 000 caractères par question. |
 
 Remarque : les données contiennent des **variantes d'écriture** pour un même mode de réponse, par exemple « Liste choix unique » avec et sans espace final (182 et 27 occurrences). La migration les uniformisera.
 

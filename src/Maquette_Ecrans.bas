@@ -1,7 +1,7 @@
 Option Explicit
 
 ' =============================================================================
-' Maquette visuelle des écrans (v4, sans interaction, données d'exemple réelles).
+' Maquette visuelle des écrans (v5, sans interaction, données d'exemple réelles).
 ' Uniquement des contrôles MSForms standards : Label, Frame, ListBox, ComboBox,
 ' TextBox, OptionButton, TabStrip, MultiPage. Aucun ActiveX, aucune image :
 ' les icônes viennent de la police Windows « Segoe MDL2 Assets ».
@@ -189,7 +189,7 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     Set c = Lbl(f, "lblChapSel", "", M, yCorps + 18 + 2 * hTab, 4, hTab - 1)     ' repère du chapitre ouvert
     c.BackStyle = 1: c.BackColor = cAction
     Set c = Lbl(f, "lblLegende", ok & " terminé   " & partiel & " en cours   " & vide & " à faire   " & _
-                "! à justifier   " & fille & " question fille", _
+                "! à justifier   " & fille & " question fille   " & ChrW(&H2298) & " masquée", _
                 M + 2, yCorps + hCorps - 30, wNav - 4, 30, False, TAILLE_BASE - 2, cGris)
     c.Font.Name = POLICE_SYMB
 
@@ -205,6 +205,8 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     ts.Tabs.Add "th4", vide & " 03.4 Clauses modif."
     ts.Tabs.Add "th5", vide & " 03.5 Fin de contrat"
     ts.Value = 1
+    Set c = Lbl(f, "lblThemesTitre", "Thèmes", x0 + wZone - 96, yCorps + 5, 90, LigneH(-2), False, TAILLE_BASE - 2, cGris)
+    c.TextAlign = 3                       ' intitulé discret du niveau (décision ES-3)
     Set c = Lbl(f, "lblZoneBlanche", "", x0 + 2, yCorps + 26, wZone - 4, hCorps - 28)
     c.BackStyle = 1: c.BackColor = cBlanc
     xIn = x0 + M + 2: yIn = yCorps + 22 + M: wIn = wZone - 2 * M - 4
@@ -212,7 +214,7 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
 
     ' --- Niveau 3 : SOUS-THÈMES = TabStrip style boutons ---------------------
     ' (affiché seulement si le thème a plusieurs sous-thèmes ; un sous-thème
-    '  masqué par une question mère n'apparaît pas)
+    '  masqué par une question mère reste visible, grisé : décision ES-4)
     etape = "sous-thèmes"
     Set ts = Ctl(f, "Forms.TabStrip.1", "tsSousThemes", xIn, yIn, wIn, 26)
     ts.Font.Name = POLICE_SYMB
@@ -221,12 +223,17 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     ts.Tabs.Clear
     ts.Tabs.Add "st1", ok & " Modalités d'intervention"
     ts.Tabs.Add "st2", partiel & " 03.2.2 Offre non exécutée"
+    ts.Tabs.Add "st3", ChrW(&H2298) & " 03.2.3 Offre exécutée"
+    On Error Resume Next
+    ts.Tabs(2).Enabled = False            ' grisé, non modifiable
+    ts.Tabs(2).ControlTipText = "Sans objet : El77 contient « Offre non exécutée »"
+    On Error GoTo 0
     ts.Value = 1
-    Lbl f, "lblMasque", "1 sous-thème masqué (« Offre exécutée ») par la réponse à El77.", _
-        xIn + 2, yIn + 31, wIn - 180, LigneH(-2), False, TAILLE_BASE - 2, cGris
-    Set c = Lbl(f, "lblAfficherMasques", "Afficher les éléments masqués", xIn + wIn - 176, yIn + 31, 176, _
-                LigneH(-2), False, TAILLE_BASE - 2, cAction)
-    c.Font.Underline = True: c.TextAlign = 3
+    Set c = Lbl(f, "lblSousThemesTitre", "Sous-thèmes", xIn + wIn - 96, yIn + 6, 90, LigneH(-2), False, TAILLE_BASE - 2, cGris)
+    c.TextAlign = 3
+    Set c = Lbl(f, "lblMasque", ChrW(&H2298) & " Grisé : « Offre exécutée » est sans objet, car El77 contient « Offre non exécutée ».", _
+        xIn + 2, yIn + 31, wIn, LigneH(-2), False, TAILLE_BASE - 2, cGris)
+    c.Font.Name = POLICE_SYMB
 
     ' --- Questions du sous-thème ---------------------------------------------
     etape = "questions"
@@ -236,28 +243,28 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     Lbl f, "lblFiltre", "Afficher", xIn, y2 + 27, 52, LigneH()
     Combo f, "cboFiltre", xIn + 54, y2 + 24, wQ - 54, 22, _
           Array("Toutes les questions", "Non répondues", "À justifier", "À revoir", "Écarts au standard")
-    Lbl f, "lblCompteur", "5 affichées · 1 masquée", xIn, y2 + 51, wQ, LigneH(-2), False, TAILLE_BASE - 2, cGris
+    Lbl f, "lblCompteur", "6 questions, dont 1 masquée (grisée, non modifiable)", xIn, y2 + 51, wQ, LigneH(-2), False, TAILLE_BASE - 2, cGris
     Set lst = Liste(f, "lstQuestions", xIn, y2 + 68, wQ, yBas - 36 - (y2 + 68), "16;44;" & CLng(wQ - 16 - 44 - 6))
+    AjouterLigne lst, ChrW(&H2298), "El78a", "(masquée) Modalités de passation en accord-cadre"
     AjouterLigne lst, ok, "El78f", "Dérogation au principe de non exclusivité ?"
     AjouterLigne lst, IIf(casSp, "!", enCours), "El78b", "Adhésion via formulaire sur ugap.fr ?"
     AjouterLigne lst, vide, "El78c", "Qui effectue les marchés subséquents ?"
     AjouterLigne lst, IIf(casSp, enCours, vide), "El78d", "Volume estimé des marchés par an ?"
     AjouterLigne lst, "!", "El78e", "Modalités de passation des marchés subséquents"
-    lst.ListIndex = IIf(casSp, 3, 1)
-    BtnPlat f, "btnSousThemeStd", "Appliquer le standard aux non répondues", xIn, yBas - 28, wQ, 28, 0, ICO_COCHE
+    lst.ListIndex = IIf(casSp, 4, 2)
+    BtnPlat f, "btnSousThemeStd", "Rétablir les standards du sous-thème", xIn, yBas - 28, wQ, 28, 0, ICO_COCHE
 
     ' --- Détail de la question : MultiPage ------------------------------------
     etape = "détail"
     xD = xIn + wQ + 2 * M: wD = wIn - wQ - 2 * M: hD = yBas - y2
     Set mp = Ctl(f, "Forms.MultiPage.1", "mpDetail", xD, y2, wD, hD)
     mp.TabFixedHeight = 22
-    Do While mp.Pages.Count < 4
+    Do While mp.Pages.Count < 3
         mp.Pages.Add
     Loop
     mp.Pages(0).Caption = "Réponse"
     mp.Pages(1).Caption = "Standards"
-    mp.Pages(2).Caption = "Commentaires (2)"
-    mp.Pages(3).Caption = "Historique"
+    mp.Pages(2).Caption = "Commentaire"
     mp.Value = 0
     pw = wD - 6: ph = hD - 30
 
@@ -267,9 +274,9 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     Set pg = mp.Pages(0)
     phPage = ph
     iw = Borne(pw - 2 * M, 200, 640)      ' largeur de lecture limitée sur grand écran
-    If ph < IIf(casSp, 520, 440) Then     ' petit écran : la page défile au lieu d'être tronquée
-        pg.ScrollBars = 2: pg.ScrollHeight = IIf(casSp, 520, 440)
-        ph = IIf(casSp, 520, 440): iw = Borne(pw - 2 * M - 14, 200, 640)
+    If ph < IIf(casSp, 520, 490) Then     ' petit écran : la page défile au lieu d'être tronquée
+        pg.ScrollBars = 2: pg.ScrollHeight = IIf(casSp, 520, 490)
+        ph = IIf(casSp, 520, 490): iw = Borne(pw - 2 * M - 14, 200, 640)
     End If
     Set c = Lbl(pg, "lblFondPage", "", 0, 0, pw, ph)
     c.BackStyle = 1: c.BackColor = cBlanc
@@ -336,6 +343,14 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
         Lbl pg, "lblDiffInfo", "Par défaut « Identique » : à vérifier.", M + 260, y + 4, iw - 260, _
             LigneH(-2), False, TAILLE_BASE - 2, cGris
         y = y + 36
+    Else
+        ' Question avec standard : différence facultative et discrète (décision ES-8)
+        Lbl pg, "lblDiffFac", "Différence avec l'offre précédente (facultatif)", M, y, iw, LigneH(-2), _
+            False, TAILLE_BASE - 2, cGris
+        Opt pg, "optDiffNC", "Non concerné", M, y + 15, 120, 20, True, "grpDifference"
+        Opt pg, "optDiffId", "Identique", M + 126, y + 15, 100, 20, False, "grpDifference"
+        Opt pg, "optDiffDiff", "Différente", M + 232, y + 15, 110, 20, False, "grpDifference"
+        y = y + 46
     End If
 
     SectionTitre pg, "secJustif", IIf(casSp, "JUSTIFICATION DU CAS DIFFÉRENCIANT", _
@@ -378,57 +393,20 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     AjouterLigne lst, "Alimente le CCAP", "Non"
     lst.ListIndex = 0
 
-    ' Page 3 : Commentaires (officiels / intra, nature, destinataire, réponse, statut)
-    etape = "page Commentaires"
+    ' Page 3 : Commentaire (décision ES-14 : une zone simple, 5 000 caractères)
+    etape = "page Commentaire"
     Set pg = mp.Pages(2)
-    If ph < 330 Then
-        pg.ScrollBars = 2: pg.ScrollHeight = 330: ph = 330
-    End If
     Set c = Lbl(pg, "lblFondPage3", "", 0, 0, pw, ph)
     c.BackStyle = 1: c.BackColor = cBlanc
-    hD = Borne(ph - 8 - 210, 50, 260)       ' hauteur de la liste
-    Set lst = Liste(pg, "lstCommentaires", M, 8, iw, hD, _
-                    "58;66;48;84;" & CLng(Borne(iw - 58 - 66 - 48 - 84 - 56 - 12, 60, 900)) & ";56")
-    lst.Font.Name = POLICE
-    AjouterLigne lst, "05/10 10:40", "P. Durand", "Officiel", "Question", _
-                 "Le formulaire ugap.fr est-il prévu en 2027 ?", "Ouvert"
-    AjouterLigne lst, "05/10 11:02", "J. Martin", "Intra", "Remarque", "Voir avec la DAI avant le COPIL.", "Traité"
-    lst.ListIndex = 0
-    y = 8 + hD + 12
-    Lbl pg, "lblReponseCom", "Réponse au commentaire sélectionné", M, y + 3, iw - 130, LigneH(), True
-    Combo pg, "cboStatutCom", M + iw - 120, y, 120, 22, Array("Ouvert", "En cours", "Traité", "Clos"), 0
-    y = y + 26
-    Set c = Txt(pg, "txtReponseCom", "Pas prévu à ce stade : point à inscrire au COPIL.", M, y, iw, 34)
-    c.MultiLine = True
-    y = y + 34 + 16
-    SectionTitre pg, "secNouveauCom", "NOUVEAU COMMENTAIRE", M, y, iw
-    y = y + 26
-    Combo pg, "cboTypeCom", M, y, 96, 22, Array("Officiel", "Intra"), 0
-    Combo pg, "cboNatureCom", M + 102, y, 170, 22, _
-          Array("Remarque", "Question", "Recommandation", "Demande de modification"), 0
-    Set c = Txt(pg, "txtDestinataire", "Adressé à…", M + 278, y, iw - 278, 22)
-    c.ForeColor = cGris
-    y = y + 28
-    Set c = Txt(pg, "txtNouveauCom", "", M, y, iw, 40)
-    c.MultiLine = True
-    BtnPlat pg, "btnAjouterCom", "Ajouter", M + iw - 100, y + 46, 100, 26, 1
-
-    ' Page 4 : Historique
-    etape = "page Historique"
-    ph = phPage
-    Set pg = mp.Pages(3)
-    Set c = Lbl(pg, "lblFondPage4", "", 0, 0, pw, ph)
-    c.BackStyle = 1: c.BackColor = cBlanc
-    Set lst = Liste(pg, "lstHistorique", M, 8, iw, ph - 16, "70;74;" & CLng(iw - 150))
-    lst.Font.Name = POLICE
-    If casSp Then
-        AjouterLigne lst, "05/10 10:50", "J. Martin", "Différence : « Identique » -> « Différente »"
-        AjouterLigne lst, "05/10 10:49", "J. Martin", "Réponse saisie"
-    Else
-        AjouterLigne lst, "05/10 10:42", "J. Martin", "Réponse : « Oui, adhésion… » (non conforme)"
-        AjouterLigne lst, "02/10 16:10", "Système", "Réponse pré-remplie avec le standard"
-    End If
-    AjouterLigne lst, "02/10 16:05", "Système", "Question affichée (El77 contient « Offre non exécutée »)"
+    SectionTitre pg, "secCommentaire", "COMMENTAIRE SUR CETTE QUESTION", M, 8, iw
+    Set c = Txt(pg, "txtCommentaire", "Vérifier avec la DAI si le formulaire d'enquête est prévu pour 2027 avant de figer la réponse.", _
+                M, 34, iw, Borne(ph - 34 - 30, 60, 600))
+    c.MultiLine = True: c.WordWrap = True
+    c.MaxLength = 5000
+    c.ScrollBars = 2                      ' fmScrollBarsVertical
+    Set c = Lbl(pg, "lblCompteurCom", "95 / 5 000 caractères", M + iw - 200, ph - 24, 200, LigneH(-2), _
+                False, TAILLE_BASE - 2, cGris)
+    c.TextAlign = 3
 
     ' --- Pied de page ---------------------------------------------------------
     etape = "pied de page"
@@ -484,7 +462,7 @@ Private Sub ConstruirePageGarde(f As Object)
     Dim libelles As Variant, valeurs As Variant
 
     etape = "page de garde"
-    f.Width = 780: f.Height = 450
+    f.Width = 780: f.Height = 530
     CentrerSurExcel f
     f.BackColor = cBlanc
     W = f.InsideWidth: H = f.InsideHeight
@@ -513,7 +491,7 @@ Private Sub ConstruirePageGarde(f As Object)
     ' Même ordre que l'ordre de tabulation validé (TextBox4, 8, 6, 10, 7, 5)
     libelles = Array("Nom de l'acheteur", "Assistant(e) support achat", "Nom du chef produit", _
                      "Nom du juriste", "Pilote de l'offre (DPO / RPO / CPA / Leader)", "Nom du sponsor")
-    valeurs = Array("Jeanne Martin", "", "Paul Lefèvre", "", "Sophie Bernard", "")
+    valeurs = Array("", "", "Paul Lefèvre", "", "Sophie Bernard", "")   ' acheteur non pré-rempli (PG-4)
     For i = 0 To 5
         Lbl f, "lblEquipe" & i, CStr(libelles(i)), xG, y + IIf(Len(libelles(i)) > 26, -4, 3), wLib - 6, _
             IIf(Len(libelles(i)) > 26, 2 * LigneH(-1), LigneH()), False, IIf(Len(libelles(i)) > 26, TAILLE_BASE - 1, TAILLE_BASE)
@@ -525,17 +503,18 @@ Private Sub ConstruirePageGarde(f As Object)
     y = 58
     SectionTitre f, "secStandards", "STANDARDS APPLICABLES", xD, y, wCol
     y = y + 26
+    ' Listes ouvertes, comme UserForm1 (décision PG-2)
     Lbl f, "lblDirAchat", "Direction achat", xD, y + 3, wLib, LigneH()
-    Combo f, "cboDirAchat", xD + wLib, y, wCol - wLib, 22, Array("DAG", "DAI", "DAV", "DS"), 1
-    y = y + 28
+    ListeOuverte f, "lstDirAchat", xD + wLib, y, wCol - wLib, Array("DAG", "DAI", "DAV", "DS"), 1
+    y = y + 4 * LigneH() + 14
     Lbl f, "lblDirection", "Standard de direction", xD, y + 3, wLib, LigneH()
-    Combo f, "cboDirection", xD + wLib, y, wCol - wLib, 22, _
+    ListeOuverte f, "lstDirection", xD + wLib, y, wCol - wLib, _
           Array("DAV", "DAI", "DS", "DAG Mobilier scolaire et Equipement général", "DAG SOFI", "Non standardisé"), 1
-    y = y + 28
+    y = y + 6 * LigneH() + 14
     Lbl f, "lblUnivers", "Standard d'univers", xD, y + 3, wLib, LigneH()
-    Combo f, "cboUnivers", xD + wLib, y, wCol - wLib, 22, _
+    ListeOuverte f, "lstUnivers", xD + wLib, y, wCol - wLib, _
           Array("PII", "Materiel_et_Prestations", "Copieurs", "Telecom", "Bureau WEB", "Logiciels"), 5
-    y = y + 30
+    y = y + 6 * LigneH() + 14
     Set c = Ctl(f, "Forms.CheckBox.1", "chkConserver", xD + wLib, y, wCol - wLib, 22)
     c.Caption = "Conserver les réponses déjà saisies"
     c.BackStyle = 0: c.Value = True
@@ -753,6 +732,19 @@ Private Function Opt(parent As Object, nom As String, texte As String, _
     c.GroupName = IIf(groupe = "", parent.Name, groupe)
     c.Value = coche
     Set Opt = c
+End Function
+
+' Liste ouverte (ListBox) à une colonne, hauteur ajustée au nombre d'éléments
+Private Function ListeOuverte(parent As Object, nom As String, ByVal l As Single, ByVal t As Single, _
+                              ByVal w As Single, elements As Variant, Optional ByVal selection As Long = 0) As Object
+    Dim c As Object, e As Variant
+    Set c = Liste(parent, nom, l, t, w, (UBound(elements) + 1) * LigneH() + 6, "")
+    c.Font.Name = POLICE
+    For Each e In elements
+        c.AddItem e
+    Next e
+    c.ListIndex = selection
+    Set ListeOuverte = c
 End Function
 
 Private Sub AjouterLigne(lst As Object, ParamArray valeurs() As Variant)

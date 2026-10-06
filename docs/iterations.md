@@ -13,7 +13,7 @@ Ce fichier sert aussi de point de reprise d'une session à l'autre.
 ## Itération 2 : cadrage (02 → 05/10/2026)
 - **Livré** : `docs/cadrage.md` (propositions P1 à P12, questions ouvertes).
 - **Décisions** :
-  - architecture : un `.xlam` pour le code et un `.xlsx` sans macro par offre (sous réserve de la DSI) ;
+  - architecture : un `.xlam` pour le code et un `.xlsx` sans macro par offre (la DSI validera le `.xlam`) ;
   - priorité à l'outil acheteur ; l'administration vient ensuite ;
   - une seule fenêtre de saisie ; la page de garde reste une boîte de dialogue séparée.
 
@@ -51,7 +51,7 @@ Ce fichier sert aussi de point de reprise d'une session à l'autre.
     - « Conserver les réponses déjà saisies », Valider / Annuler.
     - Le bouton ADMIN est retiré : l'administration sera un outil séparé.
 - **Décision (Q1, lots)** : les lots ne sont **pas** dans la page de garde ni dans la saisie des questions. Dans l'outil d'origine, une macro génère une feuille avec une ligne par lot, à partir du nombre de lots. Ce sera **intégré après la saisie des questions**, dans une itération ultérieure. Les lots sont retirés de la maquette.
-- **Hypothèse en attendant la réponse** : Q13 relecteurs, ils commentent dans l'outil.
+- **Q13 tranchée** : pas de fonction relecteur dans l'outil (ES-15).
 - **À valider avec le chef de projet** : 27 points (page de garde PG-1 à PG-6, écran de saisie ES-1 à ES-18, transverses TR-1 à TR-3), présentés avec capture, contexte et options dans la page de validation https://claude.ai/artifact/XPFB27aRZgxGY1i91PCVBV. Les décisions saisies dans la page sont enregistrées et relues par Claude.
 
 ### Décisions du chef de projet (06/10/2026), relevées dans la page de validation
@@ -76,18 +76,29 @@ Ce fichier sert aussi de point de reprise d'une session à l'autre.
 | ES-11 | Bouton « Non concerné », même règle que l'origine | |
 | ES-12 | Pas de précisions séparées : zone de réponse sans limite | |
 | ES-13 | Enregistrement automatique | |
-| ES-14 | Commentaires : à ajuster. Note : *garder une zone de commentaire simple, avec un nombre de caractères suffisant (5 000 par exemple)* | ⚠️ à préciser |
-| ES-15 | Relecteurs (Q13) : **à revoir**, pas encore tranché | |
+| ES-14 | **Zone de commentaire simple de 5 000 caractères** (option a : pas de type, nature, destinataire ni statut) | ⚠️ proposition : commentaires structurés |
+| ES-15 | Relecteurs (Q13) : **pas de fonction relecteur** dans l'outil | ⚠️ hypothèse : ils commentent dans l'outil |
 | ES-16 | **Onglet « Standards » seulement**, onglet « Historique » retiré | ⚠️ proposition : les deux |
 | ES-17 | Texte 10 pt + A− / A+ | |
 | ES-18 | Couleurs neutres actuelles, pas de charte | |
 | TR-1 | Gestion des données en deux temps (conversion automatique, puis outil d'administration) | |
 | TR-2 | CCAP dans une version ultérieure | |
-| TR-3 | Contact DSI : le développeur | |
+| TR-3 | Contact DSI : le développeur. **Le complément `.xlam` sera validé par la DSI** | |
+
+## Itération 5 : maquette v5, décisions du chef de projet appliquées
+Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcranSaisie`, `MaquettePageGarde`, puis `MaquetteNettoyer`) :
+- **PG-2** : direction achat, standard de direction et standard d'univers en **listes ouvertes** ;
+- **PG-4** : nom de l'acheteur vide ;
+- **ES-3** : intitulés discrets « Thèmes » et « Sous-thèmes » au-dessus des barres de navigation ;
+- **ES-4** : les éléments masqués restent visibles, **grisés et non modifiables** (onglet de sous-thème « ⊘ 03.2.3 », question El78a), le lien « Afficher les éléments masqués » est supprimé et le symbole ⊘ est ajouté à la légende ;
+- **ES-8** : « Différence avec l'offre précédente (facultatif) » en option discrète pour les questions avec standard ;
+- **ES-14** : page **Commentaire** réduite à une zone de texte de 5 000 caractères, avec compteur ;
+- **ES-16** : onglet « Historique » retiré, il reste Réponse, Standards et Commentaire ;
+- bouton « Rétablir les standards du sous-thème ».
 
 ## Prochaines itérations (indicatif)
 | N° | Contenu |
 |---|---|
-| 5 | Maquette de l'écran **Revue** (les 5 synthèses) |
-| 6 | **Preuve de concept** : `.xlam` minimal qui lit les questions et les standards et calcule standard et conformité ; test d'installation sur un poste verrouillé de la DSI |
-| 7+ | Écran de saisie branché sur les vraies données, enregistrement, commentaires, revue, **puis les lots** (feuille Détail des lots générée à partir du nombre de lots)… puis `SGO_Admin.xlam` |
+| 6 | Maquette de l'écran **Revue** (les 5 synthèses) |
+| 7 | **Preuve de concept** : `.xlam` minimal qui lit les questions et les standards et calcule standard et conformité ; test d'installation sur un poste verrouillé de la DSI |
+| 8+ | Écran de saisie branché sur les vraies données, enregistrement, commentaires, revue, **puis les lots** (feuille Détail des lots générée à partir du nombre de lots)… puis `SGO_Admin.xlam` |
