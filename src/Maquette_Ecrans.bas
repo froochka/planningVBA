@@ -6,9 +6,8 @@ Option Explicit
 ' TextBox, OptionButton, TabStrip, MultiPage. Aucun ActiveX, aucune image :
 ' les icônes viennent de la police Windows « Segoe MDL2 Assets ».
 '
-'   Alt+F8 > MaquetteCasStandard : question avec standard, réponse non conforme (cas 2)
-'   Alt+F8 > MaquetteCasSpecifique : question spécifique, différente de l'offre précédente (cas 4)
-'   (MaquetteEcranSaisie = MaquetteCasStandard)
+'   Alt+F8 > MaquetteEcranSaisie : fenêtre principale ; demande quel exemple afficher
+'            (cas 2 : question avec standard, non conforme / cas 4 : question spécifique)
 '   Alt+F8 > MaquetteRecherche   : même fenêtre, panneau de résultats de recherche ouvert
 '   Alt+F8 > MaquettePageGarde   : page de garde (offre, standards, lots)
 '   Alt+F8 > MaquetteNettoyer    : à lancer avant d'enregistrer le classeur
@@ -62,8 +61,15 @@ End Sub
 ' -----------------------------------------------------------------------------
 ' Points d'entrée
 ' -----------------------------------------------------------------------------
+' Point d'entrée unique : demande quel exemple afficher
 Public Sub MaquetteEcranSaisie()
-    MaquetteCasStandard
+    Select Case MsgBox("Quel exemple afficher ?" & vbCrLf & vbCrLf & _
+                       "Oui : question avec standard, réponse non conforme (cas 2)" & vbCrLf & _
+                       "Non : question spécifique, différente de l'offre précédente (cas 4)", _
+                       vbYesNoCancel + vbQuestion, "Maquette SGO")
+        Case vbYes: MaquetteCasStandard
+        Case vbNo: MaquetteCasSpecifique
+    End Select
 End Sub
 
 ' Question avec standard, réponse non conforme : cas 2 (justification de la dérogation)
@@ -307,7 +313,6 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     End If
 
     ' Conformité : calculée par l'outil, jamais saisie
-    If casSp Then
     Set c = Lbl(pg, "lblConformiteFond", "", M, y, iw, 26)
     c.BackStyle = 1: c.BackColor = IIf(casSp, RGB(232, 240, 250), RGB(253, 236, 234))
     If casSp Then
