@@ -44,6 +44,12 @@ Ce fichier sert aussi de point de reprise d'une session à l'autre.
   - bouton **Non concerné** ;
   - page **Commentaires** : officiel / intra, nature, destinataire, réponse, statut ;
   - deux exemples : macros `MaquetteCasStandard` (cas ②) et `MaquetteCasSpecifique` (cas ④).
+  - **page de garde refaite** à partir de l'écran validé avec le chef de projet (`UserForm1`) :
+    - N° et libellé de la procédure ;
+    - 6 noms de l'équipe projet, dans l'ordre de tabulation validé ;
+    - direction achat, standard de direction, standard d'univers ;
+    - « Conserver les réponses déjà saisies », Valider / Annuler.
+    - Les lots y figurent comme proposition. Le bouton ADMIN est retiré : l'administration sera un outil séparé.
 - **Hypothèses en attendant les réponses** :
   - Q1 lots : pas de saisie par lot dans l'écran pour l'instant ;
   - Q13 relecteurs : ils commentent dans l'outil.

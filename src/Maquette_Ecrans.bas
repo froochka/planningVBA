@@ -473,68 +473,92 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
 End Sub
 
 ' -----------------------------------------------------------------------------
-' Page de garde : boîte de dialogue séparée (création du dossier / modification)
+' Page de garde : reprend les champs de UserForm1 validé avec le chef de projet
+' (6 noms de l'équipe, direction achat, standards de direction et d'univers,
+' « Conserver les réponses déjà saisies ») + N° et libellé de la procédure
+' (page de garde de l'outil d'origine). Les lots sont une proposition.
 ' -----------------------------------------------------------------------------
 Private Sub ConstruirePageGarde(f As Object)
     Dim W As Single, H As Single, c As Object, lst As Object
-    Dim y As Single, xc As Single, wChamp As Single, wSec As Single
+    Dim y As Single, xG As Single, xD As Single, wCol As Single, wLib As Single, i As Long
+    Dim libelles As Variant, valeurs As Variant
 
     etape = "page de garde"
-    f.Width = 520: f.Height = 550
+    f.Width = 780: f.Height = 470
     CentrerSurExcel f
     f.BackColor = cBlanc
     W = f.InsideWidth: H = f.InsideHeight
-    xc = 130: wSec = W - 2 * M - 8: wChamp = wSec - xc
+    wCol = (W - 2 * M - 8 - 24) / 2
+    xG = M + 4: xD = xG + wCol + 24
+    wLib = 150
 
     Set c = Lbl(f, "lblBandeau", "", 0, 0, W, 44)
     c.BackStyle = 1: c.BackColor = cBandeau
-    Lbl f, "lblTitre", "Nouveau dossier d'élaboration", M + 4, 10, 360, LigneH(4), True, TAILLE_BASE + 4, cBlanc
+    Lbl f, "lblTitre", "Dossier de conception de l'offre  ·  Élaboration de l'offre", M + 4, 10, W - 2 * M, _
+        LigneH(4), True, TAILLE_BASE + 4, cBlanc
 
+    ' --- Colonne gauche : procédure + équipe projet ----------------------------
     y = 58
-    SectionTitre f, "secOffre", "OFFRE", M + 4, y, wSec
+    SectionTitre f, "secProcedure", "PROCÉDURE", xG, y, wCol
     y = y + 26
-    Lbl f, "lblNum", "N° d'offre", M + 4, y + 3, xc, LigneH()
-    Txt f, "txtNum", "2026-123", M + 4 + xc, y, 120, 22
-    y = y + 30
-    Lbl f, "lblIntitule", "Intitulé", M + 4, y + 3, xc, LigneH()
-    Txt f, "txtIntitule", "Renouvellement des logiciels de gestion", M + 4 + xc, y, wChamp, 22
-    y = y + 30
-    Lbl f, "lblAcheteur", "Acheteur", M + 4, y + 3, xc, LigneH()
-    Set c = Txt(f, "txtAcheteur", "Jeanne Martin (identifiant Windows)", M + 4 + xc, y, wChamp, 22)
-    c.Locked = True: c.BackColor = cFond: c.ForeColor = cGris
-
-    y = y + 42
-    SectionTitre f, "secStandards", "STANDARDS APPLICABLES", M + 4, y, wSec
-    y = y + 26
-    Lbl f, "lblDirAchat", "Direction d'achat", M + 4, y + 3, xc, LigneH()
-    Combo f, "cboDirAchat", M + 4 + xc, y, 180, 22, Array("DAG", "DAI", "DAV", "DS"), 1
-    y = y + 30
-    Lbl f, "lblDirection", "Direction", M + 4, y + 3, xc, LigneH()
-    Combo f, "cboDirection", M + 4 + xc, y, 180, 22, _
-          Array("DAV", "DAI", "DS", "DAG Mobilier scolaire et Equipement général", "DAG SOFI", "Non standardisé"), 1
-    y = y + 30
-    Lbl f, "lblUnivers", "Univers", M + 4, y + 3, xc, LigneH()
-    Combo f, "cboUnivers", M + 4 + xc, y, 180, 22, _
-          Array("PII", "Materiel_et_Prestations", "Copieurs", "Telecom", "Bureau WEB", "Logiciels"), 5
+    Lbl f, "lblNumProc", "N° de procédure", xG, y + 3, wLib, LigneH()
+    Txt f, "txtNumProc", "2026-123", xG + wLib, y, 120, 22
     y = y + 28
-    Lbl f, "lblInfoStd", "Ces choix déterminent les standards affichés pour chaque question. " & _
-        "Les modifier plus tard déclenche une analyse d'impact sur les réponses déjà saisies.", _
-        M + 4, y, wSec, 2 * LigneH(-2) + 2, False, TAILLE_BASE - 2, cGris
+    Lbl f, "lblLibProc", "Libellé de la procédure", xG, y + 3, wLib, LigneH()
+    Txt f, "txtLibProc", "Renouvellement des logiciels de gestion", xG + wLib, y, wCol - wLib, 22
 
     y = y + 40
-    SectionTitre f, "secLots", "LOTS (MARCHÉS)", M + 4, y, wSec
+    SectionTitre f, "secEquipe", "ÉQUIPE PROJET", xG, y, wCol
     y = y + 26
-    Set lst = Liste(f, "lstLots", M + 4, y, wSec - 112, 84, "48;" & CLng(wSec - 112 - 54))
-    lst.Font.Name = POLICE
-    AjouterLigne lst, "Lot 1", "Logiciels de gestion financière"
-    AjouterLigne lst, "Lot 2", "Logiciels de gestion des ressources humaines"
-    AjouterLigne lst, "Lot 3", "Maintenance et support"
-    BtnPlat f, "btnAjouterLot", "Ajouter", M + 4 + wSec - 104, y, 104, 24, 0
-    BtnPlat f, "btnModifierLot", "Modifier", M + 4 + wSec - 104, y + 30, 104, 24, 0
-    BtnPlat f, "btnSupprimerLot", "Supprimer", M + 4 + wSec - 104, y + 60, 104, 24, 0
+    ' Même ordre que l'ordre de tabulation validé (TextBox4, 8, 6, 10, 7, 5)
+    libelles = Array("Nom de l'acheteur", "Assistant(e) support achat", "Nom du chef produit", _
+                     "Nom du juriste", "Pilote de l'offre (DPO / RPO / CPA / Leader)", "Nom du sponsor")
+    valeurs = Array("Jeanne Martin", "", "Paul Lefèvre", "", "Sophie Bernard", "")
+    For i = 0 To 5
+        Lbl f, "lblEquipe" & i, CStr(libelles(i)), xG, y + IIf(Len(libelles(i)) > 26, -4, 3), wLib - 6, _
+            IIf(Len(libelles(i)) > 26, 2 * LigneH(-1), LigneH()), False, IIf(Len(libelles(i)) > 26, TAILLE_BASE - 1, TAILLE_BASE)
+        Txt f, "txtEquipe" & i, CStr(valeurs(i)), xG + wLib, y, wCol - wLib, 22
+        y = y + 30
+    Next i
 
-    BtnPlat f, "btnAnnuler", "Annuler", W - M - 4 - 260, H - 40, 110, 30, 0
-    BtnPlat f, "btnCreer", "Créer le dossier", W - M - 4 - 142, H - 40, 142, 30, 1
+    ' --- Colonne droite : standards + lots -------------------------------------
+    y = 58
+    SectionTitre f, "secStandards", "STANDARDS APPLICABLES", xD, y, wCol
+    y = y + 26
+    Lbl f, "lblDirAchat", "Direction achat", xD, y + 3, wLib, LigneH()
+    Combo f, "cboDirAchat", xD + wLib, y, wCol - wLib, 22, Array("DAG", "DAI", "DAV", "DS"), 1
+    y = y + 28
+    Lbl f, "lblDirection", "Standard de direction", xD, y + 3, wLib, LigneH()
+    Combo f, "cboDirection", xD + wLib, y, wCol - wLib, 22, _
+          Array("DAV", "DAI", "DS", "DAG Mobilier scolaire et Equipement général", "DAG SOFI", "Non standardisé"), 1
+    y = y + 28
+    Lbl f, "lblUnivers", "Standard d'univers", xD, y + 3, wLib, LigneH()
+    Combo f, "cboUnivers", xD + wLib, y, wCol - wLib, 22, _
+          Array("PII", "Materiel_et_Prestations", "Copieurs", "Telecom", "Bureau WEB", "Logiciels"), 5
+    y = y + 30
+    Set c = Ctl(f, "Forms.CheckBox.1", "chkConserver", xD + wLib, y, wCol - wLib, 22)
+    c.Caption = "Conserver les réponses déjà saisies"
+    c.BackStyle = 0: c.Value = True
+    y = y + 24
+    Lbl f, "lblInfoStd", "Ces choix déterminent les standards affichés. En cas de modification, " & _
+        "une analyse d'impact est présentée avant d'appliquer le changement.", _
+        xD, y, wCol, 2 * LigneH(-2) + 2, False, TAILLE_BASE - 2, cGris
+
+    y = y + 42
+    SectionTitre f, "secLots", "LOTS (MARCHÉS)  ·  proposition, à valider", xD, y, wCol
+    y = y + 26
+    Set lst = Liste(f, "lstLots", xD, y, wCol - 96, 84, "40;" & CLng(wCol - 96 - 46))
+    lst.Font.Name = POLICE
+    AjouterLigne lst, "Lot 1", "Gestion financière"
+    AjouterLigne lst, "Lot 2", "Ressources humaines"
+    AjouterLigne lst, "Lot 3", "Maintenance et support"
+    BtnPlat f, "btnAjouterLot", "Ajouter", xD + wCol - 88, y, 88, 24, 0
+    BtnPlat f, "btnModifierLot", "Modifier", xD + wCol - 88, y + 30, 88, 24, 0
+    BtnPlat f, "btnSupprimerLot", "Supprimer", xD + wCol - 88, y + 60, 88, 24, 0
+
+    ' --- Boutons ----------------------------------------------------------------
+    BtnPlat f, "btnAnnuler", "Annuler", W - M - 4 - 238, H - 40, 110, 30, 0
+    BtnPlat f, "btnValider", "Valider", W - M - 4 - 120, H - 40, 120, 30, 1
 End Sub
 
 ' -----------------------------------------------------------------------------
