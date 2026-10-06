@@ -52,7 +52,7 @@ Ce fichier sert aussi de point de reprise d'une session à l'autre.
     - Le bouton ADMIN est retiré : l'administration sera un outil séparé.
 - **Décision (Q1, lots)** : les lots ne sont **pas** dans la page de garde ni dans la saisie des questions. Dans l'outil d'origine, une macro génère une feuille avec une ligne par lot, à partir du nombre de lots. Ce sera **intégré après la saisie des questions**, dans une itération ultérieure. Les lots sont retirés de la maquette.
 - **Hypothèse en attendant la réponse** : Q13 relecteurs, ils commentent dans l'outil.
-- **À valider avec le chef de projet** : le bloc Réponse, la page Commentaires, les réponses à Q11 et Q13.
+- **À valider avec le chef de projet** : 27 points (page de garde PG-1 à PG-6, écran de saisie ES-1 à ES-18, transverses TR-1 à TR-3), présentés avec capture, contexte et options dans la page de validation https://claude.ai/artifact/XPFB27aRZgxGY1i91PCVBV. Les décisions saisies dans la page sont enregistrées et relues par Claude.
 
 ## Prochaines itérations (indicatif)
 | N° | Contenu |
