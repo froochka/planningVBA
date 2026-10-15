@@ -111,7 +111,8 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
   - **page de garde** réelle (`frmGarde`) et **écran de saisie** réel (`frmSaisie`) ;
   - **tests dans Excel** (`TesterMoteur`) : rejoue les valeurs attendues et des scénarios de conditions ;
   - corrections de la maquette (libellés du filtre, info-bulles, « Conditionne : »).
-- **À tester** : voir « Tester l'itération 6 » dans `README.md`.
+- **Validé dans Excel (15/10/2026)** : `TesterMoteur` → plus de 14 000 vérifications, **0 écart**, en 1 seconde. Le moteur VBA donne les mêmes résultats que l'outil d'origine.
+- **À tester** : l'écran de saisie (macro `SGO`), voir « Tester l'itération 6 » dans `README.md`.
 - **Découvertes de la migration** (détail dans le rapport) :
   - des conditions masquent des **thèmes et sous-thèmes entiers** (exemple : 03.2.3 « Offre exécutée » dépend de El77) ;
   - les chapitres 08 et 09 n'ont pas de thème : un thème « implicite » est créé ;
