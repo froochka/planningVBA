@@ -1,0 +1,442 @@
+﻿id;libelle;sous_theme;ordre;mode;choix;operateur;alimente_ccap;active;systeme
+El393;Direction (standard de direction);;1;;;;Non;Oui;Oui
+El394;Univers (standard d'univers);;2;;;;Non;Oui;Oui
+El1;Numéro et objet de la procédure à renouveler / ou à lancer;SST_ElTT405;3;Texte;;;Oui;Oui;Non
+El1b;Numéro(s)  et dénomination de l'offre conformément à la cartographie ORECA;SST_ElTT405;4;Cartographie ORECA;;=;Non;Oui;Non
+El0a;Cette procédure est-elle concernée par une des définitions suivantes et si oui sélectionner les définitions concernées :;SST_ElTT405;5;Liste choix multiple;Ensemble batterie|Location de batterie|Acquisition de batterie|Piles à combustibles (hydrogène)|Acquisition de véhicules|Acquisition de véhicules à hydrogène|Acquisition de véhicules 100% électriques|Acquisition d'équipement de véhicules|Location de véhicules;=;Oui;Oui;Non
+El7;Projet d'offre concerne un renouvellement (avec ou sans création/extension) ou le lancement d'une nouvelle offre ?;SST_ElTT405;6;Liste choix unique;Offre nouvelle|Renouvellement d'offres avec extension|Renouvellement d'offres avec création|Renouvellement d'offre sans création/extension|Renouvellement d'offres avec extension et création;=;Non;Oui;Non
+El7b;En cas de renouvellement, préciser le(s) numéro(s) de la(es) précédente procédure(s) ainsi que les numéros de marchés correspondants;SST_ElTT405;7;Texte;;=;Non;Oui;Non
+El2;Etendue de l'offre;SST_ElTT406;8;Liste choix unique;Matériel|Prestations récurrentes|Prestations ponctuelles|Matériel et prestations récurrentes|Matériel et prestations ponctuelles|Matériel et prestations récurrentes et ponctuelles|Prestations récurrentes et ponctuelles;;Oui;Oui;Non
+El2b;Si prestations, préciser leur nature;SST_ElTT406;9;Liste choix unique;Prestations associées et annexes|Prestations associées|Prestations annexes;;Oui;Oui;Non
+El3b;Les matériels ou prestations concernés par l'offre font-ils l'objet d'autres offres UGAP ?;SST_ElTT406;10;Liste choix unique;Oui|Non;;Non;Oui;Non
+El395;Si oui, préciser les conditions de commandes qui justifient cette multi attribution UGAP;SST_ElTT406;11;Texte;;;Non;Oui;Non
+El29;Etendue des Bénéficiaires;SST_ElTT406;12;Liste choix multiple;Etat|Opérateurs de l'Etat|Etablissements Hospitaliers|Collectivités territoriales|Clients transfrontaliers|Autres;=;Non;Oui;Non
+El30;Si autres, préciser si les bénéficiaires concernés sont les Sociétés d’autoroutes pou les Délégataires de service public;SST_ElTT406;13;Liste choix multiple;Sociétés d’autoroutes|Délégataires de service public|Caisses et entreprises|Autre;=;Non;Oui;Non
+El30c;Si autres, préciser les bénéficiaires concernés;SST_ElTT406;14;Texte;;;Non;Oui;Non
+El30b;l'UGAP est-elle bénéficiaire ?;SST_ElTT406;15;Liste choix unique;Oui, l'UGAP est bénéficaire de l'offre|Non, l'UGAP n'est pas bénéficiaire de l'offre;;Oui;Oui;Non
+El302;Le principe d'engagement maximum sans minimum s'applique-t 'il ?;SST_ElTT407;16;Liste choix unique;Oui, le principe d'engagement maximum sans minimum s'applique|Non, dérogation au standard;;Non;Oui;Non
+El303;Si non, un engagement maximum et minimum s'applique-t 'il ?;SST_ElTT407;17;Liste choix unique;Oui, un engagement maximum et minimum s'applique|Non, un engagement maximum et minimum ne s'applique pas;;Non;Oui;Non
+El303b;Si non, expliquez l'engagement applicable;SST_ElTT407;18;Texte;;;Non;Oui;Non
+El511;Le montant total estimé de la procédure est-il supérieur à 250 millions d'euros HT ?;SST_ElTT407;19;Liste choix unique;Oui|Non;;Oui;Oui;Non
+El88;Procédure avec allotissement;SST_ElTT408;20;Liste choix unique;Oui, procédure avec allotissement|Non, dérogation au principe d'allotissement;;Oui;Oui;Non
+El88b;Si oui, préciser le nombre de lots (indiquer uniquement un chiffre);SST_ElTT408;21;Nombre;;;Non;Oui;Non
+El90;Renseigner le tableau d'allotissement en annexe (estimation prévisionnel du nombre de lots et type d'allotissement technique, géographique ou autre…);SST_ElTT408;22;Annexe 10 - Détail lots;;;Oui;Oui;Non
+El91;L'allotissement fait-il l'objet d'une évolution;SST_ElTT408;23;Liste choix unique;Oui, l'allotissement fait l'objet d'une évolution|Non, l'allotissement ne fait pas l'objet d'une évolution;;Non;Oui;Non
+El92;Si oui, préciser le(s) évolution(s) concerné(es) : Est-il envisagé d'abandonner certains lots, d'ajouter des lots, de faire évoluer les formats…;SST_ElTT408;24;Liste choix multiple;Abandon de lots|Nouveaux lots|Evolution de format des lots reconduits;=;Non;Oui;Non
+El93;Si oui, expliquer pourquoi et dans quel objectif ?;SST_ElTT408;25;Texte;;;Non;Oui;Non
+El94;Une limitation du nombre de lots par titulaire est-elle envisagée ?;SST_ElTT408;26;Liste choix unique;Oui, limitation du nombre de lots par titulaire|Non, absence de limitation de lots;;Non;Oui;Non
+El95;Si oui, préciser à quel stade de la procédure;SST_ElTT408;27;Liste choix unique;Candidature|Attribution;;Non;Oui;Non
+El96;Si oui, en préciser les raisons;SST_ElTT408;28;Liste choix multiple;Dépendance économique|Contraintes règlementaires|Risque de conflits d'intérêt|Autre;=;Non;Oui;Non
+El112c;Si autre, en préciser la raison;SST_ElTT408;29;Texte;;;Non;Oui;Non
+El59;"Préciser la couverture géographique à caractère obligatoire des matériels et/ou prestations à livrer ou exécuter par le titulaire 
+Note: 
+DROM = Guadeloupe, Martinique, Guyane, Réunion et Mayotte
+COM pour besoins non soumis à une disposition de droit local = St Pierre & Miquelon, St Barthélemy, St Martin, Nouvelle Calédonie, Wallis&Futuna, Polynésie Française
+TAAF = Terres australes & antarctiques Françaises";SST_ElTT409;30;Liste choix multiple;France métropolitaine|France continentale|Corse et îles littorales non desservies par un pont gratuit|DROM|COM|Etranger;=;Oui;Oui;Non
+El500c;Si couverture géographique obligatoire à l'étranger, l'étranger comprend;SST_ElTT409;31;Liste choix multiple;Représentations françaises dans l’Union Européenne|Représentations françaises à l’étranger|Monaco, Suisse, Andorre|EEE|Autres;;Oui;Oui;Non
+El500;Si autres, préciser la couverture géographique concernée;SST_ElTT409;32;Texte;;;Oui;Oui;Non
+El60;Préciser s'il existe une couverture géographique à caractère facultatif des matériels et/ou prestations à livrer ou exécuter par le titulaire;SST_ElTT409;33;Liste choix unique;Oui, existence d'une couverture géographique facultative|Non, absence de couverture géographique facultative;;Oui;Oui;Non
+El60b;"Si oui, préciser la couverture géographique à caractère facultatif des matériels et/ou prestations à livrer ou exécuter par le titulaire 
+Note: 
+DROM = Guadeloupe, Martinique, Guyane, Réunion et Mayotte
+COM pour besoins non soumis à une disposition de droit local = St Pierre & Miquelon, St Barthélemy, St Martin, Nouvelle Calédonie, Wallis&Futuna, Polynésie Française
+TAAF = Terres australes & antarctiques Françaises";SST_ElTT409;34;Liste choix multiple;France métropolitaine|France continentale|Corse et îles littorales non desservies par un pont gratuit|DROM|COM|Etranger;=;Non;Oui;Non
+El60c;Si couverture géographique facultative à l'étranger, l'étranger comprend;SST_ElTT409;35;Liste choix multiple;Représentations françaises dans l’Union Européenne|Représentations françaises à l’étranger|Monaco, Suisse, Andorre|EEE|Autres;;Oui;Oui;Non
+El60d;Si autres, préciser la couverture géographique concernée;SST_ElTT409;36;Texte;;;Oui;Oui;Non
+El61;Préciser la nature des produits et des prestations concernées par la couverture géographique obligatoire/facultative;SST_ElTT409;37;Annexe 10 - Couverture géographique;;;Non;Oui;Non
+El24;Le secteur d'activité a-t'il une part importante de PME;SST_ElTT411;38;Liste choix unique;Oui, part importante de PME|Non, part peu importante de PME;;Non;Oui;Non
+El25;L'UGAP est-elle en lien avec une fédération / syndicats professionnels / Groupement d'entreprises sur ce secteur;SST_ElTT411;39;Liste choix unique;Oui, relation engagée avec une fédération ou syndicats professionnels|Non, absence de relation avec une fédération ou syndicats professionnels;;Non;Oui;Non
+El26;Si oui, Une action auprès d'un de ces organismes est-elle envisagée ?;SST_ElTT411;40;Liste choix unique;Oui, une action est envisagée|Non, absence d'action envisagée;;Non;Oui;Non
+El27;Si non, pourquoi ?;SST_ElTT411;41;Texte;;;Non;Oui;Non
+El279;Description du marché fournisseurs sur le périmètre de l’offre / Sa structuration / Les différences de positionnement produits/services en fonction des acteurs du marché / Le positionnement des clients éligibles à l’UGAP…;SST_ElTT411;42;Texte;;;Non;Oui;Non
+El301;Présenter le tableau des entreprises sourcées;SST_ElTT412;43;Annexe 10 - Entreprises sourcées;;;Non;Oui;Non
+El504;Préciser quelle est la méthodologie retenue pour déterminer les fournisseurs rencontrés et assurer le respect de la concurrence ?;SST_ElTT412;44;Texte;;;Non;Oui;Non
+El505;Préciser la taille, la zone couverte du/des titulaires et des autres principaux fournisseurs avec, si nécessaire, les informations sur les risques pesant sur leur pérennité (rachats en cours, en période d'observation, dépendance économique, etc.).;SST_ElTT412;45;Texte;;;Non;Oui;Non
+El69;Le mode de passation de l'appel d'offres est-il ouvert ?;SST_ElTT414;46;Liste choix unique;Oui, mode de passation en Appel d'Offres Ouverts|Non, autre mode de passation;;Non;Oui;Non
+El70;Si non, préciser le mode de passation et justifier du choix;SST_ElTT414;47;Liste choix unique;Appel d'offres restreint|Dialogue compétitif|Procédure concurrentielle avec négociation|SAD avec enchères|SAD sans enchères|Non concerné pour l'offre;;Non;Oui;Non
+El71;Type d’accords-cadres;SST_ElTT414;48;Liste choix unique;AC-Bons de commande|AC-Bons de commande|AC-Marchés subséquents et Bons de commande;;Oui;Oui;Non
+El72;Dans le cadre d'un AC à BDC ou mixte (à BDC et Marchés subséquents), quelles sont les modalités d'attribution des accords-cadres à bons de commande;SST_ElTT414;49;Liste choix unique;Mono attribué|Multi attribué|Mono et Multi attribué;=;Non;Oui;Non
+El73;Si AC BDC multi attribué ou mixte (Mono et multi attribué) préciser la modalité de multi attribution;SST_ElTT414;50;Liste choix unique;Sur règle d’attribution définie au CCAP sur la base d’un questionnaire client ou d’une attestation de choix dérogatoire sans règle d’attribution à la défaillance,|Sur règle d’attribution définie au CCAP sur la base d’un questionnaire client ou d’une attestation de choix dérogatoire et d’une règle d’attribution à la défaillance|Sur règle d’attribution définie au CCAP sur la base de quantité minimale d’engagement au marché sans défaillance,|Sur règle d’attribution standard à la survenance du besoin et règle d’attribution à la défaillance|Sur règle d’attribution standard à la survenance du besoin sans règle d’attribution à la défaillance|Sur règle d'attribution à la défaillance temporaire et/ou définitive|Autres;;Non;Oui;Non
+El73b;Si autre mode de multi attribution, préciser;SST_ElTT414;51;Texte;;;Non;Oui;Non
+El73d;Si multi attribution sur quantité minimale d’engagement au marché, précier le mode d'attribution par titulaire;SST_ElTT414;52;Texte;;;Non;Oui;Non
+El73g;Si multi attribution préciser le nombre de titulaires par lot;SST_ElTT414;53;Annexe 10 - Détail lots;;;Non;Oui;Non
+El74;Si AC mixte, préciser par lot les modalités d'attribution;SST_ElTT414;54;Annexe 10 - Détail lots;;;Non;Oui;Non
+El73e;Ces modalités d'attribution sont-elles les identiques pour tous les lots?;SST_ElTT414;55;Liste choix unique;Oui, les modalités d'attribution identiques pour tous les lots|Non, les modalités d'attribution diffèrent selon les lots;;Non;Oui;Non
+El73f;Si non, préciser le détail par lot;SST_ElTT414;56;Annexe 10 - Détail lots;;;Non;Oui;Non
+El77;Quelles sont les modalités d’intervention de l’UGAP ?;SST_ElTT415;57;Liste choix unique;Offre exécutée|Offre non exécutée|Offre exécutée & Offre non exécutée;=;Non;Oui;Non
+El78a;Préciser les modalités de passation des marchés subséquents en Accord-cadre mono et/ou en Accord-cadre multi attribué;ElTTT416;58;Annexe 10 - Détail lots;;;Non;Oui;Non
+El78f;Y’a-t-il une dérogation au principe de non exclusivité ?;ElTTT416;59;Liste choix unique;Oui, dérogation au principe de non exclusivité|Non, absence de dérogation au principe de non exclusivité;;Non;Oui;Non
+El78b;L’adhésion ou la renonciation se fera t’elle via un formulaire d’enquête sur Ugap.fr ?;ElTTT416;60;Liste choix unique;Oui, adhésion ou renonciation sur formulaire ugap.fr|Non, absence de formulaire sur ugap.fr;;Non;Oui;Non
+El78c;Dans le cadre de la passation de marchés subséquents sur AC non exécuté qui effectuera la remise en concurrence/la passation/la notification des marchés subséquents ?;ElTTT416;61;Liste choix unique;Charge des marchés subséquents par l'Ugap|Charge des marchés subséquents par le client;;Non;Oui;Non
+El78d;Quel est le volume estimé des marchés par an ?;ElTTT416;62;Texte;;;Non;Oui;Non
+El78e;Quelles sont les modalités de passation des marchés subséquents ?;ElTTT416;63;Liste choix unique;A la survenance du besoin|par périodicité;;Non;Oui;Non
+El78g;Préciser les modalités de passation en Accord-cadre mono et/ou en Accord-cadre multi attribué;ElTTT417;64;Annexe 10 - Détail lots;;;Non;Oui;Non
+El78h;Quelles sont les modalités de passation des marchés subséquents ou de passation de bons de commandes ?;ElTTT417;65;Liste choix unique;Passation des marchés subséquents à la survenance du besoin|Passation des marchés subséquents par périodicité|Passation des Bons de commandes sur Accord-cadre;;Non;Oui;Non
+El78i;Quel est le volume estimé des marchés par an ?;ElTTT417;66;Texte;;;Non;Oui;Non
+El78j;Quelle sera la forme des marchés subséquents;ElTTT417;67;Liste choix multiple;Mono client|Multi client;=;Non;Oui;Non
+El78k;Préciser les modalités de passation des marchés subséquents multi attribué ou des Accord-cadre avec BDC multi-attribué;ElTTT417;68;Annexe 10 - Détail lots;;;Non;Oui;Non
+El78l;Quelles est la règle d'attribution des bons de commande  ?;ElTTT417;69;Liste choix unique;A la survenance du besoin|par périodicité;;Non;Oui;Non
+El78m;"Le format ""offre plurielle"" s'applique-t'il ?";ElTTT417;70;Liste choix unique;Oui, le format offre plurielle s'applique|Non, le format offre plurielle ne s'applique pas;;Non;Oui;Non
+El78n;Si oui, renseigner les lots concernés;ElTTT417;71;Annexe 10 - Détail lots;;;Non;Oui;Non
+El80;La durée du(es) marchés est-elle de 48 mois (toutes reconductions comprises) ?;SST_ElTT418;72;Liste choix unique;Oui, Durée de 48 mois|Non, dérogation à la durée de 48 mois;;Oui;Oui;Non
+El81b;"Si non, préciser la durée du marché toutes reconductions comprises
+(si durée autre que le choix sur liste, saisir directement le délai dans la réponse)";SST_ElTT418;73;Liste de choix ou texte;"1.Période initiale de 48 mois ferme pour l’ensemble des produits et prestations objets du marché
+2.2nde période de 96 mois ferme restreinte aux commandes rattachées à une commande initiale sur le périmètre limitatif";;Oui;Oui;Non
+El80a;Quelle est la durée initiale en mois du marché ?;SST_ElTT418;74;Liste choix unique;36 mois|autre;;Oui;Oui;Non
+El83;Si autre, préciser la durée initiale;SST_ElTT418;75;Texte;;;Oui;Oui;Non
+El84;Le principe de reconduction s'applique t'il ?;SST_ElTT418;76;Liste choix unique;Oui, Le principe de reconduction s'applique|Non, dérogation au principe de reconduction;;Oui;Oui;Non
+El85b;Si oui, expliquer les modalités de reconduction ?;SST_ElTT418;77;Liste choix unique;Expresse|Tacite;;Oui;Oui;Non
+El84b;Si oui, Quel est le nombre de reconductions possibles ?;SST_ElTT418;78;Liste choix unique;1 reconduction|2 reconductions|3 reconductions|4 reconductions;;Oui;Oui;Non
+El84c;Si oui, Quelle est la durée de chaque reconduction ?;SST_ElTT418;79;Liste choix unique;12 mois|6 mois|4 mois|3 mois|1 fois 6 mois et 2 fois 3 mois;;Oui;Oui;Non
+El84d;Ces modalités  s'appliquent-elles à l'ensemble des lots ?;SST_ElTT418;80;Liste choix unique;Oui, ces modalités  s'appliquent à l'ensemble des lots|Non, ces modalités ne s'appliquent pas à l'ensemble des lots;;Oui;Oui;Non
+El84e;Si non, préciser les modalités particlulières pour chaque lot;SST_ElTT418;81;Annexe 10 - Détail lots;;;Oui;Oui;Non
+El86;Durée d'exécution des bons de commande ou des marchés subséquents  dépassera t'elle la date de fin du support contractuel ?;SST_ElTT418;82;Liste choix unique;Oui, la durée des BDC demeure exécutable au-delà du support contractuel sur la base des durées annoncées dans le CCAP|Non, absence d'exécution des BDC ou MS au-delà du support contractuel;;Oui;Oui;Non
+El87;Si oui, de combien de mois et sur quel périmètre (Ex : prestations de maintenance…) ?;SST_ElTT418;83;Texte;;;Oui;Oui;Non
+El87b;Si oui, ces modalités  s'appliquent-elles à l'ensemble des lots ?;SST_ElTT418;84;Liste choix unique;Oui, ces modalités  s'appliquent à l'ensemble des lots|Non, ces modalités ne s'appliquent pas à l'ensemble des lots;;Oui;Oui;Non
+El87c;Si non, préciser les modalités particlulières pour chaque lot;SST_ElTT418;85;Annexe 10 - Détail lots;;;Oui;Oui;Non
+El82;Des travaux d'interfacage ou de déploiement long sont-ils prévus nécessitant des échanges avec le titulaire avant ouverture du marché à la commercialisation ?;SST_ElTT418;86;Liste choix unique;Oui, un déploiement long est prévu|Oui, des travaux d'interfaçage et de déploiement long sont prévus|Non, absence de travaux d'interfacage ou de déploiement long;;Non;Oui;Non
+El104;Quelles sont les clauses modificatives applicables ?;SST_ElTT419;87;Liste choix multiple;Clause promo|Clause devis 5%|Clause de réexamen|Avenant|marchés de prestations similaires;=;Non;Oui;Non
+El104b;Si clause de réexamen applicable, quel est le périmètre de la clause de réexamen;ElTTT420;88;Liste choix multiple;Pour évolutions techniques ou technologiques|Suite à évolutions techniques et règlementaires|Ajouts nécessaires à bonne exécution de marché|En cas de circonstances imprévisibles|Modifications du montant maximum|Autres;=;Non;Oui;Non
+El105;Si autre, expliquer le périmètre complémentaire applicable en matière de clause de réexamen;ElTTT420;89;Texte;;;Non;Oui;Non
+El107;Si clause promotionnelle applicable, quel est le périmètre applicable ?;ElTTT422;90;Liste choix multiple;Diminution du prix net d'un ou de plusieurs matériel(s)/prestations|La mise en place de conditionnements promotionnels (vente de lots)|La mise en place de packages dit promotionnels regroupant plusieurs matériels, options, accessoires du marché;=;Non;Oui;Non
+El269;Des obligations particulières relatives à la gestion des fins de contrats sont-elles a préciser dans des documents contractuels, processus et ou pilotées  ?;SST_ElTT423;91;Liste choix unique;Oui, obligations particulières à la gestion des fins de contrats|Non, absence d'obligations particulières à la gestion des fins de contrats;;Non;Oui;Non
+El390;Si oui, préciser l'attendu après échanges avec les référents DCDT concernés;SST_ElTT423;92;Texte;;;Non;Oui;Non
+El391;Si oui, un accompagnement est-il souhaité pour la modélisation du plan de gestion des fins de contrat ?;SST_ElTT423;93;Liste choix unique;Oui, Accompagnement souhaité pour la gestion des fins de contrats|Non, absence d'accompagnement à la gestion des fins de contrats;;Non;Oui;Non
+El501;L'offre prévoit-elle un devis UGAP  ?;SST_ElTT431;94;Liste choix unique;Oui, l'offre prévoit un devis UGAP|Non, la proposition du titulaire se substitue au devis UGAP;;Non;Oui;Non
+El110;Existe-il des prérequis à l’établissement d’un devis ?;SST_ElTT431;95;Liste choix unique;Oui, prérequis à l'établissement d'un devis|Non, absence de prérequis à l'établissement d'un devis;;Oui;Oui;Non
+El111;Si oui, préciser lesquels;SST_ElTT431;96;Liste choix multiple;Qualification du besoin par le titulaire et rédaction d’un dossier technique le cas échéant|fiche de vente|prévisite du titulaire|questionnaire client (offre plurielle)|fiche de recensement|attestation de complément de parc|eprocurement|devis tripartite avec outillage|convention d'embarquement|autre;=;Non;Oui;Non
+El111b;Si oui, pour quels lots;SST_ElTT431;97;Texte;;;Oui;Oui;Non
+El112;Si autre, préciser lesquels;SST_ElTT431;98;Texte;;;Non;Oui;Non
+El113;Canal d’enregistrement des devis est-il identique à celui de la commande ?;SST_ElTT432;99;Liste choix unique;Oui, canal d'enregistrement des devis identique à la commande|Non, canal d'enregistrement distinct de celui de la commande;;Non;Oui;Non
+El114;Si non, préciser lesquels;SST_ElTT432;100;Liste choix multiple;Devis tripartite / CCM / E-commerce / réel constaté /Autre;=;Oui;Oui;Non
+El114b;Si autre, précisez;SST_ElTT432;101;Texte;;;Non;Oui;Non
+El112b;Le marché prévoit-il une clause de devis tripartite ?;SST_ElTT432;102;Liste choix unique;Oui, clause obligatoire|Oui, clause facultative|Non, absence de clause;;Oui;Oui;Non
+El120;Un minimum de commande client géré par l'UGAP est-il en envisagé ?;ElTTT434;103;Liste choix unique;Oui, un minimum de commande client est envisagé|Non, absence de mimimum de commande client;;Non;Oui;Non
+El121;Si oui, s'agit-il d'un montant de commande en quantité ou en montant ?;ElTTT434;104;Liste choix unique;minimum en quantité|minimum en montant;;Non;Oui;Non
+El507;Si oui, la gestion du minimum de commande nécessite-t-elle des paramétrages informatiques ?;ElTTT434;105;Liste choix unique;Oui, paramétrages informatiques nécessaires|Non, aucun paramétrage nécessaire;;Non;Oui;Non
+El122;Modalités standard de commande;ElTTT434;106;Liste choix unique;Oui, modalités standard de commande|Non, dérogation au standard de commande;;Non;Oui;Non
+El123;Si non, préciser les modalités particulières applicables;ElTTT434;107;Liste choix multiple;Devis tripartite|CCM|E-commerce|réel constaté|Autre;=;Non;Oui;Non
+El124;Si autre, préciser;ElTTT434;108;Texte;;;Non;Oui;Non
+El140;Un minimum de commande fournisseur géré par l'UGAP est-il en envisagé ?;ElTTT435;109;Liste choix unique;Oui, un minimum de commande fournisseur est envisagé|Non, absence de mimimum de commande fournisseur;;Non;Oui;Non
+El141;Si oui, s'agit-il d'un montant de commande en quantité ou en montant ?;ElTTT435;110;Liste choix unique;minimum en quantité|minimum en montant;;Non;Oui;Non
+El508;Si oui, la gestion du minimum de commande nécessite-t-elle des paramétrages informatiques ?;ElTTT435;111;Liste choix unique;Oui|Non;;Non;Oui;Non
+El142;Minimum d’achat est-il applicable pour exonérer des frais de port est-il prévu / envisagé;ElTTT435;112;Liste choix unique;Oui, minimum d'achat pour l'exonération des frais de port|Non, absence de minimum d'achat pour l'exonération des frais de port;;Non;Oui;Non
+El125;Une dématerialisation des commandes est-elle a mettre en place via SINOE ?;SST_ElTT436;113;Liste choix unique;Oui, dématerialisation des commandes|Non, Absence de dématerialisation des commandes;;Non;Oui;Non
+El127;Si oui, le délai de transmission des informations (confirmation de commande, date prévisionnelle…) est-il conforme au délai standard de 3 jours ?;SST_ElTT436;114;Liste choix unique;Oui, Délai de transmission des informations liées à la commande ou à la livraisons conforme à 3 jours|Non, délai de transmission des informations liées à la commande ou à la livraisons non conforme au standard;;Non;Oui;Non
+El128;Si délai non conforme au standard, préciser le délai applicable;SST_ElTT436;115;Texte;;;Non;Oui;Non
+El137;En cas d'émission de bons de commande dématérialisée autre que SINOE  : dans quels délais les informations (confirmation de la commande, date prévisionnelle…) doivent-elles être transmises ?;SST_ElTT436;116;Texte;Oui|Délai de transmission des informations liées à la commande ou à la livraisons conforme à 3 jours|Non|délai de transmission des informations liées à la commande ou à la livraisons non conforme au standard;;Oui;Oui;Non
+El132;Quelle est la fréquence d'émission des bons de commandes ?;SST_ElTT436;117;Liste choix unique;A la survenance du besoin|A échéance (mensuelle|trimestrielle|annuelle)|autre ou mixte;;Non;Oui;Non
+El133;"Si fréquence d'émission ""autre"" ou ""mixte"" apporter des précisions après échanges auprès du référent devis/commande";SST_ElTT436;118;Texte;A la survenance du besoin|A échéance|Autre;;Non;Oui;Non
+El132b;En cas de BDC à échéance, préciser s'il s'agit d'une mono, multi échéance et pour quelle échéance l'UGAP émet-elle une commande ? (mensuelle, trimestrielle, semestrielle ou annuelle);SST_ElTT436;119;Liste choix multiple;mensuelle,trimestrielle,semestrielle|annuelle;;Oui;Oui;Non
+El136;Le délai de modification/résiliation ou d'annulation du BDC fournisseur est-il conforme à la règle des 8 jours;SST_ElTT438;120;Liste choix unique;Oui, le délai de modification/résiliation ou d'annulation du BDC est conforme à la règle des 8 jours|Non, le délai de modification/résiliation ou d'annulation du BDC n'est pas conforme à la règle des 8 jours;;Oui;Oui;Non
+El136b;Et si non, quel est le délai;SST_ElTT438;121;Texte;Oui|Non;;Oui;Oui;Non
+El138;En cas d’annulation/modification des bons de Commande client existe-t-il une dérogation aux CGV (=annulation le jour même)?;SST_ElTT438;122;Liste choix unique;Oui, la règle d'annulation/modification ou annulation déroge aux CGV|Non, la règle d'annulation/modification ou annulation est conforme aux CGV;;Non;Oui;Non
+El139;Si oui, Précisez les modalités particulières de modifications/annulations qui s'appliquent;SST_ElTT438;123;Texte;;;Non;Oui;Non
+El445;Ce chapitre est-il applicable;SST_THM_ElT445;124;Liste choix unique;Oui, ce chapitre est applicable|Non,ce chapitre est non applicable;;Non;Oui;Non
+El177;Une garantie commerciale contractuelle ou une garantie de bon fonctionnement en cas de logiciel est-elle en place et applicable pour l'ensemble des lots ?;SST_ElTT446;125;Liste choix unique;Oui, Garantie commerciale contractuelle applicable|Non, absence de garantie commerciale contractuelle|Oui, Garantie de bon fonctionnement du logiciel|Non, absence de garantie de bon fonctionnement du logiciel;;Non;Oui;Non
+El488;Si oui, préciser si les durées sont conformes au standard (≤ 2 ans pour les produits neufs et ≤ 1 an pour les produits reconditionnés);SST_ElTT446;126;Liste choix unique;oui|durée standard applicable|non|durée spécifique applicable;;Non;Oui;Non
+El178;Si non, préciser les durées applicabes;SST_ElTT446;127;Texte;;;Non;Oui;Non
+El179;Si oui, préciser par qui elle est assurée;SST_ElTT446;128;Liste choix multiple;Titulaire/Constructeur/Tiers;=;Non;Oui;Non
+El180a;Le détail de la garantie est-il commun à l'ensemble des lots de la procédure;SST_ElTT446;129;Liste choix unique;Oui, le détail de la garantie est commun à l'ensemble des lots|Non, le détail de la garantie varie selon  les lots;;Non;Oui;Non
+El180;Si oui, préciser le détail de la garantie;SST_ElTT446;130;Texte;;;Non;Oui;Non
+El181;Si non, préciser pour chaque lot la durée de cette garantie, les conditions de garantie;SST_ElTT446;131;Annexe 10 - Détail lots;;;Non;Oui;Non
+El181b;Quelles sont les conditions de garantie ?;SST_ElTT446;132;Liste choix multiple;Sur site client|Sur les lieux d'utilisation du matériel|Sur site bénéficiaire|Sur site ou en retour atelier (frais logistiques A/R à la charge du titulaire), chez le titulaire ou tiers (agent, concessionnaire, distributeur…), à distance (logiciel);=;Oui;Oui;Non
+El182;Sous quel délai minimal le titulaire doit assurer la résolution du SAV (hors refabrication complète du matériel);SST_ElTT446;133;Liste choix multiple;Sous un délai de résolution fixé à 21 jours|Sous un délai de résolution fixé à 30 jours|Différent de 30 jours;;Oui;Oui;Non
+El182b;Si délai minimal du titulaire pour assurer la résolution du SAV est non conforme au standard, préciser le délai applicable;SST_ElTT446;134;Texte;;;Non;Oui;Non
+El189;Dans le cadre de la garantie le délai de prise en charge du SAV par le titulaire est-il conforme au standard (48h en France Continentale et Corse / 72h pour DROM COM);SST_ElTT447;135;Liste choix unique;Oui, délai de prise en charge du SAV par le titulaire conforme au standard (48h en France Continentale et Corse / 72h pour DROM COM)|Non, délai de prise en charge du SAV par le titulaire dérogatoire au standard;;Oui;Oui;Non
+El190;Si non, préciser le(s) délai(s);SST_ElTT447;136;Texte;;;Non;Oui;Non
+El192;Existe t'il une Garantie en Temps de rétablissement (GTR);SST_ElTT447;137;Liste choix unique;Non, Absence d'une Garantie en Temps de Rétablissement (GTR)|Oui, Existence d'une garantie en Temps de Rétablissement;;Oui;Oui;Non
+El191;Y-a t'il des produits en stock;SST_ElTT447;138;Liste choix unique;Oui, Existence de produits en stock|Non, Absence de produits en stock;;Non;Oui;Non
+El183;Une fiche SAV est-elle exigée ?;SST_ElTT447;139;Liste choix unique;Oui, Fiche SAV exigée|Non, Fiche SAV non exigée;;Oui;Oui;Non
+El183l;Y-a-t-il une garantie minimum de base du véhicule complet hors batterie ?;SST_ElTT447;140;Liste choix unique;Oui, existence d'une garantie minimum de base du véhicule complet hors batterie|Non, absence de garantie minimum de base du véhicule complet hors batterie;;Oui;Oui;Non
+El183m;Si oui, quelle est la durée de garantie minimum de base du véhicule complet hors batterie ?;SST_ElTT447;141;Annexe 10 - Détail lots;;;Non;Oui;Non
+El183b;Y-a-t-il une garantie de disponibilité du véhicule pour chaque véhicule immobilisé à cause d’une défaillance prise en charge au titre de la garantie ?;SST_ElTT447;142;Liste choix unique;Oui, existence d'une garantie de disponibilité|Non, absence de garantie de disponibilité;;Oui;Oui;Non
+El183k;Si oui, quelle est la durée maximum de jours d’immobilisation du véhicule par année ? (adapter et multiplier selon le nombre de lots);SST_ElTT447;143;Annexe 10 - Détail lots;;;Non;Oui;Non
+El183e;Y-a-t-il une garantie de base d'autonomie de l'ensemble batterie ?;SST_ElTT447;144;Liste choix unique;Oui|existence d'une garantie autonomie de l'ensemble batterie|Non|absence de garantie autonomie de l'ensemble batterie;;Oui;Oui;Non
+El183f;Si oui, quelle est la durée de garantie d'autonomie minimum de base (80% de la charge initiale de l'ensemble batterie)? (adapter et multiplier selon le nombre de lots);SST_ElTT447;145;Annexe 10 - Détail lots;;;Oui;Oui;Non
+El183g;Y-a-t-il une garantie contractuelle anticorrosion ?;SST_ElTT447;146;Liste choix unique;Oui, Existence d'une garantie contractuelle anticorrosion|Non, Absence de garantie contractuelle anticorrosion;;Oui;Oui;Non
+El183h;Si oui, quelle est la durée garantie minimum de base (en mois/ année/ km) ? (adapter et multiplier selon le nombre de lots);SST_ElTT447;147;Annexe 10 - Détail lots;;;Oui;Oui;Non
+El183i;Le titulaire est-il tenu de fournir les pièces détachées nécessaires à la réparation du matériel ?;SST_ElTT447;148;Liste choix unique;Oui, Fourniture par le titulaire de pièces détachées|Non, Absence de fourniture de pièces détachées par le titulaire;;Oui;Oui;Non
+El183j;Si oui, quel est le délai correspondant après la fin de la fabrication du dernier matériel  ?;SST_ElTT447;149;Liste choix unique;5 ans|Autre;;Oui;Oui;Non
+El489;Si autre, préciser le délai applicable;SST_ElTT447;150;Texte;5 ans|10 ans|autre;;Oui;Oui;Non
+El184;Une extension de garantie doit-elle être mise en place ?;SST_ElTT448;151;Liste choix unique;Oui|une extension de garantie doit être mise en place|Non|absence d'extension de garantie;;Oui;Oui;Non
+El185;Si oui, concerne t'elle un matériel référencé  par le titulaire auprès du constructeur ?;SST_ElTT448;152;Liste choix unique;Non, elle ne concerne pas du matériel référencé au prix renseigné par le titulaire|Oui, elle concerne du matériel référencé au prix proposé par le titulaire;;Oui;Oui;Non
+El186;Si oui, s'agit-il d'une extension de garantie contrôlée ?;SST_ElTT448;153;Liste choix unique;Oui|Extension de garantie contrôlée|Non|absence d'extension de garantie contrôlée;;Oui;Oui;Non
+El188;Si oui, préciser la ou les durées de garantie par lot;SST_ElTT448;154;Annexe 10 - Détail lots;;;Non;Oui;Non
+El4;Des prestations de maintenance  et/ou location - maintenance sont-elles à prévoir ?;SST_ElTT437;155;Liste choix unique;Oui, prestations de maintenance prévue à l'offre|Non, absence de prestations de maintenance;;Non;Oui;Non
+El134;Quelles sont les typologies de commande de maintenance?;SST_ElTT502;156;Liste choix multiple;Location maintenance|Acquisition maintenance|Full service|Non concerné pour l'offre;=;Oui;Oui;Non
+El370;Quelles sont les modalités de maintenance (préventive, corrective…) prévues ?;SST_ElTT502;157;Liste choix multiple;préventive|corrective/curative;=;Oui;Oui;Non
+El372;Préciser la durée ?;SST_ElTT502;158;Annexe 10 - Détail lots;;;Oui;Oui;Non
+El376;Si maintenance corrective/curative son prix est-il inclus dans le prix du matériel/Logiciel/fourniture ?;SST_ElTT502;159;Liste choix unique;Oui, le prix de la maintenance corrective/curative est-elle incluse dans le prix|Non, Le prix de la maintenance corrective/curative n'est pas comprise dans le prix|Non concerné pour l'offre;;Oui;Oui;Non
+El377;Si maintenance corrective/curative, l'intervention du titulaire vise quelle remise en état ?;SST_ElTT502;160;Liste choix multiple;remise en état des Matériels|remise en état des Installations et logiciels;;Oui;Oui;Non
+El378;En cas de dysfonctionnement, sous quel délai le titulaire doit-il intervenir en France métropolitaine pour des prestations de maintenance corrective/curative  ?;SST_ElTT502;161;Texte;;;Oui;Oui;Non
+El379;En cas de dysfonctionnement, sous quel délai le titulaire doit-il intervenir en outre-mer pour des prestations de maintenance corrective/curative  ?  ?;SST_ElTT502;162;Texte;;;Oui;Oui;Non
+El380;La prestation de maintenance s'étend-elle à la fourniture et l'installation d'accessoires et options ajoutés ?;SST_ElTT502;163;Liste choix unique;Oui, la prestation de maintenance s'étend à la fourniture et à l'installation d'accessoires et options|Non, la prestation de maintenance ne s'étend pas à la fourniture et l'installation d'accessoires et options;;Oui;Oui;Non
+El381;La maintenance des équipements couvre-t-elle les bris ?;SST_ElTT502;164;Liste choix unique;Oui, la maintenance des équipements couvre les bris|Non, la maintenance des équipements ne couvre pas les bris;;Oui;Oui;Non
+El387;Préciser l'élément déclencheur des commandes (concomitant à la commande, livraison, carte grise…), les formats de commande envisagés (mono ou multi échéance) et la périodicité des commande (unique, mensuelle, trimestrielle, annuelle, autre…);SST_ElTT503;165;Liste choix multiple;concomitant à la commande (volet 1) et à l’issue de l’admission du matériel (volet 2)|la fin de la période de garantie|la fin de la période d'extension de garantie|Autre;;Non;Oui;Non
+El396;"Si ""autre"" préciser l'élément déclencheur des commandes, les formats de commande envisagés et la périodicité";SST_ElTT503;166;Texte;;;Non;Oui;Non
+El5c;Quel est le(s) format(s) d'émission de commande d’achat envisagé(s) pour les prestations de location/maintenance ?;SST_ElTT503;167;Liste choix unique;Mono échéance|Multi échéance|Mono échéance & Multi échéance;=;Oui;Oui;Non
+El5e;Quelle est la périodicité de commande d’achat envisagée en Multi échéance ?;SST_ElTT503;168;Liste choix unique;Unique|Mensuelle|Trimestrielle|Annuelle|Autre|Non concerné pour l'offre;;Non;Oui;Non
+El97;La rémunération par le titulaire en contrepartie d’un service rendu correspond-elle a la contribution standard 1%-4000€-Trimestriel ?;SST_ElTT440;169;Liste choix unique;Oui, Application de la contribution standard : 1% - 4000 € - Trimestriel|Non, dérogation à la contribution standard;;Non;Oui;Non
+El98;Si non, préciser quel schéma de rémunération s'applique à l'offre (exemple: ristourne, délégation de marge pour compte...) justifier de cette la dérogation et préciser les modalités de calcul associées - périodicité - seuil mini d'application ou l'absence de rémunération;SST_ElTT440;170;Texte;;;Non;Oui;Non
+El99;La rémunération par le client correspond-elle au standard (Taux de marge applicable au PA) avec distinction grands comptes - partenaire ?;SST_ElTT440;171;Liste choix unique;Oui, Rémunération par le client standard avec distinction Grands comptes et partenaire|Non, dérogation à la rémunération client standard;;Non;Oui;Non
+El100;Si non, préciser la marge spécifique applicable (ex : taux unique, PA=PV...) et justifier de cette dérogation;SST_ElTT440;172;Texte;;;Non;Oui;Non
+El102;Une partie de l'offre fait-elle l'objet d'une exclusion de marge;SST_ElTT440;173;Liste choix unique;Oui, exclusion de marge|Non, absence d'exclusion de marge;;Non;Oui;Non
+El103;Si oui, préciser le contenu de l'offre concerné par l'exclusion (ex : prestation d'assurance);SST_ElTT440;174;Liste choix multiple;Absence d'application de marge sur les taxes d'immatriculation|Surcoût Drom Com|Indeminité et annulation et modification de commande|Reprise de matériel;=;Non;Oui;Non
+El103c;Si autre, préciser le contenu de l'offre concerné par l'exclusion (ex : prestation d'assurance);SST_ElTT440;175;Texte;;;Non;Oui;Non
+El143;Flux facturation Client standard (Facturation fournisseur déclenche facturation client);SST_ElTT441;176;Liste choix unique;Oui, flux facturation client standard|Non, flux facturation client dérogatoire;;Non;Oui;Non
+El144;Si non, est-il prévu un autre élément déclencheur de la facture client et si oui, préciser lequel (ex :  le motif de commande - CF Annexe);SST_ElTT441;177;Texte;;;Non;Oui;Non
+El146;Si non, s'agit-il d'une commande à échéance ?;SST_ElTT441;178;Liste choix unique;Oui, il s'agit d'une commande à échéance|Non, il ne s'agit pas d'une commande à échéance;;Non;Oui;Non
+El147;Si oui, quel est le terme applicable;SST_ElTT441;179;Liste choix multiple;Terme échoir|Terme échu|Multi terme (échu et échoir);;Non;Oui;Non
+El493;Si oui, préciser la périodicité applicable;SST_ElTT441;180;Liste choix multiple;Mensuelle|trimestrielle|semestrielle, annuelle;;Non;Oui;Non
+El148;Le flux de facturation fournisseur correspond au standard (commande d'achat = facture) ?;SST_ElTT442;181;Liste choix unique;Oui, flux facturation fournisseur standard|Non, flux facturation fournisseur dérogatoire;;Non;Oui;Non
+El149;Si non, justifier et présenter le schéma de facturation dérogatoire (ex : une commande = plusieurs factures);SST_ElTT442;182;Texte;;;Non;Oui;Non
+El150;Facturation dépendante d'un échéancier ?;SST_ElTT442;183;Liste choix unique;Oui, Facturation dépendante d'un échéancier|Non, Facturation indépendante d'un échéancier;=;Non;Oui;Non
+El151;S'agit-il d'une commande à échéance ?;SST_ElTT442;184;Liste choix unique;Oui, commande à échéance|Non, absence de commande à échéance;=;Non;Oui;Non
+El151b;Si oui, en préciser le type d'échéance;SST_ElTT442;185;Liste choix unique;Mono échéance|Multi échéance|Mono échéance & Multi échéance;;Non;Oui;Non
+El152;Si mono échéance, en préciser le terme applicable;SST_ElTT442;186;Liste choix unique;Terme échoir|Terme échu|Non concerné pour l'offre;;Non;Oui;Non
+El494;Si mono échéance, préciser la périodicité applicable;SST_ElTT442;187;Liste choix unique;Paiement unique|mensuelle|trimestrielle|Semestrielle|annuelle;;Non;Oui;Non
+El152b;Si multi échéance, en préciser le terme applicable;SST_ElTT442;188;Liste choix unique;Terme échoir|Terme échu|Non concerné pour l'offre;;Non;Oui;Non
+El494b;Si multi échéance, préciser la périodicité applicable;SST_ElTT442;189;Liste choix unique;Paiement unique|mensuelle|trimestrielle|Semestrielle|annuelle;;Non;Oui;Non
+El495;Est-il prévu des prestations de travaux facturable à un sous-traitant ?;SST_ElTT442;190;Liste choix unique;Oui, il est prévu des prestations de travaux exécutables par des sous-traitants|Non, aucune prestation de travaux;;Non;Oui;Non
+El153;Facturation fournisseur en totalité (hors acomptes, avances…);SST_ElTT442;191;Liste choix unique;Oui, facturation fournisseur en totalité|Non, facturation fournisseur partielle;;Non;Oui;Non
+El154;Si non, justifier de la facturation partielle;SST_ElTT442;192;Texte;;;Non;Oui;Non
+El155;Format de facturation est-il en xml (réel constaté, facturation partielle et à forte volumétrie) ?;SST_ElTT442;193;Liste choix unique;Absence de format de facturation en xml|format de facturation en xml;;Non;Oui;Non
+El156;Des actions ou des particularités s'appliquent-elles pour le paiement du client vis-à-vis de l'UGAP et/ou de l'UGAP vis-à-vis du fournisseur ?;SST_ElTT443;194;Liste choix unique;Oui, Modalités particulières pour le paiement|Non, Absence de modalités particulières pour le paiement;;Non;Oui;Non
+El157b;Si oui, préciser si celles-ci concernent  le client et les particularités qui s'appliquent;SST_ElTT443;195;Texte;Le client doit compléter et signer l’attestation d’admission|Non concerné pour l’offre;;Non;Oui;Non
+El158;Si oui, préciser si celles-ci concernent le fourniseur et les particularités qui s'appliquent;SST_ElTT443;196;Texte;Emettre la facture après admission du matériel et joindre « l’attestation d’admission par le bénéficiaire (issue de la vérification d’aptitude technique) » complétée et signée par le client|Non concerné pour l’offre;;Non;Oui;Non
+El159;Si oui, préciser si celles-ci concernent l'UGAP et les particularités qui s'appliquent;SST_ElTT443;197;Texte;Emission de facture client|paiement du fournisseur en déduction des acomptes perçus|paiement fournisseur…|Non concerné pour l’offre;;Non;Oui;Non
+El156b;L'offre prévoit-elle un DDP ou Delivered Duty Paid (Rendu droits acquittés) en cas de livraison outre-mer;SST_ElTT443;198;Liste choix unique;Absence de système DDP|Présence de système DDP;;Oui;Oui;Non
+El160;"Les modalités envisagées en terme d'avance sont-elles conformes au code de la commande publique :
+Son taux est fixé à 5 %.
+Le montant de l’avance versée au titulaire n’est ni révisable ni actualisable ?";SST_ElTT444;199;Liste choix unique;Oui, les modalités sont conformes au code de la commande publique|Non, les modalités sont distinctes du code de la commande publique;;Non;Oui;Non
+El160b;Si non, préciser;SST_ElTT444;200;Texte;;;Non;Oui;Non
+El161;Le montant total des acomptes est conforme au standard et ne peut pas excéder 90% du montant hors taxe de la commande concernée.;SST_ElTT444;201;Liste choix unique;Oui, le montant total des acomptes est conforme au standard|Non, le montant total des acomptes est dérogatoire;;Oui;Oui;Non
+El161b;Si non, justifier de la dérogation au standard de 90%;SST_ElTT444;202;Texte;Le pourcentage de 90% est trop élevé pour principalement un report d'exécution|Autre;;Oui;Oui;Non
+El161c;Si non, indiquer le pourcentage;SST_ElTT444;203;Liste de choix ou texte;30%|60%|70%;;Non;Oui;Non
+El162;Un acompte pour approvisionnement est-il prévu ?;SST_ElTT444;204;Liste choix unique;Oui, un acompte pour approvisonnement est prévu|Non, Absence d'acompte pour approvisionnement;;Oui;Oui;Non
+El163;"Si oui, est-il conforme au standard:
+- Montant est supérieur à 50 K€
+- Délai de la prestation est supérieur à 90 jours 
+- Montant d'acompte fixé au maximum à 40% du montant TTC du BDC?";SST_ElTT444;205;Liste choix unique;Acompte conforme au standard dont le montant est supérieur à 50 000 euros|dont le délai de prestation est supérieur à 90 jours|Maximum 40%|Garantie à première demande|Acompte non conforme au standard;;Oui;Oui;Non
+El163b;Si non, préciser montant, delai et  le pourcentage;SST_ElTT444;206;Texte;;;Oui;Oui;Non
+El163c;Le marché prévoit-il un acompte pour report de livraison/ d'exécution de plus de trente jours ?;SST_ElTT444;207;Liste choix unique;Oui, Acompte pour report de livraison d'exécution de plus de 30 jours|Non, absence d'acompte report de livraison ou d'exécution de plus de 30 jours;;Oui;Oui;Non
+El163d;Si oui, le montant de cet acompte est-il conforme au standard de 80% du montant HT du BDC?;SST_ElTT444;208;Liste choix unique;Oui, acompte conforme au standard des 80% du montant € HT du BDC|Non, acompte dérogatoire au standard;;Oui;Oui;Non
+El392;Si non, préciser le pourcentage applicable;SST_ElTT444;209;Texte;Oui|acompte conforme au standard des 80% du montant € HT du BDC|Non|acompte dérogatoire au standard;;Non;Oui;Non
+El163e;Le marché prévoit-il un acompte pour remise de la tête de série?;SST_ElTT444;210;Liste choix unique;Oui, Acompte pour remise de la tête de série|Non, absence d'acompte pour remise de la tête de série;;Oui;Oui;Non
+El163f;"Si oui la demande d’acompte ne pourra dépasser la limite de 70% H.T du montant total de la commande
+=> la demande d’acompte est conforme au standard: 
+- 70% maximum du montant total de la commande HT
+- Répartis dans la limite de 35% pour le maquettage du véhicule dit ""téte de série"" et 35 % lors de la sortie usine du véhicule en version dit « tête de série »";SST_ElTT444;211;Liste choix unique;Oui, acompte conforme au standard|Non, acompte dérogatoire au standard;;Oui;Oui;Non
+El205a;Une clause relative aux réunions de suivi doit-elle être prévue ?;SST_ElTT450;212;Liste choix unique;Oui, une clause relative aux réunions de suivi doit être prévue au marché|Non, pas de clause de réunion de suivi à prévoir;;Oui;Oui;Non
+EL492;Est-il prévu un dispositif Bonus/Malus pour inciter les fournisseurs à améliorer la qualité de service ?;SST_ElTT450;213;Liste choix unique;Oui, il est prévu un dispositif de Bonus/Malus|Non, il n'est pas prévu de dispositif de Bonus/Malus;;Non;Oui;Non
+El205;La mesure de la qualité de service et du suivi des titulaires sont réalisés au travers des critères;SST_ElTT450;214;Liste choix multiple;Critères prévus dans le cadre de l’analyse multicritère des offres|Définition de l’objet du (des) lot(s) et/ou éléments obligatoires du cahier des charges|Pilotage avec KPI (key performance indicator – indicateurs clés de performance)|Pas de critère Qualité de Service;=;Non;Oui;Non
+El206;Si pilotage avec KPI, indiquer les indicateurs envisager pour suivre l'exécution;SST_ElTT450;215;Liste choix unique;Indicateurs SINOE|Autre;;Non;Oui;Non
+El206b;Si autre, indiquer les indicateurs envisager pour suivre l'exécution (en cas de sélection autre, saisir directement les indicateurs en texte libre);SST_ElTT450;216;Liste choix multiple;Nb fichiers traçabilité traités|Délai transmission fichiers  traçabilité|Tx d prise en compte des commande|Fiabilité livraison prév.|Fiabilité date livraison prév.|Conformité facturation fournisseur|Tx prise en charge des commentaires|Taux litiges résolus / Ou texte libre;=;Non;Oui;Non
+El207;En cas d'absence de critère qualité de service, justifier pourquoi;SST_ElTT450;217;Texte;;;Non;Oui;Non
+El208;Le marché prévoit-il dans le cadre du SAV des pénalités pour non respect de la GTI/GTR (Garantie en Temps d'Intervention/Garantie en Temps de Rétablissement)?;SST_ElTT451;218;Liste choix unique;Oui, le marché prévoit des pénalités pour non respect de la GTI/GTR|Non, Absence de pénalités pour non respect de la GTI/GTR;;Oui;Oui;Non
+El209;Si oui, renseigner le tableau d'allotissement;SST_ElTT451;219;Annexe 10 - Détail lots;;;Non;Oui;Non
+El210;Existe-il des pénalités de défaut de mise en œuvre de la clause d'insertion;SST_ElTT451;220;Liste choix unique;Oui, Pénalités relatives à la clause d'insertion prévues au marché|Non, Absence de pénalités relatives à la  clause d'insertion;;Non;Oui;Non
+El211;"Si oui, le montant des pénalités applicables correspondent-elles au standard : 
+* Absence au RDV fixé par l'UGAP ou de suivi de la démarche = Forfait de 500 €,
+* Absence de transmission d'information sur la mise en œuvre de la clause = Forfait de 500 €,
+* Non respect des attentes horaires définies dans l'AE : Forfait de 60 € par heure non réalisée.";SST_ElTT451;221;Liste choix unique;Oui, les pénalités relatives à la clause d'insertion prévues au marché correspondent au standard|Non, une ou plusieurs pénalités relatives à la  clause d'insertion sont dérogatoiures;;Oui;Oui;Non
+El213;Si non, préciser le montant de chaque pénalité applicable ?;SST_ElTT451;222;Texte;;;Oui;Oui;Non
+El401;Le marché prévoit-il dans le cadre de la maintenance des pénalités pour non respect du délai de réparation ?;SST_ElTT451;223;Liste choix unique;Oui, le marché prévoit des pénalités pour non respect du délai de réparation|Non, absence de pénalités pour non respect du délai de réparation;;Oui;Oui;Non
+El402;Le cas échéant, quel est le montant par lot ?;SST_ElTT451;224;Texte;;;Oui;Oui;Non
+El199;Préciser la formule de pénalités de retard de livraison/d'exécution ou d'indisponibilité;SST_ElTT451;225;Annexe 10 - Détail lots;;;Oui;Oui;Non
+El199b;Le plafond des pénalités est-il conforme au standard établi?;SST_ElTT451;226;Liste choix unique;Oui, le plafond des pénalités est conforme au standard de 30% du bon de commande HT|Non, le plafond des pénalités est dérogatoire au standard établi;;Oui;Oui;Non
+El199c;En cas de plafond de pénaité dérogatoire au standard, préciser le pourcentage du bon de commande ou le montant du plafond;SST_ElTT451;227;Texte;;;Oui;Oui;Non
+El200;Une clause de performance est-elle prévue ?;SST_ElTT452;228;Liste choix unique;Oui, Existence d'une clause de performance|Non, absence de clause de performance;;Oui;Oui;Non
+El263;"Les données personnelles des utilisateurs finaux (distincts de l’interlocuteur client en charge de la passation de la commande) de la prestation/du produit ont-elles vocation à transiter / intégrer le système d’information de l’UGAP ? 
+Exemple : données des patients (nom – prénom, notamment) sur les factures générées dans le cadre d’offres médicales – données des stagiaires (nom – prénom, notamment) sur les factures générées dans le cadre de l’offre formation professionnelle";SST_THM_ElT453;229;Liste choix unique;Oui, les données personnelles ont vocation à transiter/intégrer le SI de l'UGAP|Non, les données personnelles n'ont pas vocation à transiter/intgérer le SI de l'UGAP;;Non;Oui;Non
+El264;Si oui, contacter dès à présent le chargé de mission NTIC et le DPD afin de pouvoir apporter les justifications nécessaires;SST_THM_ElT453;230;Texte;;;Non;Oui;Non
+El490;"Le traitement des données personnelles envisagé concerne-t-il des données sensibles (santé, religion, géolocalisation, orientation sexuelle ou appartenance syndicale, etc.) ; des personnes vulnérables (patients, personnes âgées, enfants, etc.) ; un usage innovant (utilisation d’une nouvelle technologie) ; ou du profilage/surveillance systématique ?";SST_THM_ElT453;231;Liste choix unique;Oui, le traitement des données personnelles concernent des données sensibles, personnes vulnérables, à usage innovant…|Non, le traitement des données personnelles ne concernent pas les données sensibles, personnes vulnérables, à usage innovant;;Non;Oui;Non
+El265;Si oui, une analyse d'impact au sens RGPD doit-elle être mise en œuvre après échanges avec le chargé de mission NTIC et le DPD ?;SST_THM_ElT453;232;Liste choix unique;Oui, une analyse d’impact relative à la protection des données est requise par le RGPD|Non, absence d'analyse d'impact par le RGPD;;Non;Oui;Non
+El266;Est-il prévu des logiciels dans les éléments cédés ou concédés ?;SST_THM_ElT491;233;Liste choix multiple;Non, Pas de logiciels prévus dans les éléments concédés ou cédés|Oui, logiciesl cédés prévus|Oui, logiciels concédés prévus;=;Oui;Oui;Non
+El268;"Si oui, à compter de quel délai le titulaire s'engage à communiquer au bénéficiaire le droit d'utilisation des logiciels concédés ? 
+(si délai autre que le choix sur liste, saisir directement le délai dans la réponse)";SST_THM_ElT491;234;Liste de choix ou texte;Dans un délai de 30 jours|Dans un délai de 7 jours;;Oui;Oui;Non
+El307;Préciser la forme des prix : Unitaire = prix appliqué aux quantités réellement livrées ou exécutées / Forfaitaire = Prix forfaitaire est celui qui rémunère le titulaire pour une prestation ou un ensemble de prestations, indépendamment des quantités mises en œuvre pour leur réalisation;SST_ElTT455;235;Liste choix unique;Unitaire|Forfaitaire|Mixte;;Non;Oui;Non
+El308;Préciser les modalités particulières de prix applicables;SST_ElTT455;236;Liste choix multiple;Référence forfaitaire petite commande|Minima de commande|Politique de remise (ex remise sur tarif public)|Barème dégressif en fonction des quantités|Conditions de livraison|surcoût (îles littorales);=;Non;Oui;Non
+El309;Ces modalités  s'appliquent-elles à l'ensemble des lots ?;SST_ElTT455;237;Liste choix unique;Oui, ces modalités  s'appliquent à l'ensemble des lots|Non, ces modalités ne s'appliquent pas à l'ensemble des lots;;Non;Oui;Non
+El310;Si non, préciser les modalités particlulières pour chaque lot;SST_ElTT455;238;Texte;;;Non;Oui;Non
+El308b;Quels sont les prix applicables?;SST_ElTT455;239;Liste choix multiple;Franco France Métropolitaine|FEC (Entrepôt UGAP)|Départ Usine|Franco France Continentale;=;Oui;Oui;Non
+El308c;Si FFM, quels sont les lots concernés;SST_ElTT455;240;Texte;;;Oui;Oui;Non
+El308d;Si FFC, quels sont les lots concernés;SST_ElTT455;241;Texte;;;Oui;Oui;Non
+El308e;Si DU, quels sont les lots concernés;SST_ElTT455;242;Texte;;;Oui;Oui;Non
+El308f;Si FEC, quels sont les lots concernés;SST_ElTT455;243;Texte;;;Oui;Oui;Non
+El308g;Si DU, le prix des modalités DU correspond-il à un % de minoration;SST_ElTT455;244;Liste choix unique;Oui, il correspond à un pourcentage de minoration|Non, il ne correspond pas à un pourcentage de minoration;;Oui;Oui;Non
+El308h;Si  FEC, le prix des modalités FEC correspond-il à un % de minoration;SST_ElTT455;245;Liste choix unique;Oui, il correspond à un pourcentage de minoration|Non, il ne correspond pas à un pourcentage de minoration;;Non;Oui;Non
+El220;S'il existe un surcoût, préciser lequel;SST_ElTT455;246;Liste choix multiple;Oui, surcoût outre-mer|Non, Absence de surcoût outre-mer;;Oui;Oui;Non
+El221;Si surcoût outre-mer, préciser si celui comprend des éléments supplémentaires à tropicalisation, emballage, étiquetage spécifique pour l'envoi du matériel/produit, frais afférents à la préparation technique et administrative des matériels/produits;SST_ElTT455;247;Texte;Oui|Non;;Non;Oui;Non
+El222;De quelle façon s'exprime le surcoût étranger ?;SST_ElTT455;248;Liste choix unique;Oui|Non;;Oui;Oui;Non
+El223;L'offre comprend-elle des taxes spécifiques (TVA différente de 20%, éco contribution, taxe parafiscale…);SST_ElTT455;249;Liste choix unique;Oui, taxes spécifiques applicables|Non, absence de taxes spécifiques applicables;;Oui;Oui;Non
+El224a;Si oui préciser si elles sont liées à des prestations locales;SST_ElTT455;250;Liste choix multiple;Oui|Non;=;Non;Oui;Non
+El224b;Si oui préciser si elles concernent l'immatriculation de véhicules;SST_ElTT455;251;Liste choix unique;Oui, elles concernent l'immatriculation de véhicules|Non, elles ne concernent pas l'immatriculation de véhicules;=;Oui;Oui;Non
+El224c;Si oui préciser si elles concernent les frais de transport;SST_ElTT455;252;Liste choix multiple;Oui|Non;=;Non;Oui;Non
+El224d;Si oui préciser si elles concernent l'assurance livraison;SST_ElTT455;253;Liste choix unique;Oui|Assurance pour les livraisons hors France Métropolitaine (TVA 0%)|Non|Absence d'assurance pour la livraison;;Non;Oui;Non
+El311;Est-il demandé aux candidats une remise sur catalogue ?;ElTTT455;254;Liste choix unique;Oui, remise sur catalogue exigée|Non, absence de remsie sur catalogue;;Oui;Oui;Non
+El312;Si oui, préciser sur quoi porte cette remise;ElTTT455;255;Liste choix unique;Pièces détachées|Matériels figurant en annexe à l'AE;;Oui;Oui;Non
+El313;Les prix couvrent-ils les frais d'hébergement, de transport et de restauration en lien avec les prestations ?;ElTTT456;256;Liste choix unique;Oui, les frais couvrent l'hébergement, le transport et la restauration|Non, les frais ne couvrent pas l'hébergement, le transport et la restauration;;Oui;Oui;Non
+El314;Si oui, préciser;ElTTT456;257;Liste choix unique;Sur devis|Inclus dans les prix|Non concerné pour la direction/univers|Non concerné pour l'offre;;Non;Oui;Non
+El313b;Y'a-t-il des frais de modification ou relivraison  ?;ElTTT456;258;Liste choix unique;Oui, frais de modification ou relivraison prévus|Non, absence de frais de modification ou relivraison;;Oui;Oui;Non
+El315;L'offre prévoit-elle des supports d'enregistrement (cles USB, disques durs, CD, …)?;ElTTT457;259;Liste choix unique;Oui, l'offre prévoit des supports d'enregistrement|Non, l'offre ne prévoit pas de supports d'enregistrement;;Non;Oui;Non
+El315b;Si oui, une rémunération pour copie privée est-elle prévue ?;ElTTT457;260;Liste choix unique;Oui, une rémunération pour copie privée est prévue|Non, absence de rémunération pour copie privée;;Oui;Oui;Non
+El316;Quelles sont les modalités de variation des prix   ?;SST_ElTT458;261;Liste choix multiple;Prix fermes|Prix révisables sur tarif public à la date d'anniversaire|Prix révisables sur tarif public à tout moment|Prix révisables sur tarif public à date fixe|Prix révisables sur indice|Taux de remise sur tarif public|Autre;;Oui;Oui;Non
+El316a;Préciser le périmètre concerné par l'actualisation des prix fermes;SST_ElTT458;262;Liste choix multiple;Oui|les modalités de variation des prix sont identiques pour tous les lots|Non|les modalités de variation des prix sont différentes en fonction des lots;;Non;Oui;Non
+El403;Si révision sur indice, préciser les modalités de variation par lot;SST_ElTT458;263;Annexe 10 - Détail lots;;;Non;Oui;Non
+El506;Si révision sur tarif public à tout moment, préciser les lots;SST_ElTT458;264;Texte;;;Non;Oui;Non
+El506a;Préciser le périmètre concerné par la révision sur tarif public à tout moment;SST_ElTT458;265;Liste choix multiple;Oui|les modalités de variation des prix sont identiques pour tous les lots|Non|les modalités de variation des prix sont différentes en fonction des lots;;Non;Oui;Non
+El506b;Si révision sur tarif public à tout moment, date de départ de la première période de révision, à la baisse uniquement, pour une durée de 6 mois;SST_ElTT458;266;Liste choix unique;date de notification du présent contrat|date de départ de la durée initiale du contrat figurant dans l’ordre de service;;Non;Oui;Non
+El506c;Si révision sur tarif public à tout moment, préciser le rythme de révision après la première période de 6 mois;SST_ElTT458;267;Liste choix unique;six (6) mois glissants|douze (12) mois glissants|Autre rythme de révision;;Non;Oui;Non
+El506d;Si autre rythme de révision sur tarif public à tout moment, préciser;SST_ElTT458;268;Texte;;;Non;Oui;Non
+El506e;Date d'entrée en vigueur du nouveau prix sur tarif public;SST_ElTT458;269;Texte;date acceptée ou fixée par l’UGAP dans le courrier adressé au titulaire|trente (30) jours calendaires à compter de la validation de l’UGAP;;Non;Oui;Non
+El510;Si révision sur tarif public à date fixe ou anniversaire, préciser les lot;SST_ElTT458;270;Texte;;;Non;Oui;Non
+El510a;Préciser le périmètre concerné par la révision sur tarif public à date fixe ou anniversaire;SST_ElTT458;271;Liste choix multiple;Oui|les modalités de variation des prix sont identiques pour tous les lots|Non|les modalités de variation des prix sont différentes en fonction des lots;;Non;Oui;Non
+El510b;Si révision sur tarif public à date fixe ou anniversaire, préciser la date de révision;SST_ElTT458;272;Liste choix unique;le 1er avril|le 1er septembre|le 1er février|Autre date;;Non;Oui;Non
+El510c;Si révision sur tarif public à date fixe ou anniversaire à une autre date, préciser;SST_ElTT458;273;Texte;six (6) mois glissants|douze (12) mois glissants|Autre rythme de révision;;Non;Oui;Non
+El510d;Les prix figurant au tarif public du titulaire, objet du présent marché sont révisables à date fixe ou anniversaire, à l'exception du prix suivant;SST_ElTT458;274;Liste choix unique;la date de notification|la date de départ de la durée initiale du marché;;Non;Oui;Non
+El510e;Date butoir de communication de son nouveau tarif à l'UGAP par le titulaire;SST_ElTT458;275;Texte;avant le 31 octobre à minuit de l’année précédente|pour une révision au 1er février|avant le 30 juin à minuit de la même année|pour une révision au 1er septembre|autre date butoir;;Non;Oui;Non
+El510f;Si autre date butoir, préciser;SST_ElTT458;276;Texte;;;Non;Oui;Non
+El317;Le taux de remise peut-il varier?;SST_ElTT458;277;Liste choix unique;Oui, le taux de remise peut varier|Non,le taux de remise est ferme;;Oui;Oui;Non
+El317a;Le surcoût outre-mer peut-il varier?;SST_ElTT458;278;Liste choix unique;Oui, le surcoût outre-mer peut varier|Non,le surcoût outre-mer est ferme;;Non;Oui;Non
+El318;Si le taux de remise peut varier, préciser les modalités de variation du taux dans le cadre de la mise en œuvre de la formule de révision des prix ou des offres promotionnelles;SST_ElTT458;279;Liste choix multiple;Variation taux de remise à la hausse ou à la baisse dans la limite du taux minimum indiqué en annexe à l’acte d’engagement|Variation taux de remise dans le cadre de la mise en œuvre de la révision des prix à date fixe ou des offres promotionnelles;;Non;Oui;Non
+El318a;Ces modalités particulières s'appliquent-elles à l'ensemble des lots ?;SST_ElTT458;280;Liste choix unique;Oui, modalités applicables à l'ensemble des lots|Non, modalités différentes en fonction des lots;;Non;Oui;Non
+El319;Si non, préciser les modalités particlulières pour chaque lot;SST_ElTT458;281;Annexe 10 - Détail lots;;;Non;Oui;Non
+El320;Existe-il une première clause de 1ère révision des prix;ElTTT459;282;Liste choix unique;Oui, Existence d'une première clause de 1ère révision des prix|Non,absence d'une première clause de 1ère révision des prix;;Oui;Oui;Non
+El321;Si oui, laquelle est la première révision des prix;ElTTT459;283;Liste choix unique;Par seuil de déclenchement|Sur indices|Sur tarif public;;Oui;Oui;Non
+El322;Si révision sur indice, préciser la formule de révision applicable;ElTTT459;284;Texte;;;Oui;Oui;Non
+El223d;Existance d'une écocontribution / Multi contributions pour un même produit;ElTTT460;285;Liste choix unique;Oui, existence d'écocontribution|Oui, existence d'une multi écocontribution|Non, absence d'écocontribution;;Oui;Oui;Non
+El187;Si oui, l'affichage de l'écocontribution est-il sytématisé ?;ElTTT460;286;Liste choix unique;Oui, affichage de l'écocontribution systématisé|Non, absence d'affichage de l'écocontribution;;Non;Oui;Non
+El223e;Si oui, quel(s) sont / est le(s) lot(s) concerné(s) ?;ElTTT460;287;Texte;;;Oui;Oui;Non
+El324;Si oui, Y-a-t'il une variation de l'écocontribution ?;ElTTT460;288;Liste choix unique;Oui, variation de l'écocontribution|Non, absence de variation de l'écocontribution;;Oui;Oui;Non
+El325;Une clause de sauvegarde est-elle prévue ?;ElTTT461;289;Liste de choix ou texte;Oui, application d'une clause de sauvegarde|Non, absence de clause de sauvegarde;;Non;Oui;Non
+El326;Si oui, le pourcentage est-il conforme au standard ?;ElTTT461;290;Liste choix unique;Oui, le pourcentage est conforme au standard de 3%|Non, le pourcentage est dérogatoire au standard;;Oui;Oui;Non
+El326b;Si le pourcentage est dérogatoire, préciser la valeur ?;ElTTT461;291;Texte;;;Oui;Oui;Non
+El327;Si oui, quelle est la base de calcul de la clause de sauvegarde;ElTTT461;292;Liste choix multiple;Prix initial|Dernier prix révisé|indice inital|dernier indice révisé;=;Oui;Oui;Non
+El328;Si oui, préciser la période de calcul (X mois / X périodes successives / Autre);ElTTT461;293;Liste choix unique;12 mois|Autre;;Non;Oui;Non
+El328b;Si autre, préciser;ElTTT461;294;Texte;;;Oui;Oui;Non
+El164a;Ce chapitre est-il applicable;SST_ElTT463;295;Liste choix unique;Oui, ce chapitre est applicable|Non,ce chapitre est non applicable;;Non;Oui;Non
+El164;Les produits sont-ils soumis à une réglementation spécifique de stockage (autorisations=, ICPE, produit inflammable…);SST_ElTT463;296;Liste choix unique;Oui, les produits sont soumis à une réglementation spécifique de stockage|Non, les produits ne sont pas soumis à une réglementation spécifique;;Non;Oui;Non
+El165;Si oui, laquelle;SST_ElTT463;297;Texte;;;Non;Oui;Non
+El166;Quels sont les conditionnements envisagés (cartons, palettes…);SST_ElTT463;298;Texte;;;Non;Oui;Non
+El167;Pour les emballages à qui appartiennent-ils ?;SST_ElTT463;299;Liste choix unique;Bénéficiaire|Titulaire;;Oui;Oui;Non
+El168;Une distribution stock est-elle prévue pour tout ou partie ?;SST_ElTT463;300;Liste choix unique;Oui, distribution sur stock prévue|Non, absence de distribution sur stock;;Non;Oui;Non
+El169;Si oui, préciser les modalités de stockage;SST_ElTT463;301;Liste choix multiple;Stockage UGAP chez le titulaire (déporté vente)|Stockage UGAP au profit du titulaire (consignation)|Stockage Intermédiaire|Stockage en plateforme externalisée|Stock de consignation;=;Oui;Oui;Non
+El170;Précisions, le cas échéant;SST_ElTT463;302;Texte;;;Non;Oui;Non
+El171;Préciser les modalités de transport utilisées et les services associés (tracking, garantie..);SST_ElTT463;303;Texte;;;Non;Oui;Non
+El174;Est-il prévu de mettre à disposition sur ugap.fr l'affichage du stock disponible ?;SST_ElTT463;304;Liste choix unique;Oui, affichage du stock sur Ugap.fr|Non, absence d'affichage du stock sur Ugap.fr;;Non;Oui;Non
+El270;L'offre antérieure affiche-t'elle un stock fournisseur  ?;SST_ElTT463;305;Liste choix unique;Oui|l'offre antérieure affiche un stock fournisseur|Non|l'offre antérieure n'affiche pas de stock fournisseur;;Non;Oui;Non
+El271;Si oui, préciser à la charge de qui;SST_ElTT463;306;Liste choix multiple;Client|Fournisseur (Web service)|UGAP;=;Non;Oui;Non
+El271b;Une clause de stockage est-elle a intégrer dans le CCAP ?;SST_ElTT463;307;Liste choix unique;Oui, clause de stockage à intégrer dans le CCAP|Non, absence de clause de stockage;;Non;Oui;Non
+El271c;Si oui, quelle clause est applicable;SST_ElTT463;308;Liste choix multiple;Stock Savigny le Temple|Stock déporté chez le fournisseur|Stock en plateforme externalisée (La Poste)|Possibilité de faire du stock de consignation chez le fournisseur;=;Non;Oui;Non
+El172;Quelles sont les conditions d'achat applicables ?;SST_ElTT464;309;Liste choix multiple;Franco France Métropolitaine|FEC (Entrepôt UGAP)|Départ Usine|Franco France Continentale;=;Non;Oui;Non
+El172b;Si FFM, quels sont les lots concernés;SST_ElTT464;310;Texte;;;Non;Oui;Non
+El172c;Si FFC, quels sont les lots concernés;SST_ElTT464;311;Texte;;;Non;Oui;Non
+El172d;Si DU, quels sont les lots concernés;SST_ElTT464;312;Texte;;;Non;Oui;Non
+El172e;Si FEC, quels sont les lots concernés;SST_ElTT464;313;Texte;;;Non;Oui;Non
+El173;Quelles sont les modalités de livraison (hors France métropolitaine);SST_ElTT465;314;Liste choix multiple;Chez le transitaire du bénéficiaire en France Métropolitaine|Sur le site du bénéficiaire avec prise en charge des frais d'emballage de transport et de dédouanement;=;Non;Oui;Non
+El173b;Livraison Tête de série?;SST_ElTT465;315;Liste choix unique;Oui, livraison tête de série|Non, absence de livraison tête de série;;Oui;Oui;Non
+El330;L'offre est-elle concernée par des délais courts/ délai réduit (stock savigny le temple ou stock plateforme externalisée - Ugap Pack service plus);SST_ElTT466;316;Liste choix unique;Oui, Offre concernée par les délais courts/délai réduits|Non, offre non concernée par les délais courts/réduits;;Non;Oui;Non
+El330b;Préciser les délais maximum de livraison / d'intervention / d'exécution attendu pour chaque lot;SST_ElTT466;317;Annexe 10 - Détail lots;;;Oui;Oui;Non
+El331;Si oui, préciser le / les délais maximum par lots/produits concernés concernés;SST_ElTT466;318;Texte;;;Non;Oui;Non
+El332;Une période de neutralisation des prestations (hors SAV) est-elle à prévoir ?;SST_ElTT466;319;Liste choix multiple;Non, aucune période de neutralisation|Période de congés|Changement de modèle|impact industriel lourd|Autre;;Oui;Oui;Non
+El332b;Quelle est sa durée maximale et le délai de prévenance ?;SST_ElTT466;320;Liste choix unique;Durée maximale de 40 jours et délai de prévenance de 6 mois|Autre;;Oui;Oui;Non
+El332c;Si autre, préciser la durée maximale et le délai de prévenance;SST_ElTT466;321;Texte;;;Non;Oui;Non
+El342;Exécution des prestations Iles littorales et/ou DROM – COM (offres de produits);SST_ElTT467;322;Liste choix unique;Oui, exécution des prestations iles littorales et/ou DROM-COM|Non, absence d'exécution des prestations iles littorales et/ou DROM-COM;;Non;Oui;Non
+El343;Si oui, préciser si un traitement particulier doit être mis en place sur les iles littorales (mise en œuvre de la garantie contractuelle, prestations associées de base, recette technique le cas échéant, prestations associées optionnelles, autres...;SST_ElTT467;323;Liste choix multiple;"Les îles littorales :
+o	Garantie contractuelle,
+o	Prestations incluses dans le prix du matériel de base,
+o	Prestations annexes non incluses dans le prix du matériel de base.";=;Non;Oui;Non
+El343b;Si oui, préciser si un traitement particulier doit être mis en place sur les DROM-COM (mise en œuvre de la garantie contractuelle, prestations associées de base, recette technique le cas échéant, prestations associées optionnelles, autres...;SST_ElTT467;324;Liste choix multiple;DROM-COM : Garantie contractuelle|DROM-COM : Prestations incluses dans le prix du matériel de base|DROM-COM : Prestations annexes non incluses dans le prix du matériel de base.;=;Non;Oui;Non
+El344;Retour du matériel (offres de produits);SST_ElTT467;325;Liste choix unique;Oui, reprise de matériel|Non, absence de reprise de matériel;;Non;Oui;Non
+El345;Si oui, détailler les modalités de retour de produit par typologie;SST_ElTT467;326;Texte;;;Non;Oui;Non
+El346;Autres modalités particulières d’exécution (toute offre);SST_ElTT467;327;Liste choix unique;Oui, modalités particulières d'exécution|Non, absence de modalités particulières d'exécution;;Non;Oui;Non
+El347;Si oui, préciser lesquelles et par qui (client / Fournisseur / UGAP);SST_ElTT467;328;Texte;;;Non;Oui;Non
+El258;Une considération environnementale est-elle intégrée à chaque lot ?;SST_ElTT468;329;Liste choix unique;Oui, une considération environnementale est intégrée à chaque lot|Non, Tout ou partie des lots n'intègre pas de considération environnementale;;Non;Oui;Non
+El258b;Préciser par lot la considération environnementale applicable (spécification technique, condition d'exécution et critère environnemental);SST_ElTT468;330;Annexe 10 - Détail lots;;;Oui;Oui;Non
+El258c;L'offre inclut-elle des exigences en matière d'impact environnemental du transport?;SST_ElTT468;331;Liste choix unique;Oui, l'offre inclut des exigences en matière d'impact environnemental du transport|Non, l'offre n'inclut pas d'exigences en matière d'impact environnemental du transport;;Oui;Oui;Non
+El258d;L'offre prévoit-elle un plan de progrès décarbonation du transport?;SST_ElTT468;332;Liste choix unique;Oui, l'offre prévoit un plan de progrès décarbonation du transport|Non, l'offre ne prévoit pas de plan de progrès décarbonation du transport;;Oui;Oui;Non
+El259;L'offre est-elle concernée par une ou plusieurs REP (Responsabilité Elargie des Producteurs) ?;SST_ElTT468;333;Liste choix unique;Tout ou partie des lots sont concernés par une ou plusieurs REP|Aucun lot n'est concerné par une REP;;Non;Oui;Non
+El260;Si tout ou partie des lots concernés, préciser lesquels;SST_ElTT468;334;Annexe 10 - Détail lots;;;Non;Oui;Non
+El496;L'offre est-elle concernée par de la reprise 1 pour 1;SST_ElTT468;335;Liste choix unique;Tout ou partie des lots sont concernés par de la reprise 1 pour 1|Aucun lot n'est concerné par de la reprise 1 pour 1;;Non;Oui;Non
+El497;Si tout ou partie des lots concernés, préciser lesquels;SST_ElTT468;336;Annexe 10 - Détail lots;;;Non;Oui;Non
+El260a;Les produits issus du réemploi/réutilisation sont-ils intégrés dans l'offre (exemple : architecture lot dédié, facultatif libre ...)?;SST_ElTT468;337;Liste choix unique;Oui, l'offre/les lots intègre(nt) des produits issus du réemploi/réutilisation|Non, l'offre n'intègre pas des produits issus du réemploi/réutilisation;;Oui;Oui;Non
+El499;Si tout ou partie des lots concernés, préciser lesquels;SST_ElTT468;338;Annexe 10 - Détail lots;;;Non;Oui;Non
+El260b;Une obligation imposant aux fournisseurs de remettre pendant l'exécution du marché l'information sur l'intégration de matière recyclée dans les produits est-elle bien intégrée pour les lots le nécessitant (produits textiles, consommables d'impression, papier, engins de transports...)?;SST_ElTT468;339;Liste choix unique;Oui, l'offre/les lots prévoi(en)t pour le titulaire l'obligation de remettre pendant l'exécution du marché ces informations|Non, l'offre ne prévoit pas la remise de ces informations;;Non;Oui;Non
+El260c;Une considération sociale est elle intégrée à chaque lot (spécifications sociales, conditions d'exécution, critère social avec questionnaire, ots réservés…)  ?;SST_ElTT468;340;Liste choix unique;Oui, une considération sociale est intégrée à minima à chaque lot|Non, Tout ou partie des lots n'intègre pas de considération sociale;;Non;Oui;Non
+El260d;Si oui, préciser par lot la considération sociale applicable (Spécification technique sociale (dont l'objet du marché), condition d'exécution sociale et critère social);SST_ElTT468;341;Annexe 10 - Détail lots;;;Non;Oui;Non
+El260i;Si  non,préciser les lots concernés par cette clause;SST_ElTT468;342;Annexe 10 - Détail lots;;;Non;Oui;Non
+El260e;L'offre comprend elle des lots réservés ?;SST_ElTT468;343;Liste choix unique;Oui,au moins un lot réservé|Non, absence de lots réservés;;Non;Oui;Non
+El498;Si oui, préciser le publics concernés par les lots réservés dans l'annexe tableau allotissement;SST_ElTT468;344;Annexe 10 - Détail lots;;;Non;Oui;Non
+El260f;Si oui, préciser le publics concernés par les lots réservés;SST_ElTT468;345;Annexe 10 - Détail lots;;;Non;Oui;Non
+El260g;Les lots prévoient-ils une traçabilité sociale des chaines d'approvisionnement ?;SST_ElTT468;346;Liste choix unique;Oui, traçabilité sociale des chaines d'approvisionnement pour tous les lots des univers concernés|Non, pas de traçabilité sociale des chaines d'approvisionnement pour tous les lots des univers concernés;;Non;Oui;Non
+El260h;Une  clause imposant aux fournisseurs de remettre pendant l'exécution du marché l'information sur l'origine des produits est-elle bien intégrée pour chaque lot ?;SST_ElTT468;347;Liste choix unique;Oui, cette clause est intégrée pour chaque lot|Non, cette clause n'est pas intégrée pour chaque lot;;Non;Oui;Non
+El336;Des modalités particulières de vérification/d'admission sont-elles envisagées ?;SST_ElTT469;348;Liste choix unique;Oui, Modalités particulières de vérification/d'admission sont envisagées|Non, absence de modalités particulières de vérification/d'admission;;Non;Oui;Non
+El337;Si oui, préciser lesquelles (VA/VSR, contrôle qualité, attestation de service fait à produire…) et préciser notamment quelles sont les actions attendues du client;SST_ElTT469;349;Texte;;;Non;Oui;Non
+El337b;Une vérification d'aptitude technique est-elle prévue?;SST_ElTT469;350;Liste choix unique;Oui, vérification d'aptitude technique|Non, absence de vérification d'aptitude technique;;Oui;Oui;Non
+El338;Pour les offres de produits, la réalisation d'une recette technique réalisée par l'UGAP est-elle envisagée ?;SST_ElTT469;351;Liste choix unique;Oui, réalisation d'une recette technique|Non, absence de recette technique réalisée par l'UGAP;;Non;Oui;Non
+El339b;Des documents doivent-ils être fournis par le titulaire au moment de la livraison? (notice, carnet d'entretien, liste des distributeurs/agents et réparateurs agréés);SST_ElTT469;352;Liste choix unique;Oui, des documents doivent être fournis par le titulaire au moment de la livraison|Non, absence de documents à fournir;;Oui;Oui;Non
+El339c;La possibilité de réalisation d'un audit lors de l'exécution du marché est-il prévu à l'offre?;SST_ElTT469;353;Liste choix unique;Oui, un audit est prévu dans le cadre de l'exécution du marché|Non absence d'audit prévu au marché;;Oui;Oui;Non
+El339d;Le transfert de propriété au profit du bénéficiaire s'effectue;SST_ElTT469;354;Liste choix multiple;A la livraison|A la mise en service|Au jour de l'admission;;Oui;Oui;Non
+El348;Quelle forme de candidature est-elle acceptée ?;ElTTT472;355;Liste choix unique;Groupement solidaire obligatoire|Groupement solidaire et conjoint (avec mandataire solidaire);;Non;Oui;Non
+El349;Si groupement solidaire obligatoire, justifier de ce choix;ElTTT472;356;Texte;;;Non;Oui;Non
+El350;Eléments pris en compte;ElTTT473;357;Liste choix unique;CA global du candidat réalisé au cours des 3 derniers exercices disponibles|CA du candidat concernant la fourniture/service objet du marché, réalisé au cours des 3 derniers exercices disponibles;;Non;Oui;Non
+El352;Modalités de sélection;ElTTT473;358;Liste choix unique;Pas de niveau minimal imposé|Chiffres d’affaires minimum en montant|Ratio financier inférieur ou égal à XX% - CA global du candidat|Ratio financier inférieur ou égal à XX% - CA objet du (des) lot(s) du candidat;;Non;Oui;Non
+El351;Eléments pris en compte pour l'analyse du critère capacité professionnelles et techniques;ElTTT474;359;Liste choix multiple;liste des principales fournitures ou services effectuées au cours des 3 dernières années|Titres d’études et professionnels de l’opérateur économique et/ou des cadres de l’entreprise, et notamment des responsables de prestations de services de même nature que celle du marché|Certificats de qualifications professionnelles ou équivalents établis par des organismes indépendants, Certificats de qualité ou équivalent|Indication des systèmes de gestion et de suivi de la chaine d’approvisionnement que le candidat pourra mettre en œuvre|Outillage, matériel et équipement technique dont le candidat dispose pour la réalisation du marché|Effectifs moyens annuels et importance du personnel d’encadrement, pour chacune des 3 dernières années.;=;Non;Oui;Non
+El353;Un minimum est-il imposé sur ce critère ?;ElTTT474;360;Liste choix unique;Non, Pas de niveau minimal imposé|Oui, Niveau minimal imposé;;Non;Oui;Non
+El353b;Si oui, apporter la justification;ElTTT474;361;Texte;;;Non;Oui;Non
+El356;Analyse de la convenance des prix;ElTTT475;362;Liste choix unique;L’analyse de la convenance des prix se fera sur la base du panel articles visé ci-dessous dans la partie « gain à l'achat »|L’analyse de la convenance est prévue sur une autre configuration;;Non;Oui;Non
+El357;Présenter et motiver le choix d'une analyse de la convenance sur une autre configuration;ElTTT475;363;Texte;;;Non;Oui;Non
+El358;Nécessité de demander des spécimens dans le cadre de l'analyse des offres ?;ElTTT476;364;Liste choix unique;Oui, nécessité de spécimens dans le cadre de l'analyse de l'offre|Non, pas de spécimen demandé;;Non;Oui;Non
+El359;Si oui, le versement d'une prime est-elle envisagée ?;ElTTT476;365;Liste choix unique;Oui|Non;;Non;Oui;Non
+El360;Quels sont les critères de pondération et pondération applicables;SST_ElTT477;366;Annexe 10 - Analyse Critères;;;Non;Oui;Non
+El285;Un accompagnement est-il nécessaire pour le calcul du gain achat ?;SST_ElTT478;367;Liste choix unique;Oui,Accompagnement nécessaire pour le calcul des gains à l'achat|Non, Aucun accompagnement nécessaire pour la calcul des gains à l'achat;;Non;Oui;Non
+El291;Panel articles;SST_ElTT478;368;Texte;;;Non;Oui;Non
+El509;Une réunion de criticité est-elle à réaliser par le référent référencement ?;SST_ElTT480;369;Liste choix unique;Oui, une réunion de criticité est à réaliser|Non, pas de réunion de criticité;;Non;Oui;Non
+El227;Conclusion de la réunion criticité du référencement;SST_ElTT480;370;Annexe 10 - Criticité référencement;;;Non;Oui;Non
+El217;Un comité de référencement est-il à prévoir suite à l'analyse de la criticité du référencement menée par le référent référencement ?;SST_ElTT480;371;Liste choix unique;Oui, un comité de référencement 1 est à prévoir|Non, pas de comité de référencement 1;;Non;Oui;Non
+El218;Si oui, sur quelle problématique/thématique du référencement ?;SST_ElTT480;372;Texte;;;Non;Oui;Non
+El35;Supports utilisés;SST_ElTT481;373;Liste choix multiple;Print (catalogue général, catalogue spécialisé, plaquettes fournisseurs…)|Web (ugap.fr)|Animation (emailing, communiqué de presse, push…);=;Non;Oui;Non
+El36;Un ou des catalogues privatifs sont-ils en place ?;SST_ElTT481;374;Liste choix unique;Oui, Catalogue privatif en place|Non, absence de catalogue privatif;;Non;Oui;Non
+El37;Si oui, préciser;SST_ElTT481;375;Texte;;;Non;Oui;Non
+El38;Une e-boutique spécifique est-elle en place ?;SST_ElTT481;376;Liste choix unique;Oui, une e-boutique spécifique est en place|Non, absence d'une e-boutique spécifique;;Non;Oui;Non
+El38b;Si oui, préciser;SST_ElTT481;377;Texte;;;Non;Oui;Non
+El40;Commercialisation de l'offre sur le WEB ?;SST_ElTT482;378;Liste choix unique;Oui, commercialisation de l'offre sur le WEB|Non, absence de commercialisation sur le WEB;;Non;Oui;Non
+El41;Si oui exclusivement sur le web ?;SST_ElTT482;379;Liste choix unique;Oui, commercialisation exclusive sur le WEB|Non, pas d'exclusivité sur le WEB;;Non;Oui;Non
+El41b;Préciser sur toute ou partie de l'offre;SST_ElTT482;380;Liste choix unique;Totalement|Partiellement;;Non;Oui;Non
+El41c;Un configurateur est-il en place ?;SST_ElTT482;381;Liste choix unique;Oui, un configurateur est en place|Non, absence de configurateur;;Non;Oui;Non
+El43;Si oui, préciser le type de configurateur;SST_ElTT482;382;Liste choix unique;UGAP|Titulaire;;Non;Oui;Non
+El44;Si oui à la commercialisation sur le WEB, Un contrôle/accès restreint à typologie de clients/utilisateurs chez le client est-il en place ?;SST_ElTT482;383;Liste choix unique;Oui, contrôle/accès restreint à typologie de clients/utilisateurs chez le client|Non, Absence de contrôle/accès restreint à typologie de clients/utilisateurs chez le client;;Non;Oui;Non
+El45;Si oui à la commercialisation sur le WEB, L'offre nécessite-elle une connexion à une plateforme tierce;SST_ElTT482;384;Liste choix unique;Oui, connexion à une plateforme tierce|Non, Absence de connexion à une plateforme tierce;;Non;Oui;Non
+El46;Si oui à la commercialisation sur le WEB, L'offre est-elle en e-procurement ?;SST_ElTT482;385;Liste choix unique;Oui, offre en e-procurement|Non, Absence de e-procurement;;Non;Oui;Non
+El33;Répartition client Vente Assistée / Vente à Distance envisagée;SST_ElTT482;386;Liste choix unique;100 % Vente Assistée|50% Vente A Distance|50% Vente Assistée / 50% Vente A Distance|Autre;;Non;Oui;Non
+El33b;Si autre répartion Vente Assistée / Vente A distance, préciser;SST_ElTT482;387;Texte;;;Non;Oui;Non
+El47;Commercialisation de l'offre par le CCM  (prise de commande);SST_ElTT482;388;Liste choix unique;Oui, commercialisation de l'offre par le CCM|Non, exclusion du canal de vente CCM;;Non;Oui;Non
+El48;Commercialisation de l'offre par le Réseau;SST_ElTT482;389;Liste choix unique;Oui, commercialisation de l'offre par le réseau|Non, exclusion du commercialisation par le réseau;;Non;Oui;Non
+El49;SMAR (Gestion centralisée des commandes/ facturation);SST_ElTT482;390;Liste choix unique;Oui, commercialisation par la SMAR|Non, exclusion d'une commercialisation par la SMAR;;Non;Oui;Non
+El62;Schéma de vente opérationnel est-il disponible sous la base de Co ?;SST_ElTT483;391;Liste choix unique;Oui, Schéma de vente disponible sous la base de Co|Non, absence du schéma de vente sur la base de co;;Non;Oui;Non
+El63;Type de schéma de vente;SST_ElTT483;392;Liste choix unique;Schéma de vente offre tripartite|Schéma de vente offre avec prestations associées|Schéma de vente offre sans prestation associée|Autre;;Non;Oui;Non
+El64;Si autre ou si le schéma de vente de l'offre précédente a présenté des écarts ou des problématiques sur le parcours client, présenter le nouveau schéma de vente applicable résultant des échanges avec le référent;SST_ElTT483;393;Texte;;;Non;Oui;Non
+El361;Le titulaire s'engage a fournir :;SST_ElTT484;394;Liste choix multiple;Fiches technico-commerciales|images numériques|Publipostages|Nuanciers|Une banque de donnée de type AUTOCAD|Matériel de démonstration|Guide de vente;=;Non;Oui;Non
+El361b;Dans le cadre du guide vente préciser  les lot(s) concerné(s) ?;SST_ElTT484;395;Texte;;;Non;Oui;Non
+El116;Existence d'une convention client?;SST_ElTT485;396;Liste choix unique;"Oui, existence d'une convention client ""valant BDC""|Oui existence d'une convention client d'embarquement|Non, absence de convention client";;Oui;Oui;Non
+El117;Si oui préciser l'étendue;SST_ElTT485;397;Texte;;;Non;Oui;Non
+El219;Si oui, préciser qui traite la convention;SST_ElTT485;398;Liste choix multiple;Réseau|SMAR;;Non;Oui;Non
+El118;Existence de CGE ?;SST_ElTT485;399;Liste choix unique;Oui, existence de CGE|Non, absence de CGE;;Non;Oui;Non
+El369;Existence d'autres documents commerciaux (exemples : kit de remise en concurrence/passation de marché subséquent, trame type rapport d'analyse, lettre de rejet…);SST_ElTT485;400;Liste choix unique;Oui, existence d'autres documents commerciaux|Non, absence d'autres documents commerciaux;;Non;Oui;Non
+El389;Si oui lesquels ?;SST_ElTT485;401;Texte;;;Non;Oui;Non
+El333;Préciser les éléments attendus de la part du titulaire concernant la formation et l'information;SST_ElTT486;402;Liste choix multiple;Réunion de lancement avec le titulaire|Présentation synthétique de son organisation dédiée au marché|Annuaires des contacts|Formation|Information des collaborateurs de l'UGAP|Autre;=;Non;Oui;Non
+El333c;Si autres éléments attendus de la part du titulaire concernant la formation et l'information, préciser;SST_ElTT486;403;Texte;;;Non;Oui;Non
+El333b;Préciser les éléments attendus de la part du titulaire concernant le déploiement, la commercialisation et l'exécution de l'offre;SST_ElTT486;404;Liste choix multiple;Alimentation et ou validation du référencement|Documentation SAV|Outils|Impératifs logistiques UGAP (tracabilité…)|Eléments pour publication (ex : photo)|Aides à la commercialisation (prêt de matériel...)|Autre;=;Non;Oui;Non
+El333d;Si autres éléments attendus de la part du titulaire concernant le déploiement, la commercialisation et l'exécution de l'offre, préciser;SST_ElTT486;405;Texte;;;Non;Oui;Non
+El334;Si autre, préciser (en cas de cas non listé, préciser directement les information en texte libre);SST_ElTT486;406;Liste choix multiple;Alimentation et ou validation du référencement|Documentation SAV|Outils|Impératifs logistiques UGAP (tracabilité…)|Eléments pour publication (ex : photo)|Aides à la commercialisation (prêt de matériel...)|Autre;=;Non;Oui;Non
+El335a;La contractualisation d'un interlocuteur dédié dans le CCAP est-elle à prévoir ?;SST_ElTT486;407;Liste choix unique;Oui, la contractualisation d'un interlocuteur dédié est à prévoir dans le CCAP|Non, absence de mention de contractualisation d'un interlocuteur dédié dans le CCAP;;Oui;Oui;Non
+El335;Si oui, décrire le niveau d'exigences associé et les documents associés (CCAP, CCTP, Annexes….) et les modalités retenues afin d'assurer la disponibilité des données produits ou services nécessaires notamment au déploiement de l'offre (Données, produits, certificats, images...);SST_ElTT486;408;Texte;;;Oui;Oui;Non
+El335f;Si non, cette obligation fait-elle l'objet d'un critère d'analyse des offres ?;SST_ElTT486;409;Liste choix unique;"Oui, cette obligation fait l'objet d'un critère d'analyse des offres|Oui, cette obligation fait l'objet d'un critère d'analyse des offres;Non, absence de critère d'analyse des offres";;Oui;Oui;Non
+El335g;Quelles sont les annexes à l'acte d'engagement pour chaque lot?;SST_ElTT486;410;Annexe 10 - Listes Annexes AE;;;Oui;Oui;Non
+El335e;Quels sont les autres documents du marché?;SST_ElTT486;411;Liste choix multiple;CCP-COD|CCAP sans annexe|CCAP avec annexes|CCTP|Dossier Technique|Mémoire technique du titulaire|Fiches technico-commerciale|CCF;;Oui;Oui;Non
+El335h;Si présence d'annexes au CCAP, préciser lesquelles;SST_ElTT486;412;Liste choix multiple;Attestation d’admission par le bénéficiaire|Tableau des étendues géographiques et prestations annexes|Questionnaire relatif au besoin client|Attestation de restitution de la batterie en fin de location|Spécifications détaillées relatives à la facturation en UBL Invoice version 2.1;;Oui;Oui;Non
+El304;Client;SST_ElTT487;413;Liste choix multiple;Définition du besoin, acceptation du devis UGAP|Emission d’une commande client et transmission des CGE|Non concerné pour l'offre;=;Non;Oui;Non
+El305;Fournisseur;SST_ElTT487;414;Liste choix multiple;Recueil des besoins|Remise d’un dossier technique à l’appui du devis qualification et solution technique|Non concerné pour l'offre;=;Non;Oui;Non
+El306;UGAP;SST_ElTT487;415;Liste choix multiple;Accompagnement client et réalisation devis/commande|Application du process de commande et veille à ce que celui-ci soit respecté tout au long du marché|D’une manière générale, amélioration de la qualité de service rendue au client|Non concerné pour l'offre;=;Non;Oui;Non

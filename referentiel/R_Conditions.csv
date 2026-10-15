@@ -1,0 +1,299 @@
+﻿fille;mere;operateur;critere
+El100;El99;<>;Non
+El103;El102;<>;Oui
+El104b;El104;<>;clause de réexamen
+El105;El104b;<>;Autres
+El107;El104;<>;Clause promo
+El111;El110;<>;Oui
+El111b;El110;<>;Oui
+El112;El111;<>;Autre
+El114;El113;<>;Non
+El114b;El114;<>;Autre
+El117;El116;<>;Oui
+El219;El116;<>;Oui
+El123;El122;<>;Non
+El124;El123;<>;Autre
+El127;El125;<>;Oui
+El128;El127;<>;Non conforme
+El132b;El132;<>;échéance
+El133;El132;<>;Autre
+El136b;El136;<>;Non
+El137;El125;<>;Non
+El139;El138;<>;Oui
+El144;El143;<>;Non
+El146;El143;<>;Non
+El147;El146;<>;Oui
+El149;El148;<>;Non
+El151b;El151;<>;Oui
+El152;El151b;<>;mono
+El494;El151b;<>;mono
+El152b;El151b;<>;multi
+El494b;El151b;<>;multi
+El154;El153;<>;Non
+El157b;El156;<>;Oui
+El158;El156;<>;Oui
+El159;El156;<>;Oui
+El161b;El161;<>;Non
+El161c;El161;<>;Non
+El162;El2;<>;Matériel
+El163;El162;<>;Oui
+El163b;El163;<>;Non conforme
+El163d;El163c;<>;Oui
+El163f;El163e;<>;Oui
+El164;El164a;<>;Oui
+El165;El164;<>;Oui
+El166;El164a;<>;Oui
+El167;El164a;<>;Oui
+El168;El164a;<>;Oui
+El169;El168;<>;Oui
+El170;El164a;<>;Oui
+El171;El164a;<>;Oui
+El172b;El172;<>;Franco France Métropolitaine
+El172c;El172;<>;Franco France Continentale
+El172d;El172;<>;Départ Usine
+El172e;El172;<>;FEC (Entrepôt UGAP)
+El173b;El393;<>;DAV
+El174;El164a;=;Oui
+El488;El177;<>;Oui
+El180;El180a;<>;Oui
+El181;El180a;<>;Non
+El317a;El220;<>;outre
+El183b;El0a;<>;véhicule
+El183l;El0a;<>;véhicule
+El183m;El183l;<>;Oui
+El183f;El183e;<>;Oui
+El183h;El183g;<>;Oui
+El183j;El183i;<>;Oui
+El183k;El183b;<>;Oui
+El185;El184;<>;Oui
+El186;El184;<>;Oui
+El188;El184;<>;Oui
+El190;El189;<>;Non
+El191;El2;<>;Matériel
+El206;El205;<>;Pilotage avec KPI
+El206b;El206;<>;Autre
+El207;El205;<>;Pas de critère Qualité de Service
+El209;El208;<>;Oui
+El211;El210;<>;Oui
+El213;El211;<>;Non
+El221;El220;<>;outre
+El224a;El223;<>;Oui
+El224b;El223;<>;Oui
+El224c;El223;<>;Oui
+El224d;El223;<>;Oui
+El258b;El258;<>;Oui
+El26;El25;<>;Oui
+El260;El259;<>;Tout ou partie
+El260d;El260c;<>;Oui
+El260f;El260e;<>;Oui
+El260i;El260c;<>;Non
+El264;El263;<>;Oui
+El265;El490;<>;Oui
+El268;El266;<>;Oui
+El27;El25;<>;Non
+El270;El164a;<>;Oui
+El271;El270;<>;Oui
+El271b;El164a;<>;Oui
+El271c;El271b;<>;Oui
+El291;El285;<>;Oui
+El218;El217;<>;Oui
+El2b;El2;<>;prestation
+El30;El29;<>;Autres
+El303;El302;<>;Non
+El303b;El303;<>;Non
+El308c;El308b;<>;Franco France Métropolitaine
+El308d;El308b;<>;Franco France Continentale
+El308e;El308b;<>;Départ Usine
+El308f;El308b;<>;FEC
+El308g;El308b;<>;Départ Usine
+El308h;El308b;<>;FEC (Entrepôt UGAP)
+El310;El309;<>;Non
+El311;El2;<>;Matériel
+El312;El311;<>;Oui
+El314;El313;<>;Oui
+El315b;El315;<>;Oui
+El316a;El316;<>;ferme
+El403;El316;<>;indice
+El506;El316;<>; tarif public à tout mo
+El506a;El316;<>; tarif public à tout mo
+El506b;El316;<>; tarif public à tout mo
+El506c;El316;<>; tarif public à tout mo
+El506d;El506c;<>;autre
+El506e;El316;<>; tarif public à tout mo
+El510;El316;<>; tarif public à date fixe
+El510a;El316;<>; tarif public à date fixe
+El510b;El316;<>; tarif public à date fixe
+El510c;El510b;<>;autre
+El510d;El316;<>; tarif public à date fixe
+El510e;El316;<>; tarif public à date fixe
+El510f;El510e;<>;autre
+El318;El317;<>;Oui
+El318a;El317;<>;Oui
+El319;El318a;<>;Non
+El321;El320;<>;Oui
+El322;El321;<>;Sur indice
+El324;El223d;<>;Oui
+El187;El223d;<>;Oui
+El223e;El223d;<>;Oui
+El326;El325;<>;Oui
+El326b;El326;<>;Non
+El327;El325;<>;Oui
+El328;El325;<>;Oui
+El328b;El328;<>;Autre
+El331;El330;<>;Oui
+El332b;El332;<>;Oui
+El334;El333b;<>;Autre
+El337;El336;<>;Oui
+El337b;El336;<>;Oui
+El338;El2;<>;Matériel
+El343;El342;<>;Oui
+El343b;El342;<>;Oui
+El344;El2;<>;Matériel
+El345;El344;<>;Oui
+El347;El346;<>;Oui
+El349;El348;<>;Groupement solidaire obligatoire
+El353b;El353;<>;Oui. Niveau minimal imposé
+El357;El356;<>;L’analyse de la convenance est prévue sur une autre configuration
+El359;El358;<>;Oui
+El361b;El361;<>;Guide de vente 
+El37;El36;<>;Oui
+El389;El369;<>;Oui
+El38b;El38;<>;Oui
+El390;El269;<>;Oui
+El391;El269;<>;Oui
+El392;El163d;<>;Non
+El395;El3b;<>;Oui
+El402;El401;<>;Oui
+El41;El40;<>;Oui
+El41b;El41;<>;Oui
+El5e;El5c;<>;Multi échéance
+El60b;El60;<>;Oui
+El64;El63;<>;Autre
+El70;El69;<>;Non
+El78h;El71;<>;Marchés subséquents
+El74;El71;<>;et
+El73;El72;<>;Multi attribué
+El78h;El77;<>;Offre exécutée
+El78i;El71;<>;Marchés subséquents
+El78i;El77;<>;Offre exécutée
+El78j;El71;<>;Marchés subséquents
+ElTTT417;El77;<>;Offre exécutée
+El78g;El77;<>;Offre exécutée
+El78j;El77;<>;Offre exécutée
+El78k;El77;<>;Offre exécutée
+El78l;El77;<>;Offre exécutée
+El78m;El77;<>;Offre exécutée
+ElTTT416;El77;<>;Offre non exécutée
+El78a;El77;=;Offre non exécutée
+El78f;El77;<>;Offre non exécutée
+El78b;El77;<>;Offre non exécutée
+El78c;El71;<>;Marchés subséquents
+El78c;El77;<>;Offre non exécutée
+El78d;El77;<>;Offre non exécutée
+El78e;El71;<>;Marchés subséquents
+El78e;El77;<>;Offre non exécutée
+El78n;El78m;<>;Oui
+El7b;El7;<>;Renouvellement d'offre
+El81b;El80;<>;Non
+El83;El80a;<>;Autre
+El85b;El84;<>;Oui
+El84b;El84;<>;Oui
+El84c;El84;<>;Oui
+El84d;El84;<>;Oui
+El84e;El84d;<>;Non
+El87;El86;<>;Oui
+El87b;El86;<>;Oui
+El87c;El87b;<>;Non
+El88b;El88;<>;Oui
+El92;El91;<>;Oui
+El93;El91;<>;Oui
+El95;El94;<>;Oui
+El96;El94;<>;Oui
+El98;El97;<>;Non
+El121;El120;<>;Oui
+El507;El120;<>;Oui
+El183;El2;<>;Matériel
+El489;El183j;<>;Autre
+ElTT502;El4;<>;Oui
+El134;El4;<>;Oui
+El381;El134;<>;maintenance
+ElTT503;El4;<>;Oui
+El387;El134;<>;maintenance
+El396;El387;<>;Autre
+El5c;El134;<>;maintenance
+El178;El488;<>;non
+El179;El488;<>;oui
+El500;El59;<>;Autres
+El500c;El59;<>;etranger
+El220;El59;<>;OM
+El500;El500c;<>;Autres
+El60d;El60b;<>;Autres
+El60c;El60b;<>;etranger
+El220;El60b;<>;OM
+El60d;El60c;<>;Autres
+El493;El146;<>;Oui
+El370;El134;<>;maintenance
+El372;El370;<>;maintenance
+El378;El134;<>;maintenance
+El379;El134;<>;maintenance
+El380;El134;<>;maintenance
+El376;El370;<>;corrective
+El377;El370;<>;corrective
+El30c;El30;<>;Autre
+El332c;El332b;<>;Autre
+El141;El140;<>;Oui
+El508;El140;<>;Oui
+El333c;El333;<>;Autre
+El333d;El333b;<>;Autre
+El33b;El33;<>;Autre
+El112c;El96;<>;Autre
+El103c;El103;<>;Autre
+El160b;El160;<>;Non
+El182b;El182;<>;Différent
+El179;El177;<>;Oui
+El178;El177;<>;Non
+El497;El496;<>;Tout ou partie
+El498;El260e;<>;Oui
+El499;El260a;<>;Oui
+El227;El509;<>;Oui
+El44;El40;<>;Oui
+El45;El40;<>;Oui
+El73b;El73;<>;autre
+El73d;El73;<>;engagement
+El73e;El72;<>;Multi attribué
+El73f;El73e;<>;non
+El73g;El72;<>;Multi attribué
+El78i;El78h;<>;Marchés subséquents
+El78j;El78h;<>;Marchés subséquents
+El335f;El335a;<>;non
+El183b;El393;<>;DAV
+El183e;El393;<>;DAV
+El335h;El335e;<>;CCAP avec annexes
+El317;El316;<>;taux de remise
+El258c;El258;<>;Oui
+El258d;El258;<>;Oui
+El199c;El199b;<>;Non
+ElTT446;El445;<>;Oui
+El177;El445;<>;Oui
+El180a;El445;<>;Oui
+El181;El445;<>;Oui
+El181b;El445;<>;Oui
+El182;El445;<>;Oui
+ElTT447;El445;<>;Oui
+El189;El445;<>;Oui
+El192;El445;<>;Oui
+El191;El445;<>;Oui
+El183;El445;<>;Oui
+El183e;El445;<>;Oui
+El183g;El445;<>;Oui
+El183i;El445;<>;Oui
+ElTT448;El445;<>;Oui
+El184;El445;<>;Oui
+ElTT437;El445;<>;Oui
+El4;El445;<>;Oui
+ElTT502;El445;<>;Oui
+El370;El445;<>;Oui
+ElTT503;El445;<>;Oui
+El335;El335a;<>;oui
+El46;El40;<>;Oui
+El43;El41c;<>;Oui

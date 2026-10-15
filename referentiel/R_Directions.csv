@@ -1,0 +1,33 @@
+﻿type;code;libelle;parent;a_standards
+ACHAT;DAV;Direction des achats Véhicules;;
+ACHAT;DS;Direction Santé;;
+ACHAT;DAI;Direction des achats Informatiques;;
+ACHAT;DAG;Direction des achats Généraux;;
+STANDARD;DAV;;;Oui
+STANDARD;DS;;;Oui
+STANDARD;DAI;;;Oui
+STANDARD;DAG_Mobilier_scolaire_et_Equipement_general;;;Oui
+STANDARD;DAG_SOFI;;;Oui
+STANDARD;DAG_Energie_et_environnement;;;Non
+STANDARD;Non_standardisé;;;Oui
+UNIVERS;VI;;DAV;Oui
+UNIVERS;VL;;DAV;Oui
+UNIVERS;ISP;;DAV;Oui
+UNIVERS;PII;;DAI;Oui
+UNIVERS;Materiel_et_Prestations;;DAI;Oui
+UNIVERS;Copieurs;;DAI;Oui
+UNIVERS;Telecom;;DAI;Oui
+UNIVERS;BureauWEB;;DAI;Oui
+UNIVERS;Logiciels;;DAI;Oui
+UNIVERS;Biomedical;;DS;Oui
+UNIVERS;EQ_Soins_et_Secours;;DS;Oui
+UNIVERS;Laboratoire;;DS;Oui
+UNIVERS;EQ_Lourds;;DS;Oui
+UNIVERS;DM_DMS;;DS;Oui
+UNIVERS;GAUSS;;DS;Oui
+UNIVERS;Mobilier_scolaire;;DAG_Mobilier_scolaire_et_Equipement_general;Oui
+UNIVERS;Equipement_general;;DAG_Mobilier_scolaire_et_Equipement_general;Oui
+UNIVERS;Services_aux_batiments;;DAG_SOFI;Oui
+UNIVERS;Services_aux_occupants;;DAG_SOFI;Oui
+UNIVERS;Offres_Financieres;;DAG_SOFI;Oui
+UNIVERS;Non_standardisé;;Non_standardisé;Oui

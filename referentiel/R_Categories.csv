@@ -1,0 +1,137 @@
+﻿id;type;libelle;parent;ordre
+ElT404;CHAPITRE;01.0 PRESENTATION GENERALE DE L'OFFRE;;1
+ElTT405;THEME;01.1 Caractéristiques générales de l'offre;ElT404;2
+SST_ElTT405;SOUS_THEME;Caractéristiques générales de l'offre;ElTT405;3
+ElTT406;THEME;01.2 Périmètre de l'offre;ElT404;4
+SST_ElTT406;SOUS_THEME;Périmètre de l'offre;ElTT406;5
+ElTT407;THEME;01.3 Engagements;ElT404;6
+SST_ElTT407;SOUS_THEME;Engagements;ElTT407;7
+ElTT408;THEME;01.4 Allotissement;ElT404;8
+SST_ElTT408;SOUS_THEME;Allotissement;ElTT408;9
+ElTT409;THEME;01.5 Etendue géographique de l'offre;ElT404;10
+SST_ElTT409;SOUS_THEME;Etendue géographique de l'offre;ElTT409;11
+ElT410;CHAPITRE;02.0-ENVIRONNEMENT DE L'OFFRE;;12
+ElTT411;THEME;02.1 Secteur d'activité de l'offre;ElT410;13
+SST_ElTT411;SOUS_THEME;Secteur d'activité de l'offre;ElTT411;14
+ElTT412;THEME;02.2 Sourcing;ElT410;15
+SST_ElTT412;SOUS_THEME;Sourcing;ElTT412;16
+ElT413;CHAPITRE;03.0-MONTAGE CONTRACTUEL;;17
+ElTT414;THEME;03.1 Mode de passation et typologie de l'accord-cadre;ElT413;18
+SST_ElTT414;SOUS_THEME;Mode de passation et typologie de l'accord-cadre;ElTT414;19
+ElTT415;THEME;03.2 Modalités d'intervention de l'UGAP;ElT413;20
+SST_ElTT415;SOUS_THEME;Modalités d'intervention de l'UGAP;ElTT415;21
+ElTTT416;SOUS_THEME;03.2.2 Offre non exécutée;ElTT415;22
+ElTTT417;SOUS_THEME;03.2.3 Offre exécutée;ElTT415;23
+ElTT418;THEME;03.3 Durée;ElT413;24
+SST_ElTT418;SOUS_THEME;Durée;ElTT418;25
+ElTT419;THEME;03.4 Clause modificatives de marché;ElT413;26
+SST_ElTT419;SOUS_THEME;Clause modificatives de marché;ElTT419;27
+ElTTT420;SOUS_THEME;03.4.1 Clause de réexamen;ElTT419;28
+ElTTT422;SOUS_THEME;03.4.2 Clause promotionnelle;ElTT419;29
+ElTT423;THEME;03.5 Gestion de la fin de contrat client;ElT413;30
+SST_ElTT423;SOUS_THEME;Gestion de la fin de contrat client;ElTT423;31
+ElT430;CHAPITRE;04.0 DEVIS ET COMMANDE;;32
+ElTT431;THEME;04.1 Prérequis à l'établissement d'un devis;ElT430;33
+SST_ElTT431;SOUS_THEME;Prérequis à l'établissement d'un devis;ElTT431;34
+ElTT432;THEME;04-2 Canal d'enregistrement devis/commande / Minimum de commande;ElT430;35
+SST_ElTT432;SOUS_THEME;Canal d'enregistrement devis/commande / Minimum de commande;ElTT432;36
+ElTT433;THEME;04-3 Minimum de commande;ElT430;37
+ElTTT434;SOUS_THEME;04.3.1 Client;ElTT433;38
+ElTTT435;SOUS_THEME;04.3.2 Fournisseur;ElTT433;39
+ElTT436;THEME;04-4 Dématerialisation des devis / Commande;ElT430;40
+SST_ElTT436;SOUS_THEME;Dématerialisation des devis / Commande;ElTT436;41
+ElTT438;THEME;04-5 Modification, resiliation, annulation des BDCs;ElT430;42
+SST_ElTT438;SOUS_THEME;Modification, resiliation, annulation des BDCs;ElTT438;43
+ElT445;CHAPITRE;05.0 GARANTIE _SAV_MAINTENANCE;;44
+THM_ElT445;THEME;Généralités;ElT445;45
+SST_THM_ElT445;SOUS_THEME;Généralités;THM_ElT445;46
+ElTT446;THEME;05.1 Garantie contractuelle de base;ElT445;47
+SST_ElTT446;SOUS_THEME;Garantie contractuelle de base;ElTT446;48
+ElTT447;THEME;05.2 Etendue de la garantie;ElT445;49
+SST_ElTT447;SOUS_THEME;Etendue de la garantie;ElTT447;50
+ElTT448;THEME;05.3 Extension de la garantie;ElT445;51
+SST_ElTT448;SOUS_THEME;Extension de la garantie;ElTT448;52
+ElTT437;THEME;05.4 Maintenance;ElT445;53
+SST_ElTT437;SOUS_THEME;Maintenance;ElTT437;54
+ElTT502;THEME;05.4.1 Typologie, prix et durée de la maintenance;ElT445;55
+SST_ElTT502;SOUS_THEME;Typologie, prix et durée de la maintenance;ElTT502;56
+ElTT503;THEME;05.4.2 Commande de maintenance;ElT445;57
+SST_ElTT503;SOUS_THEME;Commande de maintenance;ElTT503;58
+ElT439;CHAPITRE;06.0 EXECUTION FINANCIERE;;59
+ElTT440;THEME;06.1 Schéma de rémunération de l'UGAP;ElT439;60
+SST_ElTT440;SOUS_THEME;Schéma de rémunération de l'UGAP;ElTT440;61
+ElTT441;THEME;06.2 Flux de facturation client;ElT439;62
+SST_ElTT441;SOUS_THEME;Flux de facturation client;ElTT441;63
+ElTT442;THEME;06.3 Flux de facturation fournisseur;ElT439;64
+SST_ElTT442;SOUS_THEME;Flux de facturation fournisseur;ElTT442;65
+ElTT443;THEME;06.4 Modalités / Actions spécifiques ou particulières sont identifiées pour le paiement;ElT439;66
+SST_ElTT443;SOUS_THEME;Modalités / Actions spécifiques ou particulières sont identifiées pour le paiement;ElTT443;67
+ElTT444;THEME;06.5 Avances / Acomptes;ElT439;68
+SST_ElTT444;SOUS_THEME;Avances / Acomptes;ElTT444;69
+ElT449;CHAPITRE;07.0 PILOTER LA PERFORMANCE FOURNISSEUR;;70
+ElTT450;THEME;07.1 Qualité de service et suivi des titulaires;ElT449;71
+SST_ElTT450;SOUS_THEME;Qualité de service et suivi des titulaires;ElTT450;72
+ElTT451;THEME;07.2 Pénalités;ElT449;73
+SST_ElTT451;SOUS_THEME;Pénalités;ElTT451;74
+ElTT452;THEME;07.3 Performance de l'offre;ElT449;75
+SST_ElTT452;SOUS_THEME;Performance de l'offre;ElTT452;76
+ElT453;CHAPITRE;08.0  CONFORMITE - Protection des données personnelles;;77
+THM_ElT453;THEME;CONFORMITE - Protection des données personnelles;ElT453;78
+SST_THM_ElT453;SOUS_THEME;CONFORMITE - Protection des données personnelles;THM_ElT453;79
+ElT491;CHAPITRE;09.0 DROITS DE PROPRIETE INTELECTUELLE;;80
+THM_ElT491;THEME;DROITS DE PROPRIETE INTELECTUELLE;ElT491;81
+SST_THM_ElT491;SOUS_THEME;DROITS DE PROPRIETE INTELECTUELLE;THM_ElT491;82
+ElT454;CHAPITRE;10.0  PRIX;;83
+ElTT455;THEME;10.1 Forme des prix et composition des prix;ElT454;84
+SST_ElTT455;SOUS_THEME;Forme des prix et composition des prix;ElTT455;85
+ElTTT455;SOUS_THEME;10.1.1 - Remise;ElTT455;86
+ElTTT456;SOUS_THEME;10.1.2 Frais;ElTT455;87
+ElTTT457;SOUS_THEME;10.1.3  Support d'enregistrement;ElTT455;88
+ElTT458;THEME;10.2 - Variation des prix ou taux de remise;ElT454;89
+SST_ElTT458;SOUS_THEME;Variation des prix ou taux de remise;ElTT458;90
+ElTTT459;SOUS_THEME;10.2.1  Clause de première révision des prix;ElTT458;91
+ElTTT460;SOUS_THEME;10.2.2 Ecocontribution;ElTT458;92
+ElTTT461;SOUS_THEME;10.2.3 Clause de sauvegarde;ElTT458;93
+ElT462;CHAPITRE;11.0 MODALITES D'EXECUTION;;94
+ElTT463;THEME;11.1 Distribution sur stock et transport (Offre de produits exécutés);ElT462;95
+SST_ElTT463;SOUS_THEME;Distribution sur stock et transport (Offre de produits exécutés);ElTT463;96
+ElTT464;THEME;11.2 Conditions d'achat;ElT462;97
+SST_ElTT464;SOUS_THEME;Conditions d'achat;ElTT464;98
+ElTT465;THEME;11.3 Modalités de livraison;ElT462;99
+SST_ElTT465;SOUS_THEME;Modalités de livraison;ElTT465;100
+ElTT466;THEME;11.4 Délais;ElT462;101
+SST_ElTT466;SOUS_THEME;Délais;ElTT466;102
+ElTT467;THEME;11.5 Modalités particulières d'exécution;ElT462;103
+SST_ElTT467;SOUS_THEME;Modalités particulières d'exécution;ElTT467;104
+ElTT468;THEME;11.6 Politiques publiques;ElT462;105
+SST_ElTT468;SOUS_THEME;Politiques publiques;ElTT468;106
+ElTT469;THEME;11.7 Admission des prestations;ElT462;107
+SST_ElTT469;SOUS_THEME;Admission des prestations;ElTT469;108
+ElT470;CHAPITRE;12.0 MODALITES D'ANALYSE DES CANDIDATURES ET DES OFFRES;;109
+ElTT471;THEME;12.1 - Analyse des candidatures;ElT470;110
+ElTTT472;SOUS_THEME;12.1.1 - Forme de la candidature;ElTT471;111
+ElTTT473;SOUS_THEME;12.1.2 -Capacité financière;ElTT471;112
+ElTTT474;SOUS_THEME;12.1.3 -Capacité professionnelle et technique;ElTT471;113
+ElTTT475;SOUS_THEME;12.1.4 -Convenance des prix;ElTT471;114
+ElTTT476;SOUS_THEME;12.1.5 -Spécimens;ElTT471;115
+ElTT477;THEME;12.2 - Analyse des offres;ElT470;116
+SST_ElTT477;SOUS_THEME;Analyse des offres;ElTT477;117
+ElTT478;THEME;12.3 - Gain à l'achat;ElT470;118
+SST_ElTT478;SOUS_THEME;Gain à l'achat;ElTT478;119
+ElT479;CHAPITRE;13.0- COMMERCIALISATION - COMMUNICATION - PROMOTION;;120
+ElTT480;THEME;13.1 Référencement;ElT479;121
+SST_ElTT480;SOUS_THEME;Référencement;ElTT480;122
+ElTT481;THEME;13.2 Promotion de l'offre;ElT479;123
+SST_ElTT481;SOUS_THEME;Promotion de l'offre;ElTT481;124
+ElTT482;THEME;13.3 Canaux de vente;ElT479;125
+SST_ElTT482;SOUS_THEME;Canaux de vente;ElTT482;126
+ElTT483;THEME;13.4 Schémas de vente;ElT479;127
+SST_ElTT483;SOUS_THEME;Schémas de vente;ElTT483;128
+ElTT484;THEME;13.5 - Support de vente;ElT479;129
+SST_ElTT484;SOUS_THEME;Support de vente;ElTT484;130
+ElTT485;THEME;13.6- Documents contractuels clients;ElT479;131
+SST_ElTT485;SOUS_THEME;Documents contractuels clients;ElTT485;132
+ElTT486;THEME;13.7 - Eléments attendus du titulaire;ElT479;133
+SST_ElTT486;SOUS_THEME;Eléments attendus du titulaire;ElTT486;134
+ElTT487;THEME;13.8 Embarquement client - Identifier et préciser de manière synthétique si des obligations / actions particulières/spécifiques sont envisagées en avant-vente (recueil besoin, devis, commande) à la charge :;ElT479;135
+SST_ElTT487;SOUS_THEME;Embarquement client - Identifier et préciser de manière synthétique si des obligations / actions particulières/spécifiques sont envisagées en avant-vente (recueil besoin, devis, commande) à la charge :;ElTT487;136
