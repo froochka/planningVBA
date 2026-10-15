@@ -235,6 +235,7 @@ Les UserForms ont une taille fixe en points. Sur un portable dont l'affichage Wi
 - **PDF** : un rapport mis en forme (page de garde, puis questions par chapitre, avec standard, réponse, conformité et justification), généré par Excel.
 - **HTML** : un fichier unique et autonome, avec un sommaire cliquable. Il s'ouvre dans n'importe quel navigateur et s'envoie facilement.
 - **Trois variantes** : dossier complet, écarts au standard uniquement (utile pour la validation), questions à justifier.
+- **Usage** (15/10/2026) : présenter l'offre à la direction. **Logo de l'UGAP à prévoir** sur les exports PDF et HTML.
 
 ❓ Faut-il un export **par lot** ?
 
