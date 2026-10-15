@@ -11,9 +11,14 @@ planningVBA/
 │   ├── Module1.bas      (modules standards)
 │   ├── ThisWorkbook.cls (classeur, feuilles, modules de classe)
 │   └── frmSaisie.frm    (code des UserForms)
+├── referentiel/         ← questions, structure, standards, conditions (CSV, migrés de l'outil d'origine)
+│   └── tests/           ← valeurs attendues pour la macro TesterMoteur
+├── docs/                ← cadrage, analyse de l'existant, itérations, rapport de migration
 └── outils/
-    ├── VbaSync.bas      ← macros ImporterVBA / ExporterVBA à installer dans Excel
-    └── extraire_vba.py  ← extraction sans Excel (utilisée par Claude)
+    ├── VbaSync.bas            ← macros ImporterVBA / ExporterVBA à installer dans Excel
+    ├── extraire_vba.py        ← extraction sans Excel (utilisée par Claude)
+    ├── migrer_referentiel.py  ← migration du référentiel depuis le classeur d'origine
+    └── moteur.py              ← copie Python du moteur VBA (preuve d'équivalence)
 ```
 
 **Règle d'or : pour le code, c'est `src/` qui fait foi.** Le `.xlsm` n'est jamais fusionné par Git.
@@ -54,3 +59,22 @@ Git ne peut pas fusionner deux versions d'un `.xlsm`. Il faut donc :
 - Les fichiers de `src/` contiennent **uniquement le code**. Les attributs cachés (`VB_PredeclaredId`, descriptions de procédures…) et la **mise en page des UserForms** restent dans le `.xlsm`.
 - Un **nouveau UserForm** doit être créé dans Excel. Son code peut ensuite être géré dans `src/`.
 - Le projet VBA ne doit pas être protégé par mot de passe.
+
+## Tester l'itération 6 (saisie sur les vraies données)
+
+**Une seule fois** :
+1. `git pull`, ouvrir `VBA_maquette_SGO.xlsm`, `Alt+F8` → **ImporterVBA**.
+   Un avertissement signale que `frmGarde` et `frmSaisie` sont absents : c'est normal.
+2. `Alt+F8` → **CreerFormulairesSGO** (crée les deux formulaires vides), puis de nouveau **ImporterVBA**.
+3. `Alt+F8` → **ImporterReferentiel** (copie `referentiel\*.csv` dans des feuilles cachées `R_...`).
+4. `Alt+F8` → **TesterMoteur** : le message doit annoncer **0 écart** (détail dans la feuille `T_Resultats`).
+5. Enregistrer le classeur.
+
+**Ensuite** : `Alt+F8` → **SGO**
+- *Oui* : nouveau dossier → page de garde → choix du fichier `.xlsx` du dossier → écran de saisie ;
+- *Non* : ouvrir un dossier `.xlsx` existant.
+
+Le dossier d'une offre est un fichier `.xlsx` **séparé et sans macro** (feuilles Offre, Reponses, Archives). Ne le rangez pas dans le dépôt Git.
+
+Après une mise à jour du référentiel (`git pull` qui modifie `referentiel/`), relancer **ImporterReferentiel**.
+

@@ -96,9 +96,32 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
 - **ES-16** : onglet « Historique » retiré, il reste Réponse, Standards et Commentaire ;
 - bouton « Rétablir les standards du sous-thème ».
 
+## Itération 6 : la saisie sur les vraies données (15/10/2026)
+- **Recentrage décidé avec l'utilisateur** : priorité à la saisie. L'écran **Revue** (les 5 synthèses de l'outil d'origine) et les **exports** (PDF / HTML pour présenter l'offre à la direction, **avec le logo de l'UGAP**) viendront une fois la saisie terminée.
+- **Décisions** :
+  - « Différence avec l'offre précédente » : **déclarative**, comme l'outil d'origine (pas de comparaison automatique avec l'offre précédente) ;
+  - une question fille qui redevient masquée : ses réponses sont **mises en sommeil** (conservées, ignorées, reprises si la condition redevient vraie), avec une confirmation avant de masquer des questions déjà renseignées (cadrage P5) ;
+  - filtre de l'écran de saisie : Toutes / Sans réponse / Justification manquante / **Standard modifié** (remplace « À revoir ») / Non conformes au standard ;
+  - info-bulles et texte « Dépend de la réponse à El77 » ou « Sans standard pour votre direction/univers » sur les éléments grisés ; mention « Conditionne : … » sur les questions mères.
+- **Livré** :
+  - **référentiel migré** (`referentiel/R_*.csv`, modèle du cadrage P4) par `outils/migrer_referentiel.py`, avec `docs/rapport_migration.md` (comptages, anomalies) ;
+  - **preuve d'équivalence** : 60 711 comparaisons avec les formules de l'outil d'origine, **0 écart** (`outils/moteur.py`) ;
+  - **moteur VBA** (`SGO_Moteur.bas`) : standard, réponse pré-remplie, conformité, conditions mère/fille (y compris sur des thèmes et sous-thèmes entiers), masquage, statuts, avancement ;
+  - **dossier d'offre** `.xlsx` sans macro (`SGO_Dossier.bas`) : feuilles Offre, Reponses, Archives ; enregistrement à chaque changement de question ;
+  - **page de garde** réelle (`frmGarde`) et **écran de saisie** réel (`frmSaisie`) ;
+  - **tests dans Excel** (`TesterMoteur`) : rejoue les valeurs attendues et des scénarios de conditions ;
+  - corrections de la maquette (libellés du filtre, info-bulles, « Conditionne : »).
+- **À tester** : voir « Tester l'itération 6 » dans `README.md`.
+- **Découvertes de la migration** (détail dans le rapport) :
+  - des conditions masquent des **thèmes et sous-thèmes entiers** (exemple : 03.2.3 « Offre exécutée » dépend de El77) ;
+  - les chapitres 08 et 09 n'ont pas de thème : un thème « implicite » est créé ;
+  - 8 conditions ont un critère absent des choix de leur question mère (la fille ne peut s'afficher que par une saisie libre) ;
+  - 3 conditions visent des questions qui n'existent plus (El323, El323b, El323c) et 1 une mère inconnue (El335b).
+
 ## Prochaines itérations (indicatif)
 | N° | Contenu |
 |---|---|
-| 6 | Maquette de l'écran **Revue** (les 5 synthèses) |
-| 7 | **Preuve de concept** : `.xlam` minimal qui lit les questions et les standards et calcule standard et conformité ; test d'installation sur un poste verrouillé de la DSI |
-| 8+ | Écran de saisie branché sur les vraies données, enregistrement, commentaires, revue, **puis les lots** (feuille Détail des lots générée à partir du nombre de lots)… puis `SGO_Admin.xlam` |
+| 7 | Retours sur la saisie réelle ; anomalies du rapport de migration à trancher avec le chef de projet ; **commentaires officiels / intra** si besoin ; **mise à jour du référentiel** dans un dossier existant (cadrage P3) |
+| 8 | **Preuve de concept `.xlam`** : déplacer le code et le référentiel dans `SGO.xlam`, onglet de ruban ; test d'installation sur un poste de la DSI |
+| 9 | Écran **Revue** (les 5 synthèses), puis **exports** PDF / HTML avec le logo de l'UGAP |
+| 10+ | **Lots** (feuille Détail des lots générée à partir du nombre de lots), annexes, puis `SGO_Admin.xlam` |

@@ -427,9 +427,15 @@ def migrer(classeur, sortie):
     ecrire("R_Standards.csv", ["question", "type", "cible", "niveau", "valeur"], standards)
     ecrire("R_Directions.csv", ["type", "code", "libelle", "parent", "a_standards"], dirs)
 
-    # ---- Valeurs attendues (formules d'origine) ------------------------------------------
+    # ---- Valeurs attendues : formules d'origine (standard, conformité) et
+    #      moteur Python (masquage d'un dossier vierge) -------------------------------------
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import moteur
+    nref = moteur.Referentiel(sortie)
     attendus = []
     for d, u in PAIRES_TEST:
+        dossier = moteur.Dossier(nref, d, u)
+        dossier.evaluer()
         for q in questions:
             if q[9]:
                 continue
@@ -437,14 +443,12 @@ def migrer(classeur, sortie):
             sv = mat.standard(q[0], d, u, niv)
             rep = reponse_initiale_origine(niv, sv, q[4])
             conf = conformite_origine(niv, sv, rep, q[4], q[6])
-            attendus.append([d, u, q[0], niv, sv, rep, conf])
+            attendus.append([d, u, q[0], niv, sv, rep, conf, dossier.etat[q[0].lower()]["motif"]])
     ecrire(os.path.join("tests", "attendus_standards.csv"),
-           ["direction", "univers", "question", "niveau", "standard", "reponse_initiale", "conformite"], attendus)
+           ["direction", "univers", "question", "niveau", "standard", "reponse_initiale", "conformite", "masquage"],
+           attendus)
 
     # ---- Preuve d'équivalence : nouveau moteur (sur les CSV) / formules d'origine ---------
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    import moteur
-    nref = moteur.Referentiel(sortie)
     nb_cmp, ecarts = 0, []
     for d in std_dir:
         for u in univers:

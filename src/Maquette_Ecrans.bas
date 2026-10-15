@@ -192,6 +192,7 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
                 "! à justifier   " & fille & " question fille   " & ChrW(&H2298) & " masquée", _
                 M + 2, yCorps + hCorps - 30, wNav - 4, 30, False, TAILLE_BASE - 2, cGris)
     c.Font.Name = POLICE_SYMB
+    c.ControlTipText = "Masquée : dépend de la réponse à une question mère, ou sans standard pour votre direction/univers"
 
     ' --- Niveau 2 : THÈMES = TabStrip ----------------------------------------
     etape = "thèmes"
@@ -226,7 +227,7 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     ts.Tabs.Add "st3", ChrW(&H2298) & " 03.2.3 Offre exécutée"
     On Error Resume Next
     ts.Tabs(2).Enabled = False            ' grisé, non modifiable
-    ts.Tabs(2).ControlTipText = "Sans objet : El77 contient « Offre non exécutée »"
+    ts.Tabs(2).ControlTipText = "Dépend de la réponse à El77"
     On Error GoTo 0
     ts.Value = 1
     Set c = Lbl(f, "lblSousThemesTitre", "Sous-thèmes", xIn + wIn - 96, yIn + 6, 90, LigneH(-2), False, TAILLE_BASE - 2, cGris)
@@ -242,10 +243,11 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
     SectionTitre f, "secQuestions", "QUESTIONS", xIn, y2, wQ
     Lbl f, "lblFiltre", "Afficher", xIn, y2 + 27, 52, LigneH()
     Combo f, "cboFiltre", xIn + 54, y2 + 24, wQ - 54, 22, _
-          Array("Toutes les questions", "Non répondues", "À justifier", "À revoir", "Écarts au standard")
+          Array("Toutes les questions", "Sans réponse", "Justification manquante", "Standard modifié", _
+                "Non conformes au standard")
     Lbl f, "lblCompteur", "6 questions, dont 1 masquée (grisée, non modifiable)", xIn, y2 + 51, wQ, LigneH(-2), False, TAILLE_BASE - 2, cGris
     Set lst = Liste(f, "lstQuestions", xIn, y2 + 68, wQ, yBas - 36 - (y2 + 68), "16;44;" & CLng(wQ - 16 - 44 - 6))
-    AjouterLigne lst, ChrW(&H2298), "El78a", "(masquée) Modalités de passation en accord-cadre"
+    AjouterLigne lst, ChrW(&H2298), "El78a", "(dépend de El77) Modalités de passation en accord-cadre"
     AjouterLigne lst, ok, "El78f", "Dérogation au principe de non exclusivité ?"
     AjouterLigne lst, IIf(casSp, "!", enCours), "El78b", "Adhésion via formulaire sur ugap.fr ?"
     AjouterLigne lst, vide, "El78c", "Qui effectue les marchés subséquents ?"
@@ -285,8 +287,9 @@ Private Sub ConstruireEcranSaisie(f As Object, ByVal avecRecherche As Boolean)
             M, 8, iw, LigneH(-2), False, TAILLE_BASE - 2, cGris
         Lbl pg, "lblLibelle", "Quel est le volume estimé des marchés par an ?", M, 26, iw, 3 * LigneH(2), True, TAILLE_BASE + 2
     Else
-        Lbl pg, "lblTypeQ", "El78b  ·  Liste à choix unique  ·  affichée car El77 contient « Offre non exécutée »", _
-            M, 8, iw, LigneH(-2), False, TAILLE_BASE - 2, cGris
+        Set c = Lbl(pg, "lblTypeQ", "El78b  ·  Liste à choix unique  ·  affichée car El77 contient « Offre non exécutée »" & _
+            "  ·  Conditionne : El78e", M, 8, iw, LigneH(-2), False, TAILLE_BASE - 2, cGris)
+        c.ControlTipText = "Votre réponse à cette question fait apparaître ou masque El78e"
         Lbl pg, "lblLibelle", "L’adhésion ou la renonciation se fera-t-elle via un formulaire d’enquête sur ugap.fr ?", _
             M, 26, iw, 3 * LigneH(2), True, TAILLE_BASE + 2
     End If

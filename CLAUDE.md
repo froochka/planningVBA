@@ -12,3 +12,8 @@ Projet : classeur Excel `VBA_maquette_SGO.xlsm` (à la racine) avec macros VBA, 
 - `outils/VbaSync.bas` est importé tel quel par Excel (lu en ANSI) : n'y mettre que des caractères ASCII.
 - Règles métier de l'outil d'origine (standards, conformité, 4 cas, conditions `<>` = contient / `=` = égal) : voir `docs/analyse_existant.md`. Cadrage et décisions : `docs/cadrage.md`.
 - Ne jamais commiter le classeur d'origine `02_PhaseElaborationOffre_*.xlsm` tel quel : il contient un identifiant de connexion (feuille 10-Entreprises Sourcées).
+- Référentiel : `referentiel/*.csv` est **généré** par `python outils/migrer_referentiel.py <classeur d'origine>.xlsm` (ne pas l'éditer à la main) ; le script écrit aussi `docs/rapport_migration.md` et vérifie l'équivalence avec les formules d'origine (0 écart attendu).
+- Moteur de règles : `src/SGO_Moteur.bas` et `outils/moteur.py` sont des copies conformes ; toute règle modifiée l'est dans les deux.
+- Écrans réels (`frmGarde`, `frmSaisie`) : formulaires vides construits par code ; l'utilisateur les crée avec la macro `CreerFormulairesSGO`. Dans un événement, ne jamais supprimer le contrôle qui le déclenche (risque de plantage d'Excel) : mettre à jour sur place ou rouvrir la fenêtre.
+- Vérifier le VBA avant de commiter (pas de compilation possible ici) : blocs, déclarations, identifiants, caractères cp1252.
+

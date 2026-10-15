@@ -146,7 +146,7 @@ Vous m'avez demandé une proposition. La voici :
 
 1. **Une question fille est visible** si toutes ses conditions sont vraies **et** si sa question mère est elle-même visible. La règle s'applique sur toute la chaîne, sans limite de niveaux.
 2. **Une question mère non répondue** : ses filles sont masquées.
-3. **Les réponses d'une fille qui devient masquée ne sont pas supprimées**, elles sont mises **en sommeil**. Elles ne comptent plus dans l'avancement et ne sont pas exportées. Si la condition redevient vraie, **elles réapparaissent**. Une erreur de clic ne fait donc rien perdre.
+3. ✅ *(retenu le 15/10/2026)* **Les réponses d'une fille qui devient masquée ne sont pas supprimées**, elles sont mises **en sommeil**. Elles ne comptent plus dans l'avancement et ne sont pas exportées. Si la condition redevient vraie, **elles réapparaissent**. Une erreur de clic ne fait donc rien perdre.
 4. **Avant d'enregistrer une réponse de question mère qui masque des filles déjà remplies**, l'outil demande confirmation :
    *« Cette réponse masque 3 questions déjà renseignées (El100, El105, El107). Leurs réponses seront conservées mais ignorées. Continuer ? »*
 5. Une fonction **« Purger les réponses en sommeil »** permet de nettoyer le dossier avant l'export final.
@@ -160,7 +160,8 @@ Vous m'avez demandé une proposition. La voici :
   Exemple : El100 s'affiche si la réponse à El99 contient « Non ».
 - `=` signifie « la réponse est **exactement égale** au critère ». Les deux règles `=` (El174, El78a) sont donc cohérentes.
 - Une question fille masquée reçoit la réponse « Non concerné pour l'offre ». Une question non applicable à la direction ou à l'univers reçoit « Non concerné pour la direction/univers ».
-- ❓ La règle d'administration impose **une seule condition par question fille**. Il existe pourtant 18 exceptions, comme El78c, conditionnée par El71 et par El77. Je propose que **toutes les conditions** doivent être remplies (ET). À confirmer.
+- La règle d'administration impose **une seule condition par question fille**. Il existe pourtant 18 exceptions, comme El78c, conditionnée par El71 et par El77. L'outil d'origine masque la fille dès qu'**une** de ses conditions n'est pas remplie : **toutes les conditions doivent donc être remplies (ET)**, et c'est ce que fait le nouveau moteur.
+- Des conditions portent aussi sur des **thèmes et sous-thèmes entiers** (exemple : 03.2.3 « Offre exécutée » dépend de El77) : le moteur les gère comme les questions.
 
 ### P6 🔶 Changement de la page de garde (direction, univers)
 
