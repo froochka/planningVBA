@@ -272,6 +272,30 @@ for f in FICHIERS:
                     continue
                 erreurs.append(f"{nomf}:{n}: identifiant non déclaré ? « {m.group(1)} »")
 
+# Noms de module (procédures, variables, constantes) qui ne diffèrent que par la
+# casse : VBA ne distingue pas majuscules et minuscules (« nom ambigu »)
+import collections
+noms = collections.defaultdict(set)
+for f in FICHIERS:
+    mod = os.path.basename(f)
+    for l in open(f, encoding="utf-8"):
+        l = nettoyer(l.rstrip("\n"))
+        mp = re.match(r"\s*(?:Public\s+|Private\s+|Friend\s+)?(?:Sub|Function|Property\s+\w+)\s+(\w+)", l)
+        mm = re.match(r"(?:Public|Private|Global|Dim)\s+(?:Const\s+|WithEvents\s+)?(.*)$", l)
+        if mp:
+            noms[mp.group(1).lower()].add((mod, mp.group(1)))
+        elif mm and not l.startswith((" ", "\t")):
+            for part in re.split(r",(?![^(]*\))", mm.group(1)):
+                x = re.match(r"\s*(\w+)", part)
+                if x:
+                    noms[x.group(1).lower()].add((mod, x.group(1)))
+for k, v in noms.items():
+    if len({n for _, n in v}) > 1 and len({m for m, _ in v}) < len(v) + 1:
+        modules = {m for m, _ in v}
+        publics_ou_meme_module = len(modules) == 1 or any(m.endswith(".bas") for m in modules)
+        if publics_ou_meme_module:
+            erreurs.append(f"nom ambigu (casse différente) : {sorted(v)}")
+
 for e in erreurs:
     print(e)
 print(f"{len(erreurs)} remarque(s)")

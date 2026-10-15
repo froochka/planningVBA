@@ -102,7 +102,7 @@ Private Sub Construire()
     M = UI_MARGE
     Me.Caption = "SGO - Élaboration du DCO   ·   " & gWbDossier.Name
     UIDimensionner Me, 0.95, 760, 440, 1600, 1000
-    Me.BackColor = uiFond
+    Me.BackColor = uiCoulFond
     W = Me.InsideWidth: H = Me.InsideHeight
     hEntete = 56: hPied = 44
     yCorps = hEntete + M
@@ -592,11 +592,11 @@ Private Sub ConstruirePageReponse()
         y = Encadre(pg, y, iw, ChrW(&H2298) & "  SANS OBJET POUR CETTE OFFRE", _
                     RaisonMasquage(curQ.Id) & ". La question reste visible mais n'est pas modifiable." & _
                     IIf(curQ.AQuelqueChose, " Les réponses déjà saisies sont conservées et seront reprises si la question redevient applicable.", ""), _
-                    uiFond, uiGris, uiGris)
+                    uiCoulFond, uiGris, uiGris)
     ElseIf curQ.EstAnnexe Then
         y = Encadre(pg, y, iw, "RÉPONSE DANS UNE ANNEXE", _
                     "Cette question se renseigne dans l'annexe « " & curQ.Reponse & " ». Les annexes seront intégrées dans une prochaine itération.", _
-                    uiFond, uiGris, uiGris)
+                    uiCoulFond, uiGris, uiGris)
     ElseIf avecStd Then
         y = Encadre(pg, y, iw, "STANDARD APPLICABLE  ·  " & LibelleNiveau(curQ.Niveau), curQ.Standard, _
                     uiStdFond, uiStdBarre, uiOrange, True)
@@ -609,7 +609,7 @@ Private Sub ConstruirePageReponse()
         End If
     ElseIf sp Then
         y = Encadre(pg, y, iw, "AUCUN STANDARD  ·  Spécifique à l'offre (Sp)", _
-                    "Réponse propre à cette offre. Indiquez si elle diffère de l'offre précédente.", uiFond, uiGris, uiGris)
+                    "Réponse propre à cette offre. Indiquez si elle diffère de l'offre précédente.", uiCoulFond, uiGris, uiGris)
     Else
         y = Encadre(pg, y, iw, "STANDARDS INCOMPLETS", _
                     "Aucun standard n'est défini pour cette question avec votre direction et votre univers : contactez votre administrateur.", _
@@ -747,13 +747,13 @@ Private Sub TexteBandeau(txt As String, fond As Long, coul As Long)
             fond = uiBleuClair: coul = uiAction
         Case ST_NON_CONCERNEE
             txt = ChrW(&H2013) & "  Non concerné"
-            fond = uiFond: coul = uiGris
+            fond = uiCoulFond: coul = uiGris
         Case ST_INCOMPLET
             txt = "?  Standards incomplets pour cette question"
             fond = uiStdFond: coul = uiOrange
         Case Else
             txt = ChrW(&H25CB) & "  Réponse à saisir"
-            fond = uiFond: coul = uiGris
+            fond = uiCoulFond: coul = uiGris
     End Select
 End Sub
 
@@ -778,7 +778,7 @@ Private Sub ConstruirePageStandards()
     UISection pg, "secStdComplet", "VALEUR COMPLÈTE DU STANDARD APPLICABLE", M, hz, iw
     Set c = UITxt(pg, "txtStdComplet", IIf(curQ.Standard = "", "(aucun)", curQ.Standard), M, hz + 26, iw, _
                   UIBorne(hDet - hz - 26 - M, 40, 400))
-    c.MultiLine = True: c.WordWrap = True: c.ScrollBars = 2: c.Locked = True: c.BackColor = uiFond
+    c.MultiLine = True: c.WordWrap = True: c.ScrollBars = 2: c.Locked = True: c.BackColor = uiCoulFond
 End Sub
 
 Private Sub ConstruirePageCommentaire()

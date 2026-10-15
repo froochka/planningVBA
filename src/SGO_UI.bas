@@ -24,14 +24,14 @@ Public Const ICO_FERMER As Long = &HE711&
 Public uiTaille As Single
 
 ' Palette
-Public uiBandeau As Long, uiAction As Long, uiFond As Long, uiBlanc As Long, uiLigne As Long
+Public uiBandeau As Long, uiAction As Long, uiCoulFond As Long, uiBlanc As Long, uiLigne As Long
 Public uiTexte As Long, uiGris As Long, uiVert As Long, uiOrange As Long, uiRouge As Long
 Public uiStdFond As Long, uiStdBarre As Long, uiOngletFond As Long, uiBleuClair As Long, uiRougeClair As Long
 
 Public Sub UIInit()
     uiBandeau = RGB(22, 54, 92)
     uiAction = RGB(0, 99, 177)
-    uiFond = RGB(243, 245, 248)
+    uiCoulFond = RGB(243, 245, 248)
     uiBlanc = RGB(255, 255, 255)
     uiLigne = RGB(214, 219, 226)
     uiTexte = RGB(33, 37, 41)
