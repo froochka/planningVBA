@@ -112,6 +112,10 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
   - **tests dans Excel** (`TesterMoteur`) : rejoue les valeurs attendues et des scénarios de conditions ;
   - corrections de la maquette (libellés du filtre, info-bulles, « Conditionne : »).
 - **Validé dans Excel (15/10/2026)** : `TesterMoteur` → plus de 14 000 vérifications, **0 écart**, en 1 seconde. Le moteur VBA donne les mêmes résultats que l'outil d'origine.
+- **Premier test de l'écran de saisie** : pas de bug. Retour d'ergonomie : libellés des questions tronqués (la liste manque de largeur, pas de hauteur ; 55 % des libellés dépassent 60 caractères). Corrigé, en gardant les 3 blocs côte à côte (décision ES-2 conservée) :
+  - listes des chapitres et des questions refaites en lignes de texte qui passent à la ligne (2 lignes pour les chapitres, 3 pour les questions), avec un **vrai grisé** des éléments sans objet et la ligne choisie surlignée ;
+  - la bande réservée aux sous-thèmes est récupérée quand le thème n'en a qu'un ;
+  - largeurs rééquilibrées : le détail garde une largeur de lecture, la liste prend le reste.
 - **À tester** : l'écran de saisie (macro `SGO`), voir « Tester l'itération 6 » dans `README.md`.
 - **Découvertes de la migration** (détail dans le rapport) :
   - des conditions masquent des **thèmes et sous-thèmes entiers** (exemple : 03.2.3 « Offre exécutée » dépend de El77) ;

@@ -12,11 +12,9 @@ Option Explicit
 ' =============================================================================
 
 ' --- Contrôles avec événements ------------------------------------------------
-Private WithEvents lstChap As MSForms.ListBox
 Private WithEvents tsThemes As MSForms.TabStrip
 Private WithEvents tsSST As MSForms.TabStrip
 Private WithEvents cboFiltre As MSForms.ComboBox
-Private WithEvents lstQ As MSForms.ListBox
 Private WithEvents lstChoix As MSForms.ListBox
 Private WithEvents cboChoix As MSForms.ComboBox
 Private WithEvents txtRep As MSForms.TextBox
@@ -42,6 +40,9 @@ Private WithEvents btnFermer As MSForms.Label
 Private WithEvents btnFermerRes As MSForms.Label
 
 Private mp As MSForms.MultiPage
+Private fraChap As MSForms.Frame        ' liste des chapitres (lignes de Labels)
+Private fraQ As MSForms.Frame           ' liste des questions (lignes de Labels)
+Private lignes As Collection            ' cClicLigne des deux listes
 Private fraRes As MSForms.Frame         ' résultats de recherche (créé une fois, masqué ou affiché)
 
 ' --- État -----------------------------------------------------------------------
@@ -49,16 +50,20 @@ Private curChap As cCategorieSGO
 Private curTheme As cCategorieSGO
 Private curSST As cCategorieSGO
 Private curQ As cQuestionSGO
-Private listeQ As Collection            ' questions affichées dans lstQ
+Private listeQ As Collection            ' questions affichées dans la liste
 Private themesAff As Collection         ' thèmes du chapitre (onglets)
 Private sstAff As Collection            ' sous-thèmes du thème (boutons)
 Private resultats As Collection         ' résultats de recherche
+Private chapSel As Long                 ' chapitre affiché (0 = premier)
+Private qSel As Long                    ' question sélectionnée dans listeQ (0 = première, -1 : aucune)
 Private chargement As Boolean           ' ignore les événements pendant un remplissage par le code
 Private sale As Boolean                 ' la question courante a changé depuis le dernier enregistrement
 
 ' --- Disposition ------------------------------------------------------------------
 Private M As Single, W As Single, H As Single      ' marge, largeur et hauteur utiles
 Private wDet As Single, hDet As Single  ' taille utile des pages du détail
+Private xIn As Single, yIn As Single, wIn As Single, yBas As Single, wQ As Single
+Private hSST As Single, yZone As Single ' hauteur des onglets de sous-thèmes ; haut de la zone Questions
 
 Private Const FILTRES As String = "Toutes les questions;Sans réponse;Justification manquante;Standard modifié;Non conformes au standard"
 
@@ -86,6 +91,11 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     SauverDossier
 End Sub
 
+Private Sub UserForm_Terminate()
+    LibererLignes "C"
+    LibererLignes "Q"
+End Sub
+
 Private Sub btnFermer_Click()
     Unload Me
 End Sub
@@ -95,10 +105,12 @@ End Sub
 ' =============================================================================
 Private Sub Construire()
     Dim hEntete As Single, hPied As Single, yCorps As Single, hCorps As Single, wNav As Single
-    Dim x0 As Single, wZone As Single, xIn As Single, yIn As Single, wIn As Single, yBas As Single
-    Dim wQ As Single, y2 As Single, xD As Single, wR As Single, y As Single, c As Object
+    Dim x0 As Single, wZone As Single
+    Dim xD As Single, wR As Single, y As Single, c As Object, wDetail As Single
 
     chargement = True
+    Set lignes = New Collection
+    chapSel = -1: qSel = -1: yZone = -1
     M = UI_MARGE
     Me.Caption = "SGO - Élaboration du DCO   ·   " & gWbDossier.Name
     UIDimensionner Me, 0.95, 760, 440, 1600, 1000
@@ -128,9 +140,7 @@ Private Sub Construire()
 
     ' --- Chapitres ------------------------------------------------------------------
     UILbl Me, "lblChapTitre", "CHAPITRES", M + 4, yCorps, wNav - 8, UILigneH(-2), True, -2, uiGris
-    Set lstChap = UIListe(Me, "lstChap", M, yCorps + 18, wNav, hCorps - 18 - 48, CLng(wNav - 46) & ";36")
-    lstChap.Font.Name = UI_POLICE_SYMB
-    lstChap.BackColor = uiOngletFond
+    Set fraChap = NouvelleListe("fraChap", M, yCorps + 18, wNav, hCorps - 18 - 48, uiOngletFond)
     Set c = UILbl(Me, "lblLegende", ChrW(&H2713) & " terminé  " & ChrW(&H25D0) & " en cours  " & ChrW(&H25CB) & " à faire  " & _
                   "! à justifier  " & ChrW(&H21BB) & " standard modifié  " & ChrW(&H25C6) & " spécifique  " & ChrW(&H2298) & " sans objet", _
                   M + 2, yCorps + hCorps - 44, wNav - 4, 44, False, -2, uiGris)
@@ -147,31 +157,31 @@ Private Sub Construire()
     xIn = x0 + M + 2: yIn = yCorps + UILigneH() + 12 + M: wIn = wZone - 2 * M - 4
     yBas = yCorps + hCorps - M
 
-    Set tsSST = UICtl(Me, "Forms.TabStrip.1", "tsSST", xIn, yIn, wIn, UILigneH() + 12)
+    hSST = UILigneH() + 12
+    Set tsSST = UICtl(Me, "Forms.TabStrip.1", "tsSST", xIn, yIn, wIn, hSST)
     tsSST.Font.Name = UI_POLICE_SYMB
     tsSST.Style = 1                                  ' boutons
     tsSST.TabFixedHeight = UILigneH() + 8
     Set c = UILbl(Me, "lblSSTTitre", "Sous-thèmes", xIn + wIn - 96, yIn + 6, 90, UILigneH(-2), False, -2, uiGris)
     c.TextAlign = 3
-    Set c = UILbl(Me, "lblMasque", "", xIn + 2, yIn + UILigneH() + 16, wIn, UILigneH(-2), False, -2, uiGris)
+    Set c = UILbl(Me, "lblMasque", "", xIn + 2, yIn, wIn, UILigneH(-2), False, -2, uiGris)
     c.Font.Name = UI_POLICE_SYMB
 
-    ' --- Questions ----------------------------------------------------------------------
-    y2 = yIn + UILigneH() + 16 + UILigneH(-2) + 8
-    wQ = UIBorne(wIn * 0.4, 230, 400)
-    UISection Me, "secQuestions", "QUESTIONS", xIn, y2, wQ
-    UILbl Me, "lblFiltre", "Afficher", xIn, y2 + 27, 52, UILigneH()
-    Set cboFiltre = UICombo(Me, "cboFiltre", xIn + 54, y2 + 24, wQ - 54, UILigneH() + 8, Split(FILTRES, ";"))
+    ' --- Questions : le détail garde une largeur de lecture confortable, la liste
+    '     prend le reste (les libellés passent à la ligne)
+    wDetail = UIBorne(wIn * 0.5, 430, 700)
+    wQ = UIBorne(wIn - 2 * M - wDetail, 230, 900)
+    UISection Me, "secQuestions", "QUESTIONS", xIn, yIn, wQ
+    UILbl Me, "lblFiltre", "Afficher", xIn, yIn + 27, 52, UILigneH()
+    Set cboFiltre = UICombo(Me, "cboFiltre", xIn + 54, yIn + 24, UIBorne(wQ - 54, 120, 260), UILigneH() + 8, Split(FILTRES, ";"))
     cboFiltre.ListIndex = 0
-    UILbl Me, "lblCompteur", "", xIn, y2 + 24 + UILigneH() + 12, wQ, UILigneH(-2), False, -2, uiGris
-    y = y2 + 24 + UILigneH() + 12 + UILigneH(-2) + 4
-    Set lstQ = UIListe(Me, "lstQ", xIn, y, wQ, yBas - 36 - y, "16;48;" & CLng(wQ - 16 - 48 - 22))
-    lstQ.Font.Name = UI_POLICE_SYMB
+    UILbl Me, "lblCompteur", "", xIn, yIn + 24 + UILigneH() + 12, wQ, UILigneH(-2), False, -2, uiGris
+    Set fraQ = NouvelleListe("fraQ", xIn, yIn + 60, wQ, 100, uiBlanc)
     Set btnRetablir = UIBouton(Me, "btnRetablir", "Rétablir les standards du sous-thème", xIn, yBas - 28, wQ, 28, 0, ICO_COCHE)
 
     ' --- Détail -----------------------------------------------------------------------
     xD = xIn + wQ + 2 * M
-    Set mp = UICtl(Me, "Forms.MultiPage.1", "mpDetail", xD, y2, wIn - wQ - 2 * M, yBas - 38 - y2)
+    Set mp = UICtl(Me, "Forms.MultiPage.1", "mpDetail", xD, yIn, wIn - wQ - 2 * M, yBas - 38 - yIn)
     mp.TabFixedHeight = UILigneH() + 8
     Do While mp.Pages.Count < 3
         mp.Pages.Add
@@ -201,6 +211,7 @@ Private Sub Construire()
     Set c = UILbl(Me, "lblEnregistre", "", M + 490, y + 7, W - M - 126 - 8 - (M + 490), UILigneH(-2), False, -2, uiVert)
     c.Font.Name = UI_POLICE_SYMB: c.TextAlign = 3
 
+    PlacerZoneQuestions False, False
     ConstruireResultats
     RemplirChapitres
     AfficherAvancement
@@ -234,13 +245,36 @@ End Sub
 ' Navigation : chapitres, thèmes, sous-thèmes, questions
 ' =============================================================================
 Private Sub RemplirChapitres()
-    Dim c As Variant, i As Long, sel As Long
-    sel = lstChap.ListIndex
-    lstChap.Clear
+    Dim c As Variant, i As Long, y As Single
+    LibererLignes "C"
+    fraChap.Controls.Clear
+    y = 2
     For Each c In gChapitres
-        UIAjouterLigne lstChap, UIPictoCategorie(c) & "  " & c.Libelle, IIf(c.Grisee(), "", c.Pourcentage() & " %")
+        y = y + AjouterLigneListe(fraChap, "C", i, y, UIPictoCategorie(c), "", c.Libelle, _
+                                  IIf(c.Grisee(), "", c.Pourcentage() & " %"), 2, c.Grisee(), c.Libelle)
+        i = i + 1
     Next c
-    If sel >= 0 And sel < lstChap.ListCount Then lstChap.ListIndex = sel
+    AjusterDefilement fraChap, y
+    MarquerChapitre chapSel
+End Sub
+
+' Met à jour pictogrammes, pourcentages et grisé des chapitres, sans reconstruire
+Private Sub RafraichirChapitres()
+    Dim c As Variant, i As Long
+    For Each c In gChapitres
+        fraChap.Controls("C" & i & "_ico").Caption = UIPictoCategorie(c)
+        fraChap.Controls("C" & i & "_dr").Caption = IIf(c.Grisee(), "", c.Pourcentage() & " %")
+        CouleursLigne fraChap, "C" & i, (i = chapSel), c.Grisee()
+        i = i + 1
+    Next c
+End Sub
+
+Private Sub MarquerChapitre(ByVal index As Long)
+    Dim i As Long
+    chapSel = index
+    For i = 0 To gChapitres.Count - 1
+        CouleursLigne fraChap, "C" & i, (i = index), gChapitres(i + 1).Grisee()
+    Next i
 End Sub
 
 ' Met à jour les pictogrammes et pourcentages sans reconstruire la navigation
@@ -248,15 +282,10 @@ Private Sub RafraichirNavigation()
     Dim c As Variant, i As Long, etaitEnChargement As Boolean
     etaitEnChargement = chargement
     chargement = True
-    i = 0
-    For Each c In gChapitres
-        lstChap.List(i, 0) = UIPictoCategorie(c) & "  " & c.Libelle
-        lstChap.List(i, 1) = IIf(c.Grisee(), "", c.Pourcentage() & " %")
-        i = i + 1
-    Next c
+    RafraichirChapitres
     EtatOnglets tsThemes, themesAff
     EtatOnglets tsSST, sstAff
-    RemplirQuestions
+    RemplirQuestions False
     AfficherAvancement
     chargement = etaitEnChargement
 End Sub
@@ -282,10 +311,20 @@ Private Sub AfficherAvancement()
     Me.Controls("lblAvancement").Caption = pct & " % · " & a(0) & " / " & a(1)
 End Sub
 
-Private Sub lstChap_Change()
-    If chargement Or lstChap.ListIndex < 0 Then Exit Sub
-    Valider
-    AfficherChapitre gChapitres(lstChap.ListIndex + 1), Nothing
+' Clic sur une ligne d'une liste maison (appelé par cClicLigne)
+Public Sub LigneCliquee(ByVal liste As String, ByVal index As Long)
+    If chargement Then Exit Sub
+    If liste = "C" Then
+        If index = chapSel Then Exit Sub
+        Valider
+        AfficherChapitre gChapitres(index + 1), Nothing
+    Else
+        If index >= listeQ.Count Then Exit Sub
+        If listeQ(index + 1) Is curQ Then Exit Sub
+        Valider
+        MarquerQuestion index
+        AfficherQuestion listeQ(index + 1)
+    End If
 End Sub
 
 Private Sub tsThemes_Change()
@@ -304,10 +343,11 @@ Private Sub cboFiltre_Change()
     If chargement Then Exit Sub
     Valider
     chargement = True
-    RemplirQuestions
+    RemplirQuestions True
     chargement = False
     If listeQ.Count > 0 Then
-        lstQ.ListIndex = 0
+        MarquerQuestion 0
+        AfficherQuestion listeQ(1)
     Else
         AfficherQuestion Nothing
     End If
@@ -332,7 +372,7 @@ Private Sub AfficherChapitre(ByVal chap As cCategorieSGO, ByVal q As cQuestionSG
     EtatOnglets tsThemes, themesAff
     If cible < 0 Then cible = 0
     For i = 1 To gChapitres.Count
-        If gChapitres(i) Is chap Then lstChap.ListIndex = i - 1
+        If gChapitres(i) Is chap Then MarquerChapitre i - 1
     Next i
     If themesAff.Count > 0 Then tsThemes.Value = cible
     chargement = False
@@ -375,8 +415,10 @@ Private Sub AfficherSousTheme(ByVal sst As cCategorieSGO, ByVal q As cQuestionSG
     Else
         Me.Controls("lblMasque").Caption = ""
     End If
+    PlacerZoneQuestions sstAff.Count > 1, sst.Grisee()
     chargement = True
-    RemplirQuestions
+    Set curQ = Nothing
+    RemplirQuestions True
     cible = -1
     If Not q Is Nothing Then
         For i = 1 To listeQ.Count
@@ -384,7 +426,7 @@ Private Sub AfficherSousTheme(ByVal sst As cCategorieSGO, ByVal q As cQuestionSG
         Next i
         If cible < 0 Then                            ' filtrée : on revient à « Toutes »
             cboFiltre.ListIndex = 0
-            RemplirQuestions
+            RemplirQuestions True
             For i = 1 To listeQ.Count
                 If listeQ(i) Is q Then cible = i - 1
             Next i
@@ -396,7 +438,7 @@ Private Sub AfficherSousTheme(ByVal sst As cCategorieSGO, ByVal q As cQuestionSG
         Next i
     End If
     If cible < 0 And listeQ.Count > 0 Then cible = 0
-    If cible >= 0 Then lstQ.ListIndex = cible
+    MarquerQuestion cible
     chargement = False
     If cible >= 0 Then
         AfficherQuestion listeQ(cible + 1)
@@ -405,35 +447,199 @@ Private Sub AfficherSousTheme(ByVal sst As cCategorieSGO, ByVal q As cQuestionSG
     End If
 End Sub
 
-' Liste des questions du sous-thème, selon le filtre
-Private Sub RemplirQuestions()
-    Dim q As Variant, lib As String, nMasq As Long, nTot As Long, sel As Long, i As Long
+' Liste des questions du sous-thème, selon le filtre. Sans « reconstruire », la
+' liste n'est reconstruite que si ses lignes changent (sinon : mise à jour sur place)
+Private Sub RemplirQuestions(ByVal reconstruire As Boolean)
+    Dim q As Variant, nMasq As Long, nTot As Long, i As Long, nouvelle As Collection, y As Single
+    Dim identique As Boolean, lib As String
     If curSST Is Nothing Then Exit Sub
-    Set listeQ = New Collection
-    lstQ.Clear
+    Set nouvelle = New Collection
     For Each q In curSST.Questions
         nTot = nTot + 1
         If q.Statut = ST_MASQUEE Then nMasq = nMasq + 1
-        If PasseFiltre(q) Then
-            listeQ.Add q
-            lib = Replace(Replace(q.Libelle, vbCr, " "), vbLf, " ")
-            If q.Statut = ST_MASQUEE Then lib = "(" & RaisonMasquage(q.Id) & ") " & lib
-            UIAjouterLigne lstQ, UIPicto(q.Statut, q.StandardModifie), q.Id, lib
-        End If
+        If PasseFiltre(q) Then nouvelle.Add q
     Next q
     If cboFiltre.ListIndex <= 0 Then
         Me.Controls("lblCompteur").Caption = nTot & " question" & IIf(nTot > 1, "s", "") & _
             IIf(nMasq > 0, ", dont " & nMasq & " sans objet (grisée" & IIf(nMasq > 1, "s", "") & ", non modifiable" & IIf(nMasq > 1, "s", "") & ")", "")
     Else
-        Me.Controls("lblCompteur").Caption = listeQ.Count & " sur " & nTot & " question" & IIf(nTot > 1, "s", "")
+        Me.Controls("lblCompteur").Caption = nouvelle.Count & " sur " & nTot & " question" & IIf(nTot > 1, "s", "")
     End If
-    sel = -1
-    If Not curQ Is Nothing Then
-        For i = 1 To listeQ.Count
-            If listeQ(i) Is curQ Then sel = i - 1
+
+    ' Mêmes lignes, même grisé : simple mise à jour des pictogrammes
+    identique = Not reconstruire And Not listeQ Is Nothing
+    If identique Then identique = (nouvelle.Count = listeQ.Count)
+    If identique Then
+        For i = 1 To nouvelle.Count
+            If Not nouvelle(i) Is listeQ(i) Or fraQ.Controls("Q" & (i - 1) & "_txt").ForeColor <> CouleurTexte(nouvelle(i)) Then
+                identique = False: Exit For
+            End If
         Next i
     End If
-    If sel >= 0 Then lstQ.ListIndex = sel
+    If identique Then
+        For i = 1 To listeQ.Count
+            fraQ.Controls("Q" & (i - 1) & "_ico").Caption = UIPicto(listeQ(i).Statut, listeQ(i).StandardModifie)
+        Next i
+        Exit Sub
+    End If
+
+    Set listeQ = nouvelle
+    LibererLignes "Q"
+    fraQ.Controls.Clear
+    fraQ.ScrollTop = 0
+    y = 2
+    For i = 1 To listeQ.Count
+        Set q = listeQ(i)
+        lib = Replace(Replace(q.Libelle, vbCr, " "), vbLf, " ")
+        If q.Statut = ST_MASQUEE Then lib = "(" & RaisonMasquage(q.Id) & ") " & lib
+        y = y + AjouterLigneListe(fraQ, "Q", i - 1, y, UIPicto(q.Statut, q.StandardModifie), q.Id, lib, "", 3, _
+                                  q.Statut = ST_MASQUEE, q.Id & " · " & Replace(Replace(q.Libelle, vbCr, " "), vbLf, " "))
+    Next i
+    AjusterDefilement fraQ, y
+    qSel = -1
+    If Not curQ Is Nothing Then
+        For i = 1 To listeQ.Count
+            If listeQ(i) Is curQ Then MarquerQuestion i - 1
+        Next i
+    End If
+End Sub
+
+Private Function CouleurTexte(ByVal q As cQuestionSGO) As Long
+    CouleurTexte = IIf(q.Statut = ST_MASQUEE, RGB(150, 156, 164), uiTexte)
+End Function
+
+Private Sub MarquerQuestion(ByVal index As Long)
+    Dim i As Long, haut As Single, bas As Single
+    If qSel >= 0 And qSel < listeQ.Count Then CouleursLigne fraQ, "Q" & qSel, False, listeQ(qSel + 1).Statut = ST_MASQUEE
+    qSel = index
+    If index < 0 Or index >= listeQ.Count Then Exit Sub
+    CouleursLigne fraQ, "Q" & index, True, listeQ(index + 1).Statut = ST_MASQUEE
+    ' La ligne choisie reste visible
+    haut = fraQ.Controls("Q" & index & "_fond").Top
+    bas = haut + fraQ.Controls("Q" & index & "_fond").Height
+    If haut < fraQ.ScrollTop Then
+        fraQ.ScrollTop = haut
+    ElseIf bas > fraQ.ScrollTop + fraQ.InsideHeight Then
+        fraQ.ScrollTop = bas - fraQ.InsideHeight
+    End If
+End Sub
+
+' -----------------------------------------------------------------------------
+' Listes « maison » : lignes de Labels dans un Frame qui défile
+' -----------------------------------------------------------------------------
+Private Function NouvelleListe(nom As String, ByVal l As Single, ByVal t As Single, ByVal w As Single, _
+                               ByVal h As Single, ByVal fond As Long) As MSForms.Frame
+    Dim f As MSForms.Frame
+    Set f = UICtl(Me, "Forms.Frame.1", nom, l, t, w, h)
+    f.Caption = ""
+    f.BackColor = fond
+    f.SpecialEffect = 0
+    f.BorderStyle = 1
+    f.BorderColor = RGB(190, 197, 206)
+    f.KeepScrollBarsVisible = 0
+    Set NouvelleListe = f
+End Function
+
+' Ajoute une ligne (pictogramme, identifiant, texte sur maxLignes lignes, texte à
+' droite) ; renvoie sa hauteur
+Private Function AjouterLigneListe(fra As MSForms.Frame, ByVal liste As String, ByVal i As Long, ByVal y As Single, _
+                                   ByVal picto As String, ByVal id As String, ByVal texte As String, ByVal droite As String, _
+                                   ByVal maxLignes As Long, ByVal grisee As Boolean, ByVal bulle As String) As Single
+    Dim nom As String, w As Single, xTxt As Single, wTxt As Single, wDr As Single, nb As Long, hl As Single
+    Dim c As Object, ligne As cClicLigne
+    nom = liste & i
+    w = fra.Width - 18                                  ' place pour la barre de défilement
+    wDr = IIf(droite = "", 0, 40)
+    xTxt = 26 + IIf(id = "", 0, 50)
+    wTxt = w - xTxt - wDr - 4
+    nb = LignesTexte(texte, wTxt, 0)
+    If nb > maxLignes Then nb = maxLignes
+    hl = nb * UILigneH() + 8
+
+    UIFond fra, nom & "_fond", 0, y, w, hl, fra.BackColor
+    UIFond fra, nom & "_barre", 0, y, 3, hl, uiAction
+    UIFond fra, nom & "_sep", 4, y + hl - 1, w - 8, 1, uiLigne
+    Set c = UILbl(fra, nom & "_ico", picto, 8, y + 4, 16, UILigneH())
+    c.Font.Name = UI_POLICE_SYMB
+    If id <> "" Then
+        Set c = UILbl(fra, nom & "_id", id, 26, y + 4, 48, UILigneH(), True, -1)
+        c.WordWrap = False
+    End If
+    UILbl fra, nom & "_txt", texte, xTxt, y + 4, wTxt, nb * UILigneH()
+    If droite <> "" Then
+        Set c = UILbl(fra, nom & "_dr", droite, w - wDr - 2, y + 4, wDr, UILigneH(), False, -1, uiGris)
+        c.TextAlign = 3
+    Else
+        UILbl fra, nom & "_dr", "", w - 2, y + 4, 1, UILigneH()
+    End If
+    ' Zone cliquable transparente au-dessus de la ligne
+    Set ligne = New cClicLigne
+    Set ligne.Zone = UILbl(fra, nom & "_zone", "", 0, y, w, hl)
+    ligne.Zone.ControlTipText = Left$(bulle, 250)
+    Set ligne.Formulaire = Me
+    ligne.Liste = liste
+    ligne.Index = i
+    lignes.Add ligne, nom
+    CouleursLigne fra, nom, False, grisee
+    AjouterLigneListe = hl
+End Function
+
+Private Sub CouleursLigne(fra As MSForms.Frame, ByVal nom As String, ByVal choisie As Boolean, ByVal grisee As Boolean)
+    Dim coul As Long
+    On Error Resume Next
+    coul = IIf(grisee, RGB(150, 156, 164), uiTexte)
+    fra.Controls(nom & "_fond").BackColor = IIf(choisie, uiBleuClair, fra.BackColor)
+    fra.Controls(nom & "_barre").Visible = choisie
+    fra.Controls(nom & "_txt").ForeColor = coul
+    fra.Controls(nom & "_txt").Font.Bold = choisie And fra Is fraChap
+    fra.Controls(nom & "_id").ForeColor = IIf(grisee, coul, uiBandeau)
+    fra.Controls(nom & "_ico").ForeColor = IIf(grisee, coul, uiTexte)
+End Sub
+
+Private Sub AjusterDefilement(fra As MSForms.Frame, ByVal hauteur As Single)
+    If hauteur > fra.InsideHeight Then
+        fra.ScrollBars = 2
+        fra.ScrollHeight = hauteur + 2
+    Else
+        fra.ScrollBars = 0
+        fra.ScrollTop = 0
+    End If
+End Sub
+
+' Supprime les objets cClicLigne d'une liste (avant de vider le Frame)
+Private Sub LibererLignes(ByVal liste As String)
+    Dim i As Long
+    If lignes Is Nothing Then Exit Sub
+    For i = lignes.Count To 1 Step -1
+        If lignes(i).Liste = liste Then
+            Set lignes(i).Formulaire = Nothing
+            Set lignes(i).Zone = Nothing
+            lignes.Remove i
+        End If
+    Next i
+End Sub
+
+' Place la zone Questions / Détail juste sous les sous-thèmes, ou en haut quand
+' le thème n'a qu'un sous-thème (la bande reste sinon vide)
+Private Sub PlacerZoneQuestions(ByVal avecSST As Boolean, ByVal avecMasque As Boolean)
+    Dim y As Single, yListe As Single
+    y = yIn
+    If avecSST Then y = y + hSST + 4
+    Me.Controls("lblMasque").Top = y
+    If avecMasque Then y = y + UILigneH(-2) + 6
+    If Abs(y - yZone) < 0.5 Then Exit Sub
+    yZone = y
+    Me.Controls("secQuestions").Top = y
+    Me.Controls("secQuestions_trait").Top = y + UILigneH(-2) + 3
+    Me.Controls("lblFiltre").Top = y + 27
+    cboFiltre.Top = y + 24
+    Me.Controls("lblCompteur").Top = y + 24 + UILigneH() + 12
+    yListe = y + 24 + UILigneH() + 12 + UILigneH(-2) + 4
+    fraQ.Top = yListe
+    fraQ.Height = UIBorne(yBas - 36 - yListe, 60, 2000)
+    mp.Top = y
+    mp.Height = UIBorne(yBas - 38 - y, 120, 2000)
+    hDet = mp.Height - mp.TabFixedHeight - 10
 End Sub
 
 Private Function PasseFiltre(ByVal q As cQuestionSGO) As Boolean
@@ -446,12 +652,6 @@ Private Function PasseFiltre(ByVal q As cQuestionSGO) As Boolean
     End Select
 End Function
 
-Private Sub lstQ_Change()
-    If chargement Or lstQ.ListIndex < 0 Then Exit Sub
-    If listeQ(lstQ.ListIndex + 1) Is curQ Then Exit Sub
-    Valider
-    AfficherQuestion listeQ(lstQ.ListIndex + 1)
-End Sub
 
 ' Va jusqu'à une question : chapitre, thème, sous-thème, sélection
 Private Sub AllerAQuestion(ByVal q As cQuestionSGO)
