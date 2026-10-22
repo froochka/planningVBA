@@ -133,8 +133,9 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
 ## Prochaines itérations (indicatif)
 | N° | Contenu |
 |---|---|
-| 7 | **Fiabiliser le dossier** : feuille d'accueil, feuilles très masquées, protection, lecture robuste et contrôle à l'ouverture, sauvegarde automatique. Retours sur la saisie réelle. Anomalies du rapport de migration à trancher avec le chef de projet |
+| 7 | **Fiabiliser le dossier** : feuille d'accueil, feuilles très masquées, protection, lecture robuste et contrôle à l'ouverture, sauvegarde automatique. Retours sur la saisie réelle. **Anomalies du référentiel** soumises au CDP (`docs/anomalies_referentiel.xlsx`), décisions intégrées par `referentiel/corrections.csv` |
 | 8 | **Preuve de concept `.xlam`** : code et référentiel dans `SGO.xlam`, **onglet SGO du ruban** (dossier = classeur actif, dossiers récents) ; adapter VbaSync ; test d'installation sur un poste de la DSI |
 | 9 | Écran **Revue** (les 5 synthèses), puis **exports** PDF / HTML avec le logo de l'UGAP |
-| 10 | **Mise à jour du référentiel** dans un dossier existant (cadrage P3) ; commentaires officiels / intra si besoin |
-| 11+ | **Lots** (feuille Détail des lots générée à partir du nombre de lots), annexes, **export XLSX à plat**, puis `SGO_Admin.xlam` |
+| 10 | **Outil d'administration `SGO_Admin.xlam`, v1** (pour le CDP) : questions (libellé, mode, liste de choix, ordre, désactivation), chapitres / thèmes / sous-thèmes, éditeur de conditions avec contrôles (boucles, mères inconnues, critères impossibles), grille des standards, directions et univers, **publication** d'une version numérotée du référentiel (cadrage P2, P11) |
+| 11 | **Mise à jour du référentiel dans les dossiers existants** (cadrage P3 : rapport des changements, réponses conservées, « À revoir ») ; commentaires officiels / intra si besoin |
+| 12+ | **Lots** (feuille Détail des lots générée à partir du nombre de lots), annexes, **export XLSX à plat**, administration v2 si besoin |
