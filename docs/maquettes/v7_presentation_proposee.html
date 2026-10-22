@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<style>
+:root{
+  --bandeau:#16365c; --action:#0063b1; --fond:#f3f5f8; --blanc:#fff; --ligne:#d6dbe2;
+  --texte:#212529; --gris:#646c76; --grisclair:#969ca4;
+  --vert:#188038; --vertfond:#e6f4ea; --rouge:#b02a1e; --rougefond:#fdecea;
+  --bleu:#0063b1; --bleufond:#e8f0fa; --ocre:#b07d00; --ocrefond:#fff9e6; --ocrebarre:#d69e00;
+  --jaune:#fffbe6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#888;font-family:"Segoe UI","Liberation Sans","DejaVu Sans",Arial,sans-serif;font-size:13px;color:var(--texte)}
+.win{width:1600px;height:900px;background:var(--fond);position:relative;overflow:hidden;border:1px solid #555}
+.titlebar{height:28px;background:#fff;border-bottom:1px solid #ccc;font-size:12px;color:#555;padding:6px 10px}
+.titlebar span{float:right}
+.bandeau{position:absolute;top:28px;left:0;right:0;height:62px;background:var(--bandeau);color:#fff}
+.bandeau h1{position:absolute;left:16px;top:8px;font-size:19px}
+.bandeau .ctx{position:absolute;left:16px;top:38px;font-size:11.5px;color:#c8d8ea}
+.search{position:absolute;right:16px;top:9px;width:360px;height:24px;background:#fff;border:1px solid #8aa;color:#999;font-size:12px;padding:4px 8px}
+.search b{position:absolute;right:0;top:0;width:28px;height:22px;background:var(--action);color:#fff;text-align:center;line-height:22px}
+.btnpg{position:absolute;right:392px;top:36px;width:130px;height:22px;border:1px solid #7896be;color:#fff;font-size:12px;text-align:center;line-height:20px}
+.prog{position:absolute;right:16px;top:38px;width:360px}
+.prog .bar{height:10px;background:#0c2440;border-radius:0;width:230px;display:inline-block;vertical-align:middle}
+.prog .bar i{display:block;height:10px;width:77%;background:#4caf50}
+.prog .t{display:inline-block;margin-left:8px;font-size:12px;font-weight:bold;vertical-align:middle}
+.prog .t small{font-weight:normal;color:#c8d8ea}
+/* chapitres */
+.nav{position:absolute;left:8px;top:98px;width:262px;bottom:52px}
+.cap{font-size:10.5px;font-weight:bold;color:var(--gris);letter-spacing:.5px;margin:4px 6px 6px}
+.chaps{background:#e8ecf1;border:1px solid #bec5ce;height:680px;overflow:hidden}
+.ch{position:relative;padding:5px 8px 7px 30px;border-bottom:1px solid #d6dbe2;font-size:12.5px;line-height:1.25}
+.ch .ico{position:absolute;left:10px;top:5px;font-size:13px}
+.ch .pct{float:right;font-size:11px;color:var(--gris);margin-left:6px}
+.ch .mini{height:3px;background:#cfd5dd;margin-top:4px;width:88%}
+.ch .mini i{display:block;height:3px}
+.ch.sel{background:#fff;font-weight:bold;margin-right:-1px;border-right:1px solid #fff}
+.ch.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--action)}
+.ch.grise{color:var(--grisclair)}
+.legende{font-size:10.5px;color:var(--gris);margin-top:8px;line-height:1.6}
+.legende span{white-space:nowrap;margin-right:8px}
+/* zone centrale */
+.zone{position:absolute;left:278px;top:98px;right:8px;bottom:52px}
+.tabs{height:30px;position:relative}
+.tab{display:inline-block;height:30px;padding:6px 12px;border:1px solid #c5ccd5;border-bottom:none;background:#eef1f5;font-size:12.5px;margin-right:-1px;color:#333}
+.tab.sel{background:#fff;font-weight:bold;border-top:3px solid var(--action);padding-top:4px;position:relative;top:1px}
+.tabs .lib{position:absolute;right:6px;top:10px;font-size:10.5px;color:var(--gris)}
+.blanc{position:absolute;top:30px;left:0;right:0;bottom:0;background:#fff;border:1px solid #c5ccd5}
+.sst{position:absolute;left:12px;top:10px;right:12px}
+.sbtn{display:inline-block;padding:4px 12px;border:1px solid #c5ccd5;border-radius:0;font-size:12px;margin-right:6px;background:#fff}
+.sbtn.sel{background:var(--bleufond);border-color:var(--action);color:var(--action);font-weight:bold}
+.sbtn.grise{color:var(--grisclair);background:#f6f7f9}
+.sst .lib{float:right;font-size:10.5px;color:var(--gris);margin-top:6px}
+.sectitle{font-size:10.5px;font-weight:bold;letter-spacing:.6px;color:var(--bandeau);border-bottom:2px solid var(--ligne);padding-bottom:3px}
+.sectitle.c{border-bottom-color:#9cc3e6}
+/* questions */
+.qcol{position:absolute;left:12px;top:48px;width:560px;bottom:12px}
+.filtre{margin:10px 0 4px;font-size:12.5px}
+.filtre .cb{display:inline-block;width:240px;height:24px;border:1px solid #aab2bd;margin-left:8px;padding:3px 8px;vertical-align:middle}
+.cpt{font-size:10.5px;color:var(--gris);margin-bottom:4px}
+.qlist{border:1px solid #bec5ce;height:560px;overflow:hidden}
+.q{position:relative;padding:6px 8px 7px 78px;border-bottom:1px solid #e3e7ec;line-height:1.3;font-size:12.5px}
+.q .ico{position:absolute;left:10px;top:6px;font-size:13px;width:16px;text-align:center}
+.q .id{position:absolute;left:30px;top:6px;font-weight:bold;color:var(--bandeau)}
+.q.sel{background:var(--bleufond)}
+.q.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--action)}
+.q.sel .id{color:var(--action)}
+.q.grise{color:var(--grisclair);background:#fafbfc}
+.q.grise .id{color:var(--grisclair)}
+.ok{color:var(--vert)} .ko{color:var(--rouge);font-weight:bold} .sp{color:var(--bleu)} .nr{color:var(--gris)}
+.btnr{position:absolute;bottom:0;left:0;right:0;height:30px;border:1px solid #aab2bd;text-align:center;line-height:28px;font-size:12.5px;background:#fff}
+/* détail */
+.dcol{position:absolute;left:592px;top:48px;right:12px;bottom:12px}
+.ariane{font-size:11px;color:var(--gris);margin-bottom:6px}
+.ariane b{color:var(--action)}
+.ptabs .tab{height:26px;padding:4px 12px}
+.page{border:1px solid #c5ccd5;height:600px;padding:12px 16px;background:#fff;overflow:hidden}
+.meta{font-size:10.5px;color:var(--gris)}
+.meta .pill{display:inline-block;background:#eef1f5;border:1px solid #d6dbe2;padding:0 6px;margin-right:4px;color:#444}
+.libq{font-size:15px;font-weight:bold;margin:6px 0 12px;max-width:640px}
+.std{background:var(--ocrefond);border-left:5px solid var(--ocrebarre);padding:8px 12px;max-width:660px;position:relative}
+.std .t{font-size:10.5px;font-weight:bold;color:var(--ocre);letter-spacing:.4px}
+.std .v{font-style:italic;margin-top:4px;font-size:13px}
+.std .r{position:absolute;right:10px;top:12px;border:1px solid #aab2bd;background:#fff;padding:4px 10px;font-size:12px}
+.blk{margin-top:14px;max-width:660px}
+.modif{display:inline-block;background:#fff3cd;color:#7a5a00;border:1px solid #e6c766;font-size:10px;padding:0 6px;margin-left:8px;font-weight:bold;letter-spacing:0}
+.choix{border:1px solid #aab2bd;margin-top:8px}
+.choix div{padding:5px 10px;font-size:12.5px}
+.choix .on{background:var(--bleufond);font-weight:bold}
+.choix .on:before{content:"◉  ";color:var(--action)}
+.choix .off:before{content:"○  ";color:#888}
+.conf{margin-top:14px;max-width:660px;background:var(--rougefond);border:1px solid #f1b8b1;border-left:6px solid var(--rouge);padding:8px 12px 9px 46px;position:relative}
+.conf .big{position:absolute;left:12px;top:9px;font-size:22px;color:var(--rouge);font-weight:bold}
+.conf .h{font-weight:bold;color:var(--rouge);font-size:13.5px}
+.conf .s{font-size:12px;color:#6b2a24;margin-top:2px}
+.diff{font-size:11px;color:var(--gris);margin-top:12px}
+.diff span{margin-right:18px;color:#333;font-size:12.5px}
+.justif{margin-top:6px;height:74px;border:2px solid #e0a400;background:var(--jaune);padding:6px 8px;color:#a08a50;font-size:12.5px}
+.oblig{color:#b06b00;font-weight:bold;font-size:10.5px;margin-left:6px}
+.dbtn{position:absolute;bottom:0;right:0}
+.dbtn div{display:inline-block;height:32px;line-height:30px;padding:0 18px;border:1px solid #aab2bd;margin-left:8px;font-size:12.5px;background:#fff}
+.dbtn .p{background:var(--action);color:#fff;border-color:var(--action);font-weight:bold}
+/* pied */
+.pied{position:absolute;left:8px;right:8px;bottom:8px;height:36px}
+.pied div{position:absolute;top:0;height:32px;line-height:30px;border:1px solid #aab2bd;background:#fff;text-align:center;font-size:12.5px}
+.toast{border:none!important;background:transparent!important;color:var(--vert);font-size:12px!important;font-weight:bold}
+/* annotations */
+.note{display:none;position:absolute;background:#ffeb3b;color:#000;font-size:11.5px;font-weight:bold;padding:3px 7px;border:1px solid #c9a800;box-shadow:1px 1px 3px rgba(0,0,0,.35);z-index:10}
+.note:before{content:attr(data-n);display:inline-block;background:#d32f2f;color:#fff;border-radius:50%;width:18px;height:18px;text-align:center;line-height:18px;margin-right:5px;font-size:11px}
+</style></head><body>
+<div class="win">
+  <div class="titlebar">SGO - Élaboration du DCO · Offre_15U908.xlsx <span>✕</span></div>
+  <div class="bandeau">
+    <h1>Élaboration du DCO</h1>
+    <div class="ctx">Offre 15U908 · Renouvellement des logiciels de gestion &nbsp;|&nbsp; DAI · Standard DAI · Univers Logiciels</div>
+    <div class="btnpg">✎ &nbsp;Page de garde</div>
+    <div class="search">Rechercher une question (El84, reconduction…)<b>⌕</b></div>
+    <div class="prog"><span class="bar"><i></i></span><span class="t">77 % <small>· 145 / 188 traitées</small></span></div>
+  </div>
+
+  <div class="nav">
+    <div class="cap">CHAPITRES</div>
+    <div class="chaps">
+      <div class="ch"><span class="ico ok">◐</span><span class="pct">68 %</span>01.0 Présentation générale de l'offre<div class="mini"><i style="width:68%;background:#4caf50"></i></div></div>
+      <div class="ch"><span class="ico ok">◐</span><span class="pct">42 %</span>02.0 Environnement de l'offre<div class="mini"><i style="width:42%;background:#4caf50"></i></div></div>
+      <div class="ch sel"><span class="ico ko">!</span><span class="pct">78 %</span>03.0 Montage contractuel<div class="mini"><i style="width:78%;background:#4caf50"></i></div></div>
+      <div class="ch"><span class="ico">◐</span><span class="pct">81 %</span>04.0 Devis et commande<div class="mini"><i style="width:81%;background:#4caf50"></i></div></div>
+      <div class="ch grise"><span class="ico">⊘</span>05.0 Garantie, SAV, maintenance</div>
+      <div class="ch"><span class="ico">◐</span><span class="pct">90 %</span>06.0 Exécution financière<div class="mini"><i style="width:90%;background:#4caf50"></i></div></div>
+      <div class="ch"><span class="ico ok">✓</span><span class="pct">100 %</span>07.0 Piloter la performance fournisseur<div class="mini"><i style="width:100%;background:#188038"></i></div></div>
+      <div class="ch"><span class="ico">◐</span><span class="pct">50 %</span>08.0 Conformité – Protection des données personnelles<div class="mini"><i style="width:50%;background:#4caf50"></i></div></div>
+      <div class="ch grise"><span class="ico">⊘</span>09.0 Droits de propriété intellectuelle</div>
+      <div class="ch"><span class="ico">◐</span><span class="pct">76 %</span>10.0 Prix<div class="mini"><i style="width:76%;background:#4caf50"></i></div></div>
+      <div class="ch"><span class="ico">◐</span><span class="pct">65 %</span>11.0 Modalités d'exécution<div class="mini"><i style="width:65%;background:#4caf50"></i></div></div>
+      <div class="ch"><span class="ico ok">✓</span><span class="pct">100 %</span>12.0 Modalités d'analyse des candidatures et des offres<div class="mini"><i style="width:100%;background:#188038"></i></div></div>
+      <div class="ch"><span class="ico">◐</span><span class="pct">78 %</span>13.0 Commercialisation – Communication – Promotion<div class="mini"><i style="width:78%;background:#4caf50"></i></div></div>
+    </div>
+    <div class="legende"><span class="ok">✓ conforme</span><span class="ko">! à justifier</span><span class="sp">◆ spécifique</span><span>○ à saisir</span><span>↻ standard modifié</span><span style="color:#969ca4">⊘ sans objet</span></div>
+  </div>
+
+  <div class="zone">
+    <div class="tabs">
+      <span class="tab"><span class="ok">✓</span> 03.1 Passation</span><span class="tab sel"><span class="ko">!</span> 03.2 Modalités d'intervention de l'UGAP</span><span class="tab">◐ 03.3 Durée</span><span class="tab">○ 03.4 Clauses modificatives</span><span class="tab">○ 03.5 Fin de contrat client</span>
+      <span class="lib">Thèmes</span>
+    </div>
+    <div class="blanc">
+      <div class="sst">
+        <span class="sbtn"><span class="ok">✓</span> Modalités d'intervention de l'UGAP</span><span class="sbtn sel">! 03.2.2 Offre non exécutée</span><span class="sbtn grise">⊘ 03.2.3 Offre exécutée</span>
+        <span class="lib">Sous-thèmes</span>
+      </div>
+
+      <div class="qcol">
+        <div class="sectitle">QUESTIONS</div>
+        <div class="filtre">Afficher <span class="cb">Toutes les questions ▾</span></div>
+        <div class="cpt">6 questions</div>
+        <div class="qlist">
+          <div class="q"><span class="ico sp">◆</span><span class="id">El78a</span>Préciser les modalités de passation des marchés subséquents en Accord-cadre mono et/ou en Accord-cadre multi attribué</div>
+          <div class="q"><span class="ico ok">✓</span><span class="id">El78f</span>Y'a-t-il une dérogation au principe de non exclusivité ?</div>
+          <div class="q sel"><span class="ico ko">!</span><span class="id">El78b</span>L'adhésion ou la renonciation se fera-t-elle via un formulaire d'enquête sur Ugap.fr ?</div>
+          <div class="q"><span class="ico ok">✓</span><span class="id">El78c</span>Dans le cadre de la passation de marchés subséquents sur AC non exécuté, qui effectuera la remise en concurrence ?</div>
+          <div class="q"><span class="ico nr">○</span><span class="id">El78d</span>Quel est le volume estimé des marchés par an ?</div>
+          <div class="q"><span class="ico ok">✓</span><span class="id">El78e</span>Quelles sont les modalités de passation des marchés subséquents ?</div>
+        </div>
+        <div class="btnr">✓ &nbsp;Rétablir les standards du sous-thème</div>
+      </div>
+
+      <div class="dcol">
+        <div class="ariane">03 Montage contractuel › 03.2 Modalités d'intervention › 03.2.2 Offre non exécutée › <b>El78b</b></div>
+        <div class="ptabs"><span class="tab sel">Réponse</span><span class="tab">Standards</span><span class="tab">Commentaire</span></div>
+        <div class="page">
+          <div class="meta"><span class="pill">El78b</span><span class="pill">Liste à choix unique</span> affichée car El77 vaut « Offre non exécutée »</div>
+          <div class="libq">L'adhésion ou la renonciation se fera-t-elle via un formulaire d'enquête sur Ugap.fr ?</div>
+          <div class="std"><div class="t">▣ STANDARD APPLICABLE · ÉTABLISSEMENT (E)</div><div class="v">Non, absence de formulaire sur ugap.fr</div><div class="r">↺ Reprendre le standard</div></div>
+          <div class="blk"><div class="sectitle c">✎ RÉPONSE <span class="modif">MODIFIÉE PAR RAPPORT AU STANDARD</span></div>
+            <div class="choix"><div class="on">Oui, adhésion ou renonciation sur formulaire ugap.fr</div><div class="off">Non, absence de formulaire sur ugap.fr</div></div>
+          </div>
+          <div class="conf"><span class="big">✗</span><div class="h">Non conforme au standard · justification obligatoire</div><div class="s">Votre réponse ne contient pas le standard « Non, absence de formulaire sur ugap.fr ». Expliquez la dérogation ci-dessous.</div></div>
+          <div class="diff">Différence avec l'offre précédente (facultatif) &nbsp; <span>● Non concerné</span><span>○ Identique</span><span>○ Différente</span></div>
+          <div class="blk"><div class="sectitle c">✍ JUSTIFICATION DE LA DÉROGATION AU STANDARD <span class="oblig">obligatoire</span></div>
+            <div class="justif">Saisissez la justification…▏</div></div>
+        </div>
+        <div class="dbtn"><div>Non concerné</div><div class="p">Valider et suivante ›</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pied">
+    <div style="left:0;width:118px">‹ Précédente</div>
+    <div style="left:126px;width:110px">Suivante ›</div>
+    <div style="left:244px;width:170px">Suivante à traiter ›</div>
+    <div style="left:422px;width:36px">A-</div><div style="left:462px;width:36px">A+</div>
+    <div class="toast" style="left:520px;width:300px;text-align:left">✔ El78a enregistrée à 10:42</div>
+    <div style="right:0;width:126px">Fermer</div>
+  </div>
+
+  <!-- annotations -->
+  <div class="note" data-n="1" style="left:120px;top:210px">Chapitre ouvert : fond blanc, barre bleue, gras + mini-barre d'avancement</div>
+  <div class="note" data-n="1" style="left:880px;top:166px">Fil d'Ariane</div>
+  <div class="note" data-n="2" style="left:1290px;top:445px">Réponse modifiée : pastille</div>
+  <div class="note" data-n="3" style="left:1270px;top:540px">Bandeau de conformité en couleur franche + explication</div>
+  <div class="note" data-n="2" style="left:1290px;top:680px">Zone obligatoire : fond jaune, bordure orange</div>
+  <div class="note" data-n="5" style="left:300px;top:395px">Code couleur unique : vert / rouge / bleu / gris</div>
+  <div class="note" data-n="3" style="left:560px;top:850px">Confirmation d'enregistrement</div>
+</div>
+</body></html>
