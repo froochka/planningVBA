@@ -116,6 +116,7 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
   - listes des chapitres et des questions refaites en lignes de texte qui passent à la ligne (2 lignes pour les chapitres, 3 pour les questions), avec un **vrai grisé** des éléments sans objet et la ligne choisie surlignée ;
   - la bande réservée aux sous-thèmes est récupérée quand le thème n'en a qu'un ;
   - largeurs rééquilibrées : le détail garde une largeur de lecture, la liste prend le reste.
+- **Présentation modernisée** (maquette `docs/maquettes/v7_presentation_proposee.png`, validée par l'utilisateur) : code couleur unique des statuts (vert conforme, rouge à justifier, bleu spécifique, gris à saisir / sans objet), chapitre ouvert sur fond blanc avec mini-barres d'avancement, fil d'Ariane, étiquettes identifiant / mode, standard en « carte de référence », pastille « modifiée par rapport au standard », bandeau de conformité avec icône, titre et explication, zone de justification obligatoire en jaune et orange, confirmation « El78a enregistrée ».
 - **À tester** : l'écran de saisie (macro `SGO`), voir « Tester l'itération 6 » dans `README.md`.
 - **Découvertes de la migration** (détail dans le rapport) :
   - des conditions masquent des **thèmes et sous-thèmes entiers** (exemple : 03.2.3 « Offre exécutée » dépend de El77) ;

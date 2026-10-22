@@ -133,19 +133,15 @@ Private Sub Construire()
     Set txtRecherche = UITxt(Me, "txtRecherche", "", W - M - wR, 7, wR - 30, 20)
     txtRecherche.ControlTipText = "Identifiant (El84) ou mot-clé, puis Entrée"
     Set btnRech = UIBouton(Me, "btnRech", "", W - M - 28, 7, 28, 20, 1, ICO_RECHERCHE)
-    UIFond Me, "lblBarreFond", W - M - wR, 37, wR - 130, 8, RGB(12, 36, 64)
-    UIFond Me, "lblBarre", W - M - wR, 37, 1, 8, RGB(76, 175, 80)
-    Set c = UILbl(Me, "lblAvancement", "", W - M - 124, 32, 124, UILigneH(-1), True, -1, uiBlanc)
+    UIFond Me, "lblBarreFond", W - M - wR, 36, wR - 170, 10, RGB(12, 36, 64)
+    UIFond Me, "lblBarre", W - M - wR, 36, 1, 10, RGB(76, 175, 80)
+    Set c = UILbl(Me, "lblAvancement", "", W - M - 164, 32, 164, UILigneH(-1), True, -1, uiBlanc)
     c.TextAlign = 3
 
     ' --- Chapitres ------------------------------------------------------------------
     UILbl Me, "lblChapTitre", "CHAPITRES", M + 4, yCorps, wNav - 8, UILigneH(-2), True, -2, uiGris
     Set fraChap = NouvelleListe("fraChap", M, yCorps + 18, wNav, hCorps - 18 - 48, uiOngletFond)
-    Set c = UILbl(Me, "lblLegende", ChrW(&H2713) & " terminé  " & ChrW(&H25D0) & " en cours  " & ChrW(&H25CB) & " à faire  " & _
-                  "! à justifier  " & ChrW(&H21BB) & " standard modifié  " & ChrW(&H25C6) & " spécifique  " & ChrW(&H2298) & " sans objet", _
-                  M + 2, yCorps + hCorps - 44, wNav - 4, 44, False, -2, uiGris)
-    c.Font.Name = UI_POLICE_SYMB
-    c.ControlTipText = "Sans objet : dépend de la réponse à une question mère, ou sans standard pour votre direction/univers"
+    Legende M + 2, yCorps + hCorps - 44, wNav - 4
 
     ' --- Thèmes (onglets) et sous-thèmes (boutons) -----------------------------------
     Set tsThemes = UICtl(Me, "Forms.TabStrip.1", "tsThemes", x0, yCorps, wZone, hCorps)
@@ -179,8 +175,10 @@ Private Sub Construire()
     Set fraQ = NouvelleListe("fraQ", xIn, yIn + 60, wQ, 100, uiBlanc)
     Set btnRetablir = UIBouton(Me, "btnRetablir", "Rétablir les standards du sous-thème", xIn, yBas - 28, wQ, 28, 0, ICO_COCHE)
 
-    ' --- Détail -----------------------------------------------------------------------
+    ' --- Détail (fil d'Ariane au-dessus) ----------------------------------------------
     xD = xIn + wQ + 2 * M
+    Set c = UILbl(Me, "lblAriane", "", xD, yIn, wIn - wQ - 2 * M, UILigneH(-1), False, -1, uiGris)
+    c.WordWrap = False
     Set mp = UICtl(Me, "Forms.MultiPage.1", "mpDetail", xD, yIn, wIn - wQ - 2 * M, yBas - 38 - yIn)
     mp.TabFixedHeight = UILigneH() + 8
     Do While mp.Pages.Count < 3
@@ -208,8 +206,8 @@ Private Sub Construire()
     Set btnAplus = UIBouton(Me, "btnAplus", "A+", M + 448, y, 34, 28, 0)
     btnAplus.ControlTipText = "Agrandir la taille du texte"
     Set btnFermer = UIBouton(Me, "btnFermer", "Fermer", W - M - 126, y, 126, 28, 0)
-    Set c = UILbl(Me, "lblEnregistre", "", M + 490, y + 7, W - M - 126 - 8 - (M + 490), UILigneH(-2), False, -2, uiVert)
-    c.Font.Name = UI_POLICE_SYMB: c.TextAlign = 3
+    Set c = UILbl(Me, "lblEnregistre", "", M + 500, y + 7, W - M - 126 - 8 - (M + 500), UILigneH(-1), True, -1, uiVert)
+    c.Font.Name = UI_POLICE_SYMB: c.TextAlign = 1: c.WordWrap = False
 
     PlacerZoneQuestions False, False
     ConstruireResultats
@@ -217,6 +215,36 @@ Private Sub Construire()
     AfficherAvancement
     chargement = False
 End Sub
+
+' Légende des pictogrammes, chacun dans sa couleur de statut
+Private Sub Legende(ByVal x0 As Single, ByVal y0 As Single, ByVal largeur As Single)
+    Dim items As Variant, coul As Variant, i As Long, x As Single, y As Single, w As Single, c As Object
+    items = Array(ChrW(&H2713) & " conforme", "! à justifier", ChrW(&H25C6) & " spécifique", _
+                  ChrW(&H25CB) & " à saisir", ChrW(&H21BB) & " standard modifié", ChrW(&H2298) & " sans objet")
+    coul = Array(uiVert, uiRouge, uiBleuStatut, uiGris, uiOrange, uiGrisClair)
+    x = x0: y = y0
+    For i = 0 To UBound(items)
+        w = Len(items(i)) * (uiTaille - 2) * 0.52 + 10
+        If x + w > x0 + largeur Then x = x0: y = y + UILigneH(-2) + 2
+        Set c = UILbl(Me, "lblLeg" & i, CStr(items(i)), x, y, w, UILigneH(-2), (i = 1), -2, CLng(coul(i)))
+        c.Font.Name = UI_POLICE_SYMB: c.WordWrap = False
+        If i = 5 Then c.ControlTipText = "Sans objet : dépend de la réponse à une question mère, ou sans standard pour votre direction/univers"
+        x = x + w
+    Next i
+End Sub
+
+' « 03 Montage contractuel › 03.2 Modalités d'intervention › 03.2.2 Offre non exécutée › El78b »
+Private Function FilAriane() As String
+    Dim sst As cCategorieSGO, th As cCategorieSGO, ch As cCategorieSGO, t As String
+    If curQ Is Nothing Then Exit Function
+    Set sst = gCategories(curQ.SousTheme)
+    Set th = gCategories(sst.Parent)
+    Set ch = gCategories(th.Parent)
+    t = ch.Libelle & "  " & ChrW(&H203A) & "  "
+    If th.Libelle <> sst.Libelle And Left$(th.Id, 4) <> "THM_" Then t = t & th.Libelle & "  " & ChrW(&H203A) & "  "
+    If Left$(sst.Id, 4) <> "SST_" Then t = t & sst.Libelle & "  " & ChrW(&H203A) & "  "
+    FilAriane = t & curQ.Id
+End Function
 
 Private Function TexteContexte() As String
     Dim num As String, lib As String
@@ -250,8 +278,9 @@ Private Sub RemplirChapitres()
     fraChap.Controls.Clear
     y = 2
     For Each c In gChapitres
-        y = y + AjouterLigneListe(fraChap, "C", i, y, UIPictoCategorie(c), "", c.Libelle, _
-                                  IIf(c.Grisee(), "", c.Pourcentage() & " %"), 2, c.Grisee(), c.Libelle)
+        y = y + AjouterLigneListe(fraChap, "C", i, y, UIPictoCategorie(c), UICouleurCategorie(c), "", c.Libelle, _
+                                  IIf(c.Grisee(), "", c.Pourcentage() & " %"), 2, c.Grisee(), c.Libelle, _
+                                  IIf(c.Grisee(), -1, c.Pourcentage()))
         i = i + 1
     Next c
     AjusterDefilement fraChap, y
@@ -263,7 +292,9 @@ Private Sub RafraichirChapitres()
     Dim c As Variant, i As Long
     For Each c In gChapitres
         fraChap.Controls("C" & i & "_ico").Caption = UIPictoCategorie(c)
+        fraChap.Controls("C" & i & "_ico").Tag = CStr(UICouleurCategorie(c))
         fraChap.Controls("C" & i & "_dr").Caption = IIf(c.Grisee(), "", c.Pourcentage() & " %")
+        MiniBarre "C" & i, IIf(c.Grisee(), -1, c.Pourcentage())
         CouleursLigne fraChap, "C" & i, (i = chapSel), c.Grisee()
         i = i + 1
     Next c
@@ -308,7 +339,7 @@ Private Sub AfficherAvancement()
     If a(1) > 0 Then pct = Int(100 * a(0) / a(1))
     wMax = Me.Controls("lblBarreFond").Width
     Me.Controls("lblBarre").Width = UIBorne(wMax * pct / 100, 1, wMax)
-    Me.Controls("lblAvancement").Caption = pct & " % · " & a(0) & " / " & a(1)
+    Me.Controls("lblAvancement").Caption = pct & " %  ·  " & a(0) & " / " & a(1) & " traitées"
 End Sub
 
 ' Clic sur une ligne d'une liste maison (appelé par cClicLigne)
@@ -479,6 +510,8 @@ Private Sub RemplirQuestions(ByVal reconstruire As Boolean)
     If identique Then
         For i = 1 To listeQ.Count
             fraQ.Controls("Q" & (i - 1) & "_ico").Caption = UIPicto(listeQ(i).Statut, listeQ(i).StandardModifie)
+            fraQ.Controls("Q" & (i - 1) & "_ico").Tag = CStr(UICouleurStatut(listeQ(i).Statut, listeQ(i).StandardModifie))
+            CouleursLigne fraQ, "Q" & (i - 1), (i - 1 = qSel), listeQ(i).Statut = ST_MASQUEE
         Next i
         Exit Sub
     End If
@@ -492,8 +525,9 @@ Private Sub RemplirQuestions(ByVal reconstruire As Boolean)
         Set q = listeQ(i)
         lib = Replace(Replace(q.Libelle, vbCr, " "), vbLf, " ")
         If q.Statut = ST_MASQUEE Then lib = "(" & RaisonMasquage(q.Id) & ") " & lib
-        y = y + AjouterLigneListe(fraQ, "Q", i - 1, y, UIPicto(q.Statut, q.StandardModifie), q.Id, lib, "", 3, _
-                                  q.Statut = ST_MASQUEE, q.Id & " · " & Replace(Replace(q.Libelle, vbCr, " "), vbLf, " "))
+        y = y + AjouterLigneListe(fraQ, "Q", i - 1, y, UIPicto(q.Statut, q.StandardModifie), _
+                                  UICouleurStatut(q.Statut, q.StandardModifie), q.Id, lib, "", 3, _
+                                  q.Statut = ST_MASQUEE, q.Id & " · " & Replace(Replace(q.Libelle, vbCr, " "), vbLf, " "), -1)
     Next i
     AjusterDefilement fraQ, y
     qSel = -1
@@ -540,11 +574,12 @@ Private Function NouvelleListe(nom As String, ByVal l As Single, ByVal t As Sing
     Set NouvelleListe = f
 End Function
 
-' Ajoute une ligne (pictogramme, identifiant, texte sur maxLignes lignes, texte à
-' droite) ; renvoie sa hauteur
+' Ajoute une ligne (pictogramme coloré, identifiant, texte sur maxLignes lignes,
+' texte à droite, mini-barre d'avancement si pct >= 0) ; renvoie sa hauteur
 Private Function AjouterLigneListe(fra As MSForms.Frame, ByVal liste As String, ByVal i As Long, ByVal y As Single, _
-                                   ByVal picto As String, ByVal id As String, ByVal texte As String, ByVal droite As String, _
-                                   ByVal maxLignes As Long, ByVal grisee As Boolean, ByVal bulle As String) As Single
+                                   ByVal picto As String, ByVal coulPicto As Long, ByVal id As String, ByVal texte As String, _
+                                   ByVal droite As String, ByVal maxLignes As Long, ByVal grisee As Boolean, _
+                                   ByVal bulle As String, ByVal pct As Long) As Single
     Dim nom As String, w As Single, xTxt As Single, wTxt As Single, wDr As Single, nb As Long, hl As Single
     Dim c As Object, ligne As cClicLigne
     nom = liste & i
@@ -554,18 +589,25 @@ Private Function AjouterLigneListe(fra As MSForms.Frame, ByVal liste As String, 
     wTxt = w - xTxt - wDr - 4
     nb = LignesTexte(texte, wTxt, 0)
     If nb > maxLignes Then nb = maxLignes
-    hl = nb * UILigneH() + 8
+    hl = nb * UILigneH() + 8 + IIf(liste = "C", 6, 0)
 
     UIFond fra, nom & "_fond", 0, y, w, hl, fra.BackColor
-    UIFond fra, nom & "_barre", 0, y, 3, hl, uiAction
+    UIFond fra, nom & "_barre", 0, y, IIf(liste = "C", 5, 4), hl, uiAction
     UIFond fra, nom & "_sep", 4, y + hl - 1, w - 8, 1, uiLigne
-    Set c = UILbl(fra, nom & "_ico", picto, 8, y + 4, 16, UILigneH())
+    Set c = UILbl(fra, nom & "_ico", picto, 8, y + 4, 16, UILigneH(), True)
     c.Font.Name = UI_POLICE_SYMB
+    c.Tag = CStr(coulPicto)
     If id <> "" Then
         Set c = UILbl(fra, nom & "_id", id, 26, y + 4, 48, UILigneH(), True, -1)
         c.WordWrap = False
     End If
     UILbl fra, nom & "_txt", texte, xTxt, y + 4, wTxt, nb * UILigneH()
+    If liste = "C" Then
+        ' Mini-barre d'avancement sous le nom du chapitre
+        UIFond fra, nom & "_pbf", xTxt, y + 4 + nb * UILigneH() + 2, wTxt * 0.9, 3, RGB(207, 213, 221)
+        UIFond fra, nom & "_pb", xTxt, y + 4 + nb * UILigneH() + 2, 1, 3, RGB(76, 175, 80)
+        MiniBarre nom, pct
+    End If
     If droite <> "" Then
         Set c = UILbl(fra, nom & "_dr", droite, w - wDr - 2, y + 4, wDr, UILigneH(), False, -1, uiGris)
         c.TextAlign = 3
@@ -584,16 +626,37 @@ Private Function AjouterLigneListe(fra As MSForms.Frame, ByVal liste As String, 
     AjouterLigneListe = hl
 End Function
 
+' Couleurs d'une ligne : chapitre ouvert sur fond blanc (il « sort » de la colonne
+' grise), question choisie sur fond bleu pâle ; barre bleue à gauche ; pictogramme
+' à la couleur de son statut (gardée dans Tag)
 Private Sub CouleursLigne(fra As MSForms.Frame, ByVal nom As String, ByVal choisie As Boolean, ByVal grisee As Boolean)
-    Dim coul As Long
+    Dim coul As Long, estChap As Boolean
     On Error Resume Next
-    coul = IIf(grisee, RGB(150, 156, 164), uiTexte)
-    fra.Controls(nom & "_fond").BackColor = IIf(choisie, uiBleuClair, fra.BackColor)
+    estChap = (fra Is fraChap)
+    coul = IIf(grisee, uiGrisClair, uiTexte)
+    If choisie Then
+        fra.Controls(nom & "_fond").BackColor = IIf(estChap, uiBlanc, uiBleuClair)
+    Else
+        fra.Controls(nom & "_fond").BackColor = fra.BackColor
+    End If
     fra.Controls(nom & "_barre").Visible = choisie
     fra.Controls(nom & "_txt").ForeColor = coul
-    fra.Controls(nom & "_txt").Font.Bold = choisie And fra Is fraChap
-    fra.Controls(nom & "_id").ForeColor = IIf(grisee, coul, uiBandeau)
-    fra.Controls(nom & "_ico").ForeColor = IIf(grisee, coul, uiTexte)
+    fra.Controls(nom & "_txt").Font.Bold = choisie And estChap
+    fra.Controls(nom & "_id").ForeColor = IIf(grisee, coul, IIf(choisie, uiAction, uiBandeau))
+    fra.Controls(nom & "_ico").ForeColor = IIf(grisee, uiGrisClair, Val(fra.Controls(nom & "_ico").Tag))
+End Sub
+
+' Mini-barre d'avancement d'un chapitre (pct < 0 : masquée)
+Private Sub MiniBarre(ByVal nom As String, ByVal pct As Long)
+    Dim f As Object, b As Object
+    On Error Resume Next
+    Set f = fraChap.Controls(nom & "_pbf")
+    Set b = fraChap.Controls(nom & "_pb")
+    f.Visible = (pct >= 0): b.Visible = (pct > 0)
+    If pct > 0 Then
+        b.Width = UIBorne(f.Width * pct / 100, 1, f.Width)
+        b.BackColor = IIf(pct >= 100, uiVert, RGB(76, 175, 80))
+    End If
 End Sub
 
 Private Sub AjusterDefilement(fra As MSForms.Frame, ByVal hauteur As Single)
@@ -637,8 +700,9 @@ Private Sub PlacerZoneQuestions(ByVal avecSST As Boolean, ByVal avecMasque As Bo
     yListe = y + 24 + UILigneH() + 12 + UILigneH(-2) + 4
     fraQ.Top = yListe
     fraQ.Height = UIBorne(yBas - 36 - yListe, 60, 2000)
-    mp.Top = y
-    mp.Height = UIBorne(yBas - 38 - y, 120, 2000)
+    Me.Controls("lblAriane").Top = y
+    mp.Top = y + UILigneH(-1) + 4
+    mp.Height = UIBorne(yBas - 38 - mp.Top, 120, 2000)
     hDet = mp.Height - mp.TabFixedHeight - 10
 End Sub
 
@@ -737,6 +801,7 @@ End Sub
 Private Sub AfficherQuestion(ByVal q As cQuestionSGO)
     Set curQ = q
     sale = False
+    Me.Controls("lblAriane").Caption = FilAriane()
     chargement = True
     ConstruirePageReponse
     ConstruirePageStandards
@@ -756,7 +821,7 @@ End Sub
 
 Private Sub ConstruirePageReponse()
     Dim pg As MSForms.Page, iw As Single, y As Single, c As Object, hz As Single, txt As String
-    Dim masquee As Boolean, i As Long, sp As Boolean, avecStd As Boolean, lesFilles As String
+    Dim masquee As Boolean, i As Long, sp As Boolean, avecStd As Boolean, lesFilles As String, x As Single
 
     Set pg = mp.Pages(0)
     LibererDetail
@@ -772,17 +837,19 @@ Private Sub ConstruirePageReponse()
     sp = (curQ.Niveau = "Sp")
     avecStd = (curQ.Niveau = "E" Or curQ.Niveau = "D" Or curQ.Niveau = "U")
 
-    ' Identifiant, mode, condition, questions conditionnées
-    txt = curQ.Id & "  ·  " & curQ.Mode
-    If RaisonAffichage(curQ.Id) <> "" And Not masquee Then txt = txt & "  ·  " & RaisonAffichage(curQ.Id)
+    ' Identifiant et mode en étiquettes, puis condition et questions conditionnées
+    x = Etiquette(pg, "lblPillId", curQ.Id, M, 8)
+    x = Etiquette(pg, "lblPillMode", curQ.Mode, x + 4, 8)
+    txt = ""
+    If RaisonAffichage(curQ.Id) <> "" And Not masquee Then txt = RaisonAffichage(curQ.Id)
     If gFilles.Exists(curQ.Id) Then
         lesFilles = gFilles(curQ.Id)
-        txt = txt & "  ·  Conditionne : " & lesFilles
+        txt = txt & IIf(txt = "", "", "  ·  ") & "Conditionne : " & lesFilles
     End If
-    hz = LignesTexte(txt, iw, -2) * UILigneH(-2)
-    Set c = UILbl(pg, "lblTypeQ", txt, M, 8, iw, hz, False, -2, uiGris)
+    hz = LignesTexte(txt, iw - (x - M) - 8, -2) * UILigneH(-2)
+    Set c = UILbl(pg, "lblTypeQ", txt, x + 8, 10, iw - (x - M) - 8, hz, False, -2, uiGris)
     If lesFilles <> "" Then c.ControlTipText = "Votre réponse fait apparaître ou masque : " & lesFilles
-    y = 8 + hz + 4
+    y = 8 + UIBorne(hz, UILigneH(-2) + 4, 200) + 6
     hz = UIBorne(LignesTexte(curQ.Libelle, iw, 2), 1, 6) * UILigneH(2)
     UILbl pg, "lblLibelle", curQ.Libelle, M, y, iw, hz, True, 2
     y = y + hz + 10
@@ -798,7 +865,7 @@ Private Sub ConstruirePageReponse()
                     "Cette question se renseigne dans l'annexe « " & curQ.Reponse & " ». Les annexes seront intégrées dans une prochaine itération.", _
                     uiCoulFond, uiGris, uiGris)
     ElseIf avecStd Then
-        y = Encadre(pg, y, iw, "STANDARD APPLICABLE  ·  " & LibelleNiveau(curQ.Niveau), curQ.Standard, _
+        y = Encadre(pg, y, iw, ChrW(&H25A3) & "  STANDARD APPLICABLE  ·  " & UCase$(LibelleNiveau(curQ.Niveau)), curQ.Standard, _
                     uiStdFond, uiStdBarre, uiOrange, True)
         If curQ.StandardModifie Then
             Set c = UILbl(pg, "lblStdModifie", ChrW(&H21BB) & "  Le standard a changé depuis votre saisie (page de garde modifiée) : " & _
@@ -817,7 +884,11 @@ Private Sub ConstruirePageReponse()
     End If
 
     ' Réponse
-    UISection pg, "secReponse", "RÉPONSE", M, y, iw
+    UISection pg, "secReponse", ChrW(&H270E) & "  RÉPONSE", M, y, iw, True
+    Set c = UILbl(pg, "lblModifiee", " MODIFIÉE PAR RAPPORT AU STANDARD ", M + 90, y - 1, 210, UILigneH(-3) + 2, True, -3, RGB(122, 90, 0))
+    c.BackStyle = 1: c.BackColor = RGB(255, 243, 205): c.BorderStyle = 1: c.BorderColor = RGB(230, 199, 102)
+    c.TextAlign = 2: c.WordWrap = False
+    c.Visible = ReponseModifiee()
     y = y + 26
     If curQ.EstAnnexe Then
         UILbl pg, "lblRepAnnexe", curQ.Reponse, M, y, iw, UILigneH(), True
@@ -877,13 +948,17 @@ Private Sub ConstruirePageReponse()
         End Select
 
         ' Justification (obligatoire pour les cas 2 et 4)
-        UISection pg, "secJustif", IIf(sp, "JUSTIFICATION DU CAS DIFFÉRENCIANT", "JUSTIFICATION DE LA DÉROGATION AU STANDARD"), M, y, iw
+        txt = IIf(sp, "JUSTIFICATION DU CAS DIFFÉRENCIANT", "JUSTIFICATION DE LA DÉROGATION AU STANDARD")
+        UISection pg, "secJustif", ChrW(&H270D) & "  " & txt, M, y, iw, True
+        Set c = UILbl(pg, "lblOblig", "obligatoire", M + 24 + Len(txt) * (uiTaille - 2) * 0.66, y, 90, UILigneH(-2), True, -2, RGB(176, 107, 0))
+        c.WordWrap = False
+        c.Visible = (curQ.Statut = ST_A_JUSTIFIER)
         y = y + 26
         hz = UIBorne(LignesTexte(curQ.Justification, iw, 0) + 1, 3, 8) * UILigneH() + 8
         Set txtJustif = UITxt(pg, "txtJustif", curQ.Justification, M, y, iw, hz)
         txtJustif.MultiLine = True: txtJustif.WordWrap = True: txtJustif.ScrollBars = 2
         txtJustif.EnterKeyBehavior = True
-        If curQ.Statut = ST_A_JUSTIFIER Then txtJustif.BorderColor = uiStdBarre
+        StyleJustification
         y = y + hz + 12
     End If
 
@@ -901,61 +976,121 @@ Private Function Encadre(ByVal pg As Object, ByVal y As Single, ByVal iw As Sing
     wTexte = iw - 28 - IIf(boutonReprendre, 160, 0)
     hz = UIBorne(LignesTexte(texte, wTexte, 0), 1, 8) * UILigneH()
     UIFond pg, "lblEncFond", M, y, iw, hz + UILigneH(-2) + 22, fond
-    UIFond pg, "lblEncBarre", M, y, 4, hz + UILigneH(-2) + 22, barre
+    UIFond pg, "lblEncBarre", M, y, 5, hz + UILigneH(-2) + 22, barre
     Set c = UILbl(pg, "lblEncTitre", titre, M + 14, y + 7, iw - 28, UILigneH(-2), True, -2, coulTitre)
     c.Font.Name = UI_POLICE_SYMB
-    Set c = UILbl(pg, "lblEncTexte", texte, M + 14, y + 10 + UILigneH(-2), wTexte, hz, boutonReprendre Or barre = uiStdBarre)
+    Set c = UILbl(pg, "lblEncTexte", texte, M + 14, y + 10 + UILigneH(-2), wTexte, hz)
+    c.Font.Italic = boutonReprendre             ' la valeur du standard, en italique
     If boutonReprendre Then
-        Set btnReprendre = UIBouton(pg, "btnReprendre", "Reprendre le standard", M + iw - 152, y + 10 + UILigneH(-2), 144, UILigneH() + 10, 0)
+        Set btnReprendre = UIBouton(pg, "btnReprendre", ChrW(&H21BA) & " Reprendre le standard", M + iw - 152, y + 10 + UILigneH(-2), 144, UILigneH() + 10, 0)
         btnReprendre.ControlTipText = "Remplace votre réponse par la valeur du standard"
     End If
     Encadre = y + hz + UILigneH(-2) + 22 + 16
 End Function
 
 Private Function BandeauConformite(ByVal pg As Object, ByVal y As Single, ByVal iw As Single) As Single
-    Dim txt As String, fond As Long, coul As Long, info As String, c As Object
-    TexteBandeau txt, fond, coul
-    UIFond pg, "lblConfFond", M, y, iw, UILigneH() + 10, fond
-    Set c = UILbl(pg, "lblConformite", txt, M + 8, y + 5, iw - 16, UILigneH(-1), True, -1, coul)
+    Dim hz As Single, c As Object
+    hz = UILigneH(0.5) + 3 * UILigneH(-1) + 12
+    UIFond pg, "lblConfFond", M, y, iw, hz, uiCoulFond
+    pg.Controls("lblConfFond").BorderStyle = 1
+    UIFond pg, "lblConfBarre", M, y, 6, hz, uiGris
+    Set c = UILbl(pg, "lblConfIco", "", M + 12, y + 6, 26, UILigneH(8), True, 8)
     c.Font.Name = UI_POLICE_SYMB
-    If curQ.Niveau = "Sp" Then
-        info = "Statut calculé automatiquement : aucun standard pour cette question."
-    Else
-        info = "Conformité calculée automatiquement : la réponse doit " & _
-               IIf(curQ.Operateur = "=", "être égale au", "contenir le") & " standard."
-    End If
-    UILbl pg, "lblConfInfo", info, M, y + UILigneH() + 13, iw, UILigneH(-2), False, -2, uiGris
-    BandeauConformite = y + UILigneH() + 13 + UILigneH(-2) + 14
+    Set c = UILbl(pg, "lblConformite", "", M + 44, y + 6, iw - 52, UILigneH(0.5), True, 0.5)
+    Set c = UILbl(pg, "lblConfInfo", "", M + 44, y + 8 + UILigneH(0.5), iw - 52, 3 * UILigneH(-1), False, -1)
+    MettreAJourBandeau
+    BandeauConformite = y + hz + 14
 End Function
 
-Private Sub TexteBandeau(txt As String, fond As Long, coul As Long)
+' Couleurs et textes du bandeau, selon le statut (mise à jour sur place)
+Private Sub MettreAJourBandeau()
+    Dim ico As String, titre As String, info As String, fond As Long, bord As Long, coul As Long, txtCoul As Long
+    Dim pg As Object, compare As String
+    Set pg = mp.Pages(0)
+    compare = IIf(curQ.Operateur = "=", "n'est pas égale au", "ne contient pas le")
     Select Case curQ.Statut
         Case ST_CONFORME
-            txt = ChrW(&H2713) & "  Conforme au standard   ·   cas " & ChrW(&H2460) & " : standard en place"
-            fond = RGB(232, 245, 236): coul = uiVert
+            ico = ChrW(&H2713): titre = "Conforme au standard"
+            info = "Votre réponse " & IIf(curQ.Operateur = "=", "est égale au", "contient le") & " standard."
+            coul = uiVert: fond = uiVertClair: bord = RGB(167, 214, 180)
         Case ST_A_JUSTIFIER, ST_JUSTIFIEE
             If curQ.Conformite = CONF_SPECIFIQUE Then
-                txt = ChrW(&H25C6) & "  Spécifique à l'offre   ·   cas " & ChrW(&H2463) & " : différent de l'offre précédente"
-                fond = uiBleuClair: coul = uiAction
+                ico = ChrW(&H25C6): coul = uiBleuStatut: fond = uiBleuClair: bord = RGB(156, 195, 230)
+                titre = "Spécifique à l'offre · différente de l'offre précédente"
+                info = IIf(curQ.Statut = ST_A_JUSTIFIER, "Justification obligatoire : expliquez la différence ci-dessous.", _
+                           "Différence justifiée.")
             Else
-                txt = ChrW(&H2717) & "  Non conforme au standard   ·   cas " & ChrW(&H2461) & " : dérogation"
-                fond = uiRougeClair: coul = uiRouge
+                ico = ChrW(&H2717): coul = uiRouge: fond = uiRougeClair: bord = RGB(241, 184, 177)
+                titre = "Non conforme au standard"
+                info = "Votre réponse " & compare & " standard « " & Abrege(Ligne1(curQ.Standard), 110) & " »." & _
+                       IIf(curQ.Statut = ST_A_JUSTIFIER, " Expliquez la dérogation ci-dessous.", " Dérogation justifiée.")
             End If
-            txt = txt & IIf(curQ.Statut = ST_A_JUSTIFIER, ", justification obligatoire", ", justifiée")
+            If curQ.Statut = ST_A_JUSTIFIER Then titre = titre & " · justification obligatoire"
         Case ST_SPECIFIQUE
-            txt = ChrW(&H25C6) & "  Spécifique à l'offre   ·   cas " & ChrW(&H2462) & " : identique à l'offre précédente"
-            fond = uiBleuClair: coul = uiAction
+            ico = ChrW(&H25C6): coul = uiBleuStatut: fond = uiBleuClair: bord = RGB(156, 195, 230)
+            titre = "Spécifique à l'offre"
+            info = "Aucun standard pour cette question : réponse propre à l'offre, identique à l'offre précédente (à vérifier)."
         Case ST_NON_CONCERNEE
-            txt = ChrW(&H2013) & "  Non concerné"
-            fond = uiCoulFond: coul = uiGris
+            ico = ChrW(&H2013): coul = uiGris: fond = uiCoulFond: bord = uiLigne
+            titre = "Non concerné"
+            info = "Cette question est sans objet pour l'offre."
         Case ST_INCOMPLET
-            txt = "?  Standards incomplets pour cette question"
-            fond = uiStdFond: coul = uiOrange
+            ico = "?": coul = uiOrange: fond = uiStdFond: bord = RGB(230, 199, 102)
+            titre = "Standards incomplets"
+            info = "Aucun standard n'est défini pour votre direction et votre univers : contactez votre administrateur."
         Case Else
-            txt = ChrW(&H25CB) & "  Réponse à saisir"
-            fond = uiCoulFond: coul = uiGris
+            ico = ChrW(&H25CB): coul = uiGris: fond = uiCoulFond: bord = uiLigne
+            titre = "Réponse à saisir"
+            info = IIf(curQ.Niveau = "Sp", "Aucun standard pour cette question : saisissez la réponse propre à l'offre.", _
+                       "Saisissez une réponse.")
     End Select
+    txtCoul = IIf(coul = uiRouge, RGB(107, 42, 36), uiTexte)
+    On Error Resume Next
+    pg.Controls("lblConfFond").BackColor = fond
+    pg.Controls("lblConfFond").BorderColor = bord
+    pg.Controls("lblConfBarre").BackColor = coul
+    pg.Controls("lblConfIco").Caption = ico
+    pg.Controls("lblConfIco").ForeColor = coul
+    pg.Controls("lblConformite").Caption = titre
+    pg.Controls("lblConformite").ForeColor = coul
+    pg.Controls("lblConfInfo").Caption = info
+    pg.Controls("lblConfInfo").ForeColor = txtCoul
 End Sub
+
+Private Function Abrege(ByVal s As String, ByVal n As Long) As String
+    If Len(s) > n Then Abrege = Left$(s, n - 1) & ChrW(&H2026) Else Abrege = s
+End Function
+
+' Réponse saisie différente du standard (pastille « modifiée »)
+Private Function ReponseModifiee() As Boolean
+    If curQ Is Nothing Then Exit Function
+    If curQ.Niveau = "E" Or curQ.Niveau = "D" Or curQ.Niveau = "U" Then
+        ReponseModifiee = curQ.Saisie And StrComp(Trim$(curQ.Reponse), Trim$(curQ.Standard), vbTextCompare) <> 0
+    End If
+End Function
+
+' Zone de justification : fond jaune pâle et bordure orange quand elle est obligatoire
+Private Sub StyleJustification()
+    If txtJustif Is Nothing Then Exit Sub
+    If curQ.Statut = ST_A_JUSTIFIER Then
+        txtJustif.BackColor = uiJauneClair
+        txtJustif.BorderColor = uiOrangeVif
+    Else
+        txtJustif.BackColor = uiBlanc
+        txtJustif.BorderColor = RGB(170, 178, 189)
+    End If
+End Sub
+
+' Petite étiquette grise (identifiant, mode de réponse) ; renvoie sa position droite
+Private Function Etiquette(ByVal pg As Object, nom As String, texte As String, ByVal x As Single, ByVal y As Single) As Single
+    Dim c As Object, w As Single
+    w = Len(texte) * (uiTaille - 2) * 0.55 + 12
+    Set c = UILbl(pg, nom, texte, x, y, w, UILigneH(-2) + 4, False, -2, RGB(68, 68, 68))
+    c.BackStyle = 1: c.BackColor = RGB(238, 241, 245)
+    c.BorderStyle = 1: c.BorderColor = uiLigne
+    c.TextAlign = 2: c.WordWrap = False
+    Etiquette = x + w
+End Function
 
 Private Sub ConstruirePageStandards()
     Dim pg As MSForms.Page, iw As Single, lst As Object, c As Object, hz As Single
@@ -1150,19 +1285,16 @@ Private Sub RafraichirApresSaisie()
 End Sub
 
 Private Sub MettreAJourDetail()
-    Dim pg As Object, txt As String, fond As Long, coul As Long
+    Dim pg As Object
     Set pg = mp.Pages(0)
     On Error Resume Next
     pg.Controls("lblRepComplete").Caption = "Réponse retenue : " & IIf(curQ.Reponse = "", "(aucune)", curQ.Reponse)
     If Not curQ.StandardModifie Then pg.Controls("lblStdModifie").Caption = ""
-    TexteBandeau txt, fond, coul
-    pg.Controls("lblConfFond").BackColor = fond
-    pg.Controls("lblConformite").Caption = txt
-    pg.Controls("lblConformite").ForeColor = coul
-    If Not txtJustif Is Nothing Then
-        txtJustif.BorderColor = IIf(curQ.Statut = ST_A_JUSTIFIER, uiStdBarre, RGB(170, 178, 189))
-    End If
+    pg.Controls("lblModifiee").Visible = ReponseModifiee()
+    pg.Controls("lblOblig").Visible = (curQ.Statut = ST_A_JUSTIFIER)
     On Error GoTo 0
+    MettreAJourBandeau
+    StyleJustification
     MettreAJourBoutons
 End Sub
 
@@ -1230,7 +1362,7 @@ Private Sub Valider()
     EnregistrerQuestion curQ
     SauverDossier
     sale = False
-    Me.Controls("lblEnregistre").Caption = ChrW(&H2714) & " Enregistré à " & Format$(Now, "hh:nn")
+    Me.Controls("lblEnregistre").Caption = ChrW(&H2714) & " " & curQ.Id & " enregistrée à " & Format$(Now, "hh:nn")
     Exit Sub
 erreur:
     MsgBox "Enregistrement impossible : " & Err.Description & vbCrLf & _

@@ -27,6 +27,8 @@ Public uiTaille As Single
 Public uiBandeau As Long, uiAction As Long, uiCoulFond As Long, uiBlanc As Long, uiLigne As Long
 Public uiTexte As Long, uiGris As Long, uiVert As Long, uiOrange As Long, uiRouge As Long
 Public uiStdFond As Long, uiStdBarre As Long, uiOngletFond As Long, uiBleuClair As Long, uiRougeClair As Long
+Public uiVertClair As Long, uiGrisClair As Long, uiJauneClair As Long, uiOrangeVif As Long, uiTraitSection As Long
+Public uiBleuStatut As Long
 
 Public Sub UIInit()
     uiBandeau = RGB(22, 54, 92)
@@ -44,6 +46,12 @@ Public Sub UIInit()
     uiOngletFond = RGB(232, 236, 241)
     uiBleuClair = RGB(232, 240, 250)
     uiRougeClair = RGB(253, 236, 234)
+    uiVertClair = RGB(230, 244, 234)
+    uiGrisClair = RGB(150, 156, 164)
+    uiJauneClair = RGB(255, 251, 230)
+    uiOrangeVif = RGB(224, 164, 0)
+    uiTraitSection = RGB(156, 195, 230)
+    uiBleuStatut = RGB(0, 99, 177)
     uiTaille = Val(GetSetting("SGO", "Affichage", "Taille", "10"))
     If uiTaille < 8 Or uiTaille > 16 Then uiTaille = 10
 End Sub
@@ -174,11 +182,15 @@ Public Sub UIBoutonActif(ByVal parent As Object, nom As String, ByVal actif As B
     parent.Controls(nom & "_ico").ForeColor = parent.Controls(nom & "_txt").ForeColor
 End Sub
 
-' Titre de section en petites capitales + trait fin
+' Titre de section en petites capitales + trait (fin et gris, ou bleu et plus
+' épais pour les sections de saisie)
 Public Sub UISection(ByVal parent As Object, nom As String, texte As String, _
-                     ByVal l As Single, ByVal t As Single, ByVal w As Single)
-    UILbl parent, nom, texte, l, t, w, UILigneH(-2), True, -2, uiBandeau
-    UIFond parent, nom & "_trait", l, t + UILigneH(-2) + 3, w, 1, uiLigne
+                     ByVal l As Single, ByVal t As Single, ByVal w As Single, _
+                     Optional ByVal saisie As Boolean = False)
+    Dim c As Object
+    Set c = UILbl(parent, nom, texte, l, t, w, UILigneH(-2), True, -2, uiBandeau)
+    c.Font.Name = UI_POLICE_SYMB
+    UIFond parent, nom & "_trait", l, t + UILigneH(-2) + 3, w, IIf(saisie, 2, 1), IIf(saisie, uiTraitSection, uiLigne)
 End Sub
 
 Public Function UITxt(ByVal parent As Object, nom As String, texte As String, _
@@ -253,6 +265,35 @@ Public Function UIPicto(ByVal statut As Long, Optional ByVal standardModifie As 
         Case ST_NON_CONCERNEE: UIPicto = ChrW(&H2013)
         Case Else: UIPicto = ChrW(&H2713)
     End Select
+End Function
+
+' Couleur d'un statut : un seul code couleur dans tout l'écran
+' (vert conforme, rouge à justifier, bleu spécifique, gris à saisir ou sans objet)
+Public Function UICouleurStatut(ByVal statut As Long, Optional ByVal standardModifie As Boolean = False) As Long
+    If standardModifie And statut <> ST_MASQUEE Then
+        UICouleurStatut = uiOrange
+        Exit Function
+    End If
+    Select Case statut
+        Case ST_CONFORME, ST_JUSTIFIEE: UICouleurStatut = uiVert
+        Case ST_A_JUSTIFIER: UICouleurStatut = uiRouge
+        Case ST_SPECIFIQUE: UICouleurStatut = uiBleuStatut
+        Case ST_INCOMPLET: UICouleurStatut = uiOrange
+        Case ST_MASQUEE: UICouleurStatut = uiGrisClair
+        Case Else: UICouleurStatut = uiGris
+    End Select
+End Function
+
+Public Function UICouleurCategorie(ByVal c As cCategorieSGO) As Long
+    If c.Grisee() Then
+        UICouleurCategorie = uiGrisClair
+    ElseIf c.NbAJustifier > 0 Then
+        UICouleurCategorie = uiRouge
+    ElseIf c.NbTraitees >= c.NbVisibles Then
+        UICouleurCategorie = uiVert
+    Else
+        UICouleurCategorie = uiGris
+    End If
 End Function
 
 ' Pictogramme d'avancement d'une catégorie
