@@ -15,6 +15,7 @@ Option Explicit
 Private WithEvents tsThemes As MSForms.TabStrip
 Private WithEvents tsSST As MSForms.TabStrip
 Private WithEvents cboFiltre As MSForms.ComboBox
+Private WithEvents chkSansObjet As MSForms.CheckBox
 Private WithEvents lstChoix As MSForms.ListBox
 Private WithEvents cboChoix As MSForms.ComboBox
 Private WithEvents txtRep As MSForms.TextBox
@@ -169,8 +170,15 @@ Private Sub Construire()
     wQ = UIBorne(wIn - 2 * M - wDetail, 230, 900)
     UISection Me, "secQuestions", "QUESTIONS", xIn, yIn, wQ
     UILbl Me, "lblFiltre", "Afficher", xIn, yIn + 27, 52, UILigneH()
-    Set cboFiltre = UICombo(Me, "cboFiltre", xIn + 54, yIn + 24, UIBorne(wQ - 54, 120, 260), UILigneH() + 8, Split(FILTRES, ";"))
+    Set cboFiltre = UICombo(Me, "cboFiltre", xIn + 54, yIn + 24, UIBorne(wQ - 54 - 190, 110, 260), UILigneH() + 8, Split(FILTRES, ";"))
     cboFiltre.ListIndex = 0
+    ' Afficher ou non les questions sans objet (grisées) ; réglage mémorisé, coché par défaut (ES-4)
+    Set chkSansObjet = UICtl(Me, "Forms.CheckBox.1", "chkSansObjet", cboFiltre.Left + cboFiltre.Width + 10, yIn + 26, _
+                             UIBorne(wQ - (cboFiltre.Left + cboFiltre.Width + 10 - xIn), 60, 200), UILigneH() + 4)
+    chkSansObjet.Caption = "Questions sans objet"
+    chkSansObjet.BackStyle = 0
+    chkSansObjet.Value = (GetSetting("SGO", "Affichage", "SansObjet", "1") = "1")
+    chkSansObjet.ControlTipText = "Afficher les questions sans objet (grisées, non modifiables)"
     UILbl Me, "lblCompteur", "", xIn, yIn + 24 + UILigneH() + 12, wQ, UILigneH(-2), False, -2, uiGris
     Set fraQ = NouvelleListe("fraQ", xIn, yIn + 60, wQ, 100, uiBlanc)
     Set btnRetablir = UIBouton(Me, "btnRetablir", "Rétablir les standards du sous-thème", xIn, yBas - 28, wQ, 28, 0, ICO_COCHE)
@@ -372,16 +380,42 @@ End Sub
 
 Private Sub cboFiltre_Change()
     If chargement Then Exit Sub
+    chkSansObjet.Enabled = (cboFiltre.ListIndex <= 0)    ' les autres filtres excluent déjà les questions sans objet
+    AppliquerFiltre
+End Sub
+
+Private Sub chkSansObjet_Click()
+    If chargement Then Exit Sub
+    SaveSetting "SGO", "Affichage", "SansObjet", IIf(chkSansObjet.Value, "1", "0")
+    AppliquerFiltre
+End Sub
+
+' Reconstruit la liste ; garde la question courante si elle y est encore
+Private Sub AppliquerFiltre()
+    Dim i As Long, cible As Long
     Valider
     chargement = True
     RemplirQuestions True
     chargement = False
+    cible = -1
+    For i = 1 To listeQ.Count
+        If listeQ(i) Is curQ Then cible = i - 1
+    Next i
+    If cible >= 0 Then Exit Sub
     If listeQ.Count > 0 Then
         MarquerQuestion 0
         AfficherQuestion listeQ(1)
     Else
         AfficherQuestion Nothing
     End If
+End Sub
+
+' Affiche une question sans objet même si la case est décochée (recherche, lien direct)
+Private Sub MontrerSansObjet()
+    If chkSansObjet.Value Then Exit Sub
+    chargement = True
+    chkSansObjet.Value = True
+    chargement = False
 End Sub
 
 ' Affiche un chapitre ; si q est donnée, va jusqu'à elle
@@ -455,8 +489,11 @@ Private Sub AfficherSousTheme(ByVal sst As cCategorieSGO, ByVal q As cQuestionSG
         For i = 1 To listeQ.Count
             If listeQ(i) Is q Then cible = i - 1
         Next i
-        If cible < 0 Then                            ' filtrée : on revient à « Toutes »
+        If cible < 0 Then                            ' filtrée : on revient à « Toutes », sans objet compris
             cboFiltre.ListIndex = 0
+            chkSansObjet.Enabled = True
+            If q.Statut = ST_MASQUEE Then MontrerSansObjet
+            chargement = True
             RemplirQuestions True
             For i = 1 To listeQ.Count
                 If listeQ(i) Is q Then cible = i - 1
@@ -490,7 +527,10 @@ Private Sub RemplirQuestions(ByVal reconstruire As Boolean)
         If q.Statut = ST_MASQUEE Then nMasq = nMasq + 1
         If PasseFiltre(q) Then nouvelle.Add q
     Next q
-    If cboFiltre.ListIndex <= 0 Then
+    If cboFiltre.ListIndex <= 0 And nMasq > 0 And Not chkSansObjet.Value Then
+        Me.Controls("lblCompteur").Caption = nTot & " question" & IIf(nTot > 1, "s", "") & ", dont " & nMasq & _
+            " sans objet masquée" & IIf(nMasq > 1, "s", "")
+    ElseIf cboFiltre.ListIndex <= 0 Then
         Me.Controls("lblCompteur").Caption = nTot & " question" & IIf(nTot > 1, "s", "") & _
             IIf(nMasq > 0, ", dont " & nMasq & " sans objet (grisée" & IIf(nMasq > 1, "s", "") & ", non modifiable" & IIf(nMasq > 1, "s", "") & ")", "")
     Else
@@ -696,6 +736,7 @@ Private Sub PlacerZoneQuestions(ByVal avecSST As Boolean, ByVal avecMasque As Bo
     Me.Controls("secQuestions_trait").Top = y + UILigneH(-2) + 3
     Me.Controls("lblFiltre").Top = y + 27
     cboFiltre.Top = y + 24
+    chkSansObjet.Top = y + 26
     Me.Controls("lblCompteur").Top = y + 24 + UILigneH() + 12
     yListe = y + 24 + UILigneH() + 12 + UILigneH(-2) + 4
     fraQ.Top = yListe
@@ -712,7 +753,7 @@ Private Function PasseFiltre(ByVal q As cQuestionSGO) As Boolean
         Case 2: PasseFiltre = (q.Statut = ST_A_JUSTIFIER)
         Case 3: PasseFiltre = q.StandardModifie
         Case 4: PasseFiltre = (q.Conformite = CONF_NON_CONFORME)
-        Case Else: PasseFiltre = True
+        Case Else: PasseFiltre = (q.Statut <> ST_MASQUEE Or chkSansObjet.Value)
     End Select
 End Function
 
@@ -788,8 +829,10 @@ Private Sub Aller(ByVal q As cQuestionSGO, ByVal messageSiRien As String)
     If q Is Nothing Then
         MsgBox messageSiRien, vbInformation, "SGO"
     Else
-        If cboFiltre.ListIndex > 0 And Not PasseFiltre(q) Then
+        If Not PasseFiltre(q) Then
             chargement = True: cboFiltre.ListIndex = 0: chargement = False
+            chkSansObjet.Enabled = True
+            If q.Statut = ST_MASQUEE Then MontrerSansObjet
         End If
         AllerAQuestion q
     End If
