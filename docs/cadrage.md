@@ -55,7 +55,8 @@ Une **fonction d'administration** permet de faire évoluer le référentiel (que
 ```
 
 **Pourquoi cette option est la meilleure** (c'est aussi votre intuition) :
-- Le fichier de l'acheteur **ne contient aucun code**. Il n'y a pas d'alerte de sécurité à l'ouverture, on peut le déposer sur Teams ou l'envoyer par mail, et il reste lisible sans l'outil.
+- Le fichier de l'acheteur **ne contient aucun code**. Il n'y a pas d'alerte de sécurité à l'ouverture, on peut le déposer sur Teams ou l'envoyer par mail.
+- ✅ *Révisé le 22/10/2026* : le dossier se lit et se modifie **uniquement avec l'outil**. Il n'est plus « lisible sans l'outil » : une seule feuille visible (accueil, résumé de l'offre, message « ce fichier s'ouvre avec l'outil SGO »), données en feuilles très masquées, structure protégée par mot de passe (voir P4). La lecture sans l'outil passe par les exports (P10).
 - **Un seul exemplaire du code** par poste : une correction s'applique à tous les dossiers d'un coup.
 - Le complément ajoute un **onglet « SGO » dans le ruban** (Nouveau dossier, Saisie, Export, Admin).
 
@@ -114,6 +115,14 @@ Règles imposées à l'admin :
 ❓ La mise à jour doit-elle être **obligatoire** pour continuer la saisie, avec consultation possible sans mise à jour, ou **au choix** de l'acheteur ?
 
 ### P4 🔶 Modèle de données
+
+✅ **Protection du dossier (décidée le 22/10/2026, à réaliser à l'itération 7)** :
+- **une seule feuille visible**, `Accueil` : message (sans pop-up) « Ce fichier s'ouvre avec l'outil SGO », et un résumé mis à jour à chaque enregistrement (n° et libellé de l'offre, direction / univers, avancement, date et auteur de la dernière modification) — texte à peaufiner ;
+- les feuilles de données (`Offre`, `Reponses`, `Archives`) en **très masqué** ; **structure du classeur protégée par mot de passe** (le mot de passe est dans le code du `.xlam`, lui-même protégé) ;
+- le dossier est reconnu par un **marqueur interne** (propriété du classeur), pas seulement par ses feuilles ;
+- **lecture robuste** : colonnes retrouvées par leur en-tête, colonnes en plus ignorées, **contrôle à l'ouverture** avec rapport (feuilles, en-têtes, identifiants inconnus ou en double) ;
+- **sauvegarde automatique** à l'ouverture par SGO (dernières versions conservées) ;
+- limite : protection contre les erreurs, pas confidentialité. Un **mot de passe d'ouverture** (chiffrement) reste possible si le CDP le demande ; déconseillé pour l'instant (fichier illisible si le mot de passe change, archivage et recherche Teams impossibles), à voir avec la DSI.
 
 **Référentiel** (dans le `.xlam`, une source unique) :
 
@@ -237,6 +246,7 @@ Les UserForms ont une taille fixe en points. Sur un portable dont l'affichage Wi
 - **HTML** : un fichier unique et autonome, avec un sommaire cliquable. Il s'ouvre dans n'importe quel navigateur et s'envoie facilement.
 - **Trois variantes** : dossier complet, écarts au standard uniquement (utile pour la validation), questions à justifier.
 - **Usage** (15/10/2026) : présenter l'offre à la direction. **Logo de l'UGAP à prévoir** sur les exports PDF et HTML.
+- **Export XLSX à plat** (22/10/2026, fin de projet) : une ligne par question (chapitre, thème, question, standard, réponse, conformité, justification, commentaire), pour la lecture, le tri et l'analyse. La **réimportation** d'un export modifié est une fonction à part (contrôle des valeurs, rapport d'écarts), à faire seulement si le besoin est confirmé.
 
 ❓ Faut-il un export **par lot** ?
 

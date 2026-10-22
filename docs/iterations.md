@@ -124,10 +124,17 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
   - 8 conditions ont un critère absent des choix de leur question mère (la fille ne peut s'afficher que par une saisie libre) ;
   - 3 conditions visent des questions qui n'existent plus (El323, El323b, El323c) et 1 une mère inconnue (El335b).
 
+## Décisions du 22/10/2026 (pour les itérations suivantes)
+- **Dossier d'offre réservé à l'outil** : une feuille d'accueil visible (message « Ce fichier s'ouvre avec l'outil SGO » et résumé de l'offre), données en feuilles très masquées, structure protégée par mot de passe ; lecture robuste avec contrôle à l'ouverture ; sauvegarde automatique (cadrage P1, P4).
+- **Export XLSX à plat** en fin de projet, en plus des PDF / HTML ; réimportation seulement si le besoin est confirmé (cadrage P10).
+- **Ruban** : onglet « SGO » du `.xlam` (Nouveau dossier, Ouvrir / récents, Saisir, Page de garde, Revue, Exporter, Aide), le dossier visé étant le **classeur actif** ; à faire avec la preuve de concept `.xlam`. D'ici là, la macro `SGO` reste le point d'entrée.
+- Avancement des thèmes et sous-thèmes : on garde les pictogrammes et les info-bulles (pas de barres).
+
 ## Prochaines itérations (indicatif)
 | N° | Contenu |
 |---|---|
-| 7 | Retours sur la saisie réelle ; anomalies du rapport de migration à trancher avec le chef de projet ; **commentaires officiels / intra** si besoin ; **mise à jour du référentiel** dans un dossier existant (cadrage P3) |
-| 8 | **Preuve de concept `.xlam`** : déplacer le code et le référentiel dans `SGO.xlam`, onglet de ruban ; test d'installation sur un poste de la DSI |
+| 7 | **Fiabiliser le dossier** : feuille d'accueil, feuilles très masquées, protection, lecture robuste et contrôle à l'ouverture, sauvegarde automatique. Retours sur la saisie réelle. Anomalies du rapport de migration à trancher avec le chef de projet |
+| 8 | **Preuve de concept `.xlam`** : code et référentiel dans `SGO.xlam`, **onglet SGO du ruban** (dossier = classeur actif, dossiers récents) ; adapter VbaSync ; test d'installation sur un poste de la DSI |
 | 9 | Écran **Revue** (les 5 synthèses), puis **exports** PDF / HTML avec le logo de l'UGAP |
-| 10+ | **Lots** (feuille Détail des lots générée à partir du nombre de lots), annexes, puis `SGO_Admin.xlam` |
+| 10 | **Mise à jour du référentiel** dans un dossier existant (cadrage P3) ; commentaires officiels / intra si besoin |
+| 11+ | **Lots** (feuille Détail des lots générée à partir du nombre de lots), annexes, **export XLSX à plat**, puis `SGO_Admin.xlam` |
