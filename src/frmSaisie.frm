@@ -937,7 +937,8 @@ Private Sub ConstruirePageReponse()
         UILbl pg, "lblRepAnnexe", curQ.Reponse, M, y, iw, UILigneH(), True
         y = y + UILigneH() + 12
     ElseIf curQ.EstListe And curQ.NbChoix > 0 And InStr(1, curQ.Mode, "texte", vbTextCompare) = 0 Then
-        hz = UIBorne(curQ.NbChoix, 2, 8) * UILigneH() + 8
+        ' Jusqu'à 12 choix affichés en entier ; au-delà, la liste défile
+        hz = UIBorne(curQ.NbChoix, 2, 12) * UILigneH() + 8
         Set lstChoix = UIListe(pg, "lstChoix", M, y, iw, hz, "")
         lstChoix.ListStyle = 1                       ' cases à cocher / boutons d'option
         lstChoix.MultiSelect = IIf(curQ.EstChoixMultiple, 1, 0)
@@ -947,6 +948,11 @@ Private Sub ConstruirePageReponse()
         SelectionnerChoix
         lstChoix.Enabled = Not masquee
         y = y + hz + 4
+        If curQ.NbChoix > 12 Then
+            UILbl pg, "lblDefiler", curQ.NbChoix & " choix : faites défiler la liste pour les voir tous.", _
+                  M, y, iw, UILigneH(-2), False, -2, uiOrange
+            y = y + UILigneH(-2) + 4
+        End If
         hz = UIBorne(LignesTexte("Réponse retenue : " & curQ.Reponse, iw, -1), 1, 4) * UILigneH(-1)
         UILbl pg, "lblRepComplete", "Réponse retenue : " & IIf(curQ.Reponse = "", "(aucune)", curQ.Reponse), _
               M, y, iw, hz, False, -1, uiGris

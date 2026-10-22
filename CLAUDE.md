@@ -16,4 +16,4 @@ Projet : classeur Excel `VBA_maquette_SGO.xlsm` (à la racine) avec macros VBA, 
 - Moteur de règles : `src/SGO_Moteur.bas` et `outils/moteur.py` sont des copies conformes ; toute règle modifiée l'est dans les deux.
 - Écrans réels (`frmGarde`, `frmSaisie`) : formulaires vides construits par code ; l'utilisateur les crée avec la macro `CreerFormulairesSGO`. Dans un événement, ne jamais supprimer le contrôle qui le déclenche (risque de plantage d'Excel) : mettre à jour sur place ou rouvrir la fenêtre.
 - Vérifier le VBA avant de commiter (pas de compilation possible ici) : blocs, déclarations, identifiants, caractères cp1252.
-
+- Nouveau classeur d'origine fourni : relancer `migrer_referentiel.py` puis `lister_anomalies.py` (procédure : `docs/anomalies_referentiel.md`) ; vérifier dans le rapport les changements par rapport à la version précédente.

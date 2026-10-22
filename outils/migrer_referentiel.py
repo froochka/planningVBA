@@ -107,6 +107,10 @@ def lire(classeur):
             return vals
         return None
 
+    # Listes nommées « ListeElxxx » de 120-REF Listes : c'est ce qu'affichait la
+    # fenêtre de choix multiples de l'outil d'origine (Module_LienMultilistUS)
+    resoudre.noms = {n.lower(): n for n in wb_f.defined_names.keys()}
+
     # Directions d'achat (page de garde) et standards de direction
     directions_achat = []
     for r in range(55, 62):
@@ -196,6 +200,72 @@ def reponse_initiale_origine(niv, standard, mode):
 
 
 # --------------------------------------------------------------------------
+# Version précédente et changements
+# --------------------------------------------------------------------------
+def lire_ancien(sortie):
+    res = {"version": "", "date": "", "note": ""}
+    chemin = os.path.join(sortie, "R_Version.csv")
+    if os.path.exists(chemin):
+        with open(chemin, encoding="utf-8-sig", newline="") as f:
+            lignes = list(csv.reader(f, delimiter=";"))
+        if len(lignes) > 1:
+            res["version"], res["date"], res["note"] = lignes[1][0], lignes[1][1], lignes[1][3]
+    for nom in ("R_Categories.csv", "R_Questions.csv", "R_Conditions.csv", "R_Standards.csv", "R_Directions.csv"):
+        chemin = os.path.join(sortie, nom)
+        if os.path.exists(chemin):
+            with open(chemin, encoding="utf-8-sig", newline="") as f:
+                res[nom] = list(csv.reader(f, delimiter=";"))[1:]
+        else:
+            res[nom] = []
+    return res
+
+
+def comparer(ancien, nouveau):
+    """Changements lisibles entre deux versions du référentiel (vide si identiques)."""
+    ch = defaultdict(list)
+    if not ancien["version"]:
+        return ch
+    champs_q = ["libelle", "sous_theme", "ordre", "mode", "choix", "operateur", "alimente_ccap", "active", "systeme"]
+    a = {r[0].lower(): r for r in ancien["R_Questions.csv"]}
+    n = {r[0].lower(): r for r in nouveau["R_Questions.csv"]}
+    for k in n.keys() - a.keys():
+        ch["Questions ajoutées"].append(f"{n[k][0]} : {n[k][1][:100]}")
+    for k in a.keys() - n.keys():
+        ch["Questions retirées"].append(f"{a[k][0]} : {a[k][1][:100]}")
+    for k in n.keys() & a.keys():
+        diffs = [champs_q[j] for j in range(len(champs_q)) if a[k][j + 1] != n[k][j + 1] and champs_q[j] != "ordre"]
+        if diffs:
+            ch["Questions modifiées"].append(f"{n[k][0]} : {', '.join(diffs)}")
+    cle = lambda r: tuple(x.lower() for x in r[:3])
+    a = {cle(r): r for r in ancien["R_Conditions.csv"]}
+    n = {cle(r): r for r in nouveau["R_Conditions.csv"]}
+    for k in n.keys() - a.keys():
+        ch["Conditions ajoutées"].append(f"{n[k][0]} ← {n[k][1]} {n[k][2]} « {n[k][3]} »")
+    for k in a.keys() - n.keys():
+        ch["Conditions retirées"].append(f"{a[k][0]} ← {a[k][1]} {a[k][2]} « {a[k][3]} »")
+    for k in n.keys() & a.keys():
+        if a[k][3] != n[k][3]:
+            ch["Conditions modifiées"].append(f"{n[k][0]} ← {n[k][1]} : « {a[k][3]} » → « {n[k][3]} »")
+    cle = lambda r: tuple(x.lower() for x in r[:3])
+    a = {cle(r): r for r in ancien["R_Standards.csv"]}
+    n = {cle(r): r for r in nouveau["R_Standards.csv"]}
+    for k in sorted(n.keys() | a.keys()):
+        av, nv = a.get(k), n.get(k)
+        if av != nv:
+            q = (nv or av)
+            ch["Standards modifiés"].append(f"{q[0]} / {q[1]} {q[2]} : « {(av or ['', '', '', '', ''])[4][:60]} » → « {(nv or ['', '', '', '', ''])[4][:60]} »"
+                                            + ("" if (av or [''] * 5)[3] == (nv or [''] * 5)[3] else f" (niveau {(av or [''] * 5)[3]} → {(nv or [''] * 5)[3]})"))
+    for nom, titre in (("R_Categories.csv", "Chapitres, thèmes, sous-thèmes modifiés"), ("R_Directions.csv", "Directions et univers modifiés")):
+        a = {tuple(r) for r in ancien[nom]}
+        n = {tuple(r) for r in nouveau[nom]}
+        for r in sorted(n - a):
+            ch[titre].append("ajout ou modification : " + " / ".join(r[:3]))
+        for r in sorted(a - n):
+            ch[titre].append("retrait ou ancienne valeur : " + " / ".join(r[:3]))
+    return ch
+
+
+# --------------------------------------------------------------------------
 # Migration
 # --------------------------------------------------------------------------
 def migrer(classeur, sortie):
@@ -263,20 +333,32 @@ def migrer(classeur, sortie):
         if mode_brut and mode_brut != mode:
             anomalies["Mode de réponse uniformisé (espaces, tiret)"].append(f"{qid} : « {mode_brut} » → « {mode} »")
 
-        # Choix : validation de données de la cellule, sinon colonne « Choix de réponse »
+        # Choix, dans l'ordre de ce que voyait l'acheteur dans l'outil d'origine :
+        # 1. la liste déroulante de la cellule (choix unique) ;
+        # 2. la liste nommée « ListeElxxx » (fenêtre de choix multiples) ;
+        # 3. à défaut, le texte de la colonne « Choix de réponse »
         choix = None
+        source_choix = ""
         if i in dvs:
             choix = resoudre(dvs[i])
+            source_choix = "liste déroulante"
             if choix is None:
                 anomalies["Liste de choix illisible (validation)"].append(f"{qid} : {dvs[i]}")
         texte_choix = [x.strip() for x in r[7].split(";") if x.strip()]
         if choix is None and mode.startswith("Liste"):
+            nom_liste = resoudre.noms.get(("liste" + qid).lower())
+            if nom_liste:
+                choix = resoudre(nom_liste)
+                source_choix = "liste nommée " + nom_liste
+        if choix is None and mode.startswith("Liste"):
             choix = texte_choix
+            source_choix = "texte"
             if choix:
-                anomalies["Choix repris de la colonne « Choix de réponse », faute de liste déroulante dans la cellule (normal pour les choix multiples)"].append(qid)
+                anomalies["Choix repris de la colonne « Choix de réponse » (ni liste déroulante, ni liste nommée)"].append(qid)
         if choix and mode.startswith("Liste") and texte_choix and \
                 [c.lower() for c in choix] != [c.lower() for c in texte_choix]:
-            anomalies["Liste déroulante différente du texte « Choix de réponse » (la liste déroulante est retenue)"].append(qid)
+            anomalies[f"Liste retenue différente du texte « Choix de réponse »"].append(
+                f"{qid} ({source_choix} retenue)")
         choix = choix or []
         for c in choix:
             if SEP_CHOIX in c:
@@ -417,8 +499,25 @@ def migrer(classeur, sortie):
                 w.writerow(l)
 
     source = re.sub(r"^[0-9a-f]{8}-", "", os.path.basename(classeur))
+    # Version : +1 si le contenu change par rapport à la version précédente
+    ancien = lire_ancien(sortie)
+    nouveau = {
+        "R_Categories.csv": [[str(x) for x in c] for c in categories],
+        "R_Questions.csv": [[str(x) for x in (q[:9] + ["Oui" if q[9] else "Non"])] for q in questions],
+        "R_Conditions.csv": [[str(x) for x in c] for c in conditions],
+        "R_Standards.csv": [[str(x) for x in st] for st in standards],
+        "R_Directions.csv": [[str(x) for x in d] for d in dirs],
+    }
+    changements = comparer(ancien, nouveau)
+    if not ancien["version"]:
+        version, note = "1", "Migration initiale depuis l'outil d'origine"
+    elif changements:
+        version, note = str(int(ancien["version"]) + 1), f"Mise à jour depuis {source}"
+    else:
+        version, note = ancien["version"], ancien["note"]
     ecrire("R_Version.csv", ["version", "date", "source", "note"],
-           [["1", datetime.date.today().isoformat(), source, "Migration initiale depuis l'outil d'origine"]])
+           [[version, datetime.date.today().isoformat() if changements or not ancien["version"] else ancien["date"],
+             source, note]])
     ecrire("R_Categories.csv", ["id", "type", "libelle", "parent", "ordre"], categories)
     ecrire("R_Questions.csv", ["id", "libelle", "sous_theme", "ordre", "mode", "choix", "operateur",
                                "alimente_ccap", "active", "systeme"],
@@ -518,6 +617,17 @@ def migrer(classeur, sortie):
     ]
     for e in ecarts[:50]:
         lignes.append(f"- {e}")
+    lignes += ["", f"## Changements par rapport à la version précédente (version {version})", ""]
+    if not ancien["version"]:
+        lignes.append("Première version.")
+    elif not changements:
+        lignes.append("Aucun changement : la version reste la même.")
+    for titre, items in changements.items():
+        lignes.append(f"### {titre} ({len(items)})")
+        lignes.append("")
+        for it in items[:200]:
+            lignes.append(f"- {it}")
+        lignes.append("")
     lignes += ["", "## Anomalies et choix faits pendant la migration", ""]
     if not anomalies:
         lignes.append("Aucune.")

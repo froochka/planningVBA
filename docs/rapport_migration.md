@@ -1,6 +1,6 @@
 # Rapport de migration du référentiel
 
-*Généré par `outils/migrer_referentiel.py` le 2026-10-15, à partir de `02_PhaseElaborationOffre_DossierConception_V4_07072026.xlsm`.*
+*Généré par `outils/migrer_referentiel.py` le 2026-10-22, à partir de `02_PhaseElaborationOffre_DossierConception_V4_07072026.xlsm`.*
 
 ## Comptages
 
@@ -41,69 +41,135 @@ Les combinaisons où la formule d'origine renvoie une erreur (`#N/A` : univers s
 
 Le fichier `referentiel/tests/attendus_standards.csv` (2891 lignes, 7 combinaisons) permet de rejouer ce contrôle dans Excel avec la macro `TesterMoteur`.
 
+## Changements par rapport à la version précédente (version 2)
+
+### Questions modifiées (35)
+
+- El73 : choix
+- El60c : choix
+- El134 : choix
+- El370 : choix
+- El59 : choix
+- El343 : choix
+- El179 : choix
+- El500c : choix
+- El387 : choix
+- El107 : choix
+- El103 : choix
+- El493 : choix
+- El351 : choix
+- El271 : choix
+- El316 : choix
+- El123 : choix
+- El0a : choix
+- El111 : choix
+- El132b : choix
+- El60b : choix
+- El206b : choix
+- El377 : choix
+- El271c : choix
+- El114 : choix
+- El173 : choix
+- El35 : choix
+- El104 : choix
+- El332 : choix
+- El361 : choix
+- El334 : choix
+- El220 : choix
+- El308 : choix
+- El30 : choix
+- El181b : choix
+- El327 : choix
+
+
 ## Anomalies et choix faits pendant la migration
 
-### Choix repris de la colonne « Choix de réponse », faute de liste déroulante dans la cellule (normal pour les choix multiples) (59)
+### Liste retenue différente du texte « Choix de réponse » (84)
 
-- El0a
-- El29
-- El30
-- El92
-- El96
-- El59
-- El500c
-- El60b
-- El60c
-- El73
-- El78j
-- El84
-- El104
-- El104b
-- El107
-- El111
-- El114
-- El123
-- El132b
-- El179
-- El181b
-- El182
-- El134
-- El370
-- El377
-- El387
-- El103
-- El147
-- El493
-- El205
-- El206b
-- El266
-- El308
-- El308b
-- El220
-- El316
-- El318
-- El325
-- El327
-- El169
-- El271
-- El271c
-- El172
-- El173
-- El332
-- El343
-- El343b
-- El351
-- El35
-- El361
-- El219
-- El333
-- El333b
-- El334
-- El335e
-- El335h
-- El304
-- El305
-- El306
+- El0a (liste nommée ListeEl0a retenue)
+- El30 (liste nommée ListeEl30 retenue)
+- El30b (liste déroulante retenue)
+- El302 (liste déroulante retenue)
+- El511 (liste déroulante retenue)
+- El59 (liste nommée ListeEl59 retenue)
+- El500c (liste nommée ListeEl500c retenue)
+- El60b (liste nommée ListeEl60b retenue)
+- El60c (liste nommée ListeEl60c retenue)
+- El69 (liste déroulante retenue)
+- El70 (liste déroulante retenue)
+- El71 (liste déroulante retenue)
+- El73 (liste nommée ListeEl73 retenue)
+- El77 (liste déroulante retenue)
+- El78l (liste déroulante retenue)
+- El81b (liste déroulante retenue)
+- El82 (liste déroulante retenue)
+- El107 (liste nommée ListeEl107 retenue)
+- El111 (liste nommée ListeEl111 retenue)
+- El114 (liste nommée ListeEl114 retenue)
+- El123 (liste nommée ListeEl123 retenue)
+- El142 (liste déroulante retenue)
+- El132 (liste déroulante retenue)
+- El132b (liste nommée ListeEl132b retenue)
+- El138 (liste déroulante retenue)
+- El488 (liste déroulante retenue)
+- El179 (liste nommée ListeEl179 retenue)
+- El181b (liste nommée ListeEl181b retenue)
+- El191 (liste déroulante retenue)
+- El183l (liste déroulante retenue)
+- El183b (liste déroulante retenue)
+- El183e (liste déroulante retenue)
+- El183j (liste déroulante retenue)
+- El184 (liste déroulante retenue)
+- El185 (liste déroulante retenue)
+- El186 (liste déroulante retenue)
+- El134 (liste nommée ListeEl134 retenue)
+- El370 (liste nommée ListeEl370 retenue)
+- El377 (liste nommée ListeEl377 retenue)
+- El5c (liste déroulante retenue)
+- El5e (liste déroulante retenue)
+- El103 (liste nommée ListeEl103 retenue)
+- El493 (liste nommée ListeEl493 retenue)
+- El151b (liste déroulante retenue)
+- El152 (liste déroulante retenue)
+- El494 (liste déroulante retenue)
+- El152b (liste déroulante retenue)
+- El494b (liste déroulante retenue)
+- El161c (liste déroulante retenue)
+- El163 (liste déroulante retenue)
+- El206b (liste nommée ListeEl206b retenue)
+- El199b (liste déroulante retenue)
+- El268 (liste déroulante retenue)
+- El308 (liste nommée ListeEl308 retenue)
+- El220 (liste nommée ListeEl220 retenue)
+- El222 (liste déroulante retenue)
+- El224a (liste déroulante retenue)
+- El224c (liste déroulante retenue)
+- El224d (liste déroulante retenue)
+- El314 (liste déroulante retenue)
+- El316 (liste nommée ListeEl316 retenue)
+- El316a (liste déroulante retenue)
+- El506a (liste déroulante retenue)
+- El510a (liste déroulante retenue)
+- El321 (liste déroulante retenue)
+- El327 (liste nommée ListeEl327 retenue)
+- El328 (liste déroulante retenue)
+- El270 (liste déroulante retenue)
+- El271 (liste nommée ListeEl271 retenue)
+- El173 (liste nommée ListeEl173 retenue)
+- El332 (liste nommée ListeEl332 retenue)
+- El343 (liste nommée ListeEl343 retenue)
+- El258c (liste déroulante retenue)
+- El260a (liste déroulante retenue)
+- El260b (liste déroulante retenue)
+- El260g (liste déroulante retenue)
+- El339c (liste déroulante retenue)
+- El352 (liste déroulante retenue)
+- El351 (liste nommée ListeEl351 retenue)
+- El359 (liste déroulante retenue)
+- El35 (liste nommée ListeEl35 retenue)
+- El361 (liste nommée ListeEl361 retenue)
+- El334 (liste nommée ListeEl334 retenue)
+- El335f (liste déroulante retenue)
 
 ### Mode de réponse uniformisé (espaces, tiret) (188)
 
@@ -296,61 +362,6 @@ Le fichier `referentiel/tests/attendus_standards.csv` (2891 lignes, 7 combinaiso
 - El335a : « Liste choix unique  » → « Liste choix unique »
 - El335f : « Liste choix unique  » → « Liste choix unique »
 
-### Liste déroulante différente du texte « Choix de réponse » (la liste déroulante est retenue) (52)
-
-- El30b
-- El302
-- El511
-- El69
-- El70
-- El71
-- El77
-- El78l
-- El81b
-- El82
-- El142
-- El132
-- El138
-- El488
-- El191
-- El183l
-- El183b
-- El183e
-- El183j
-- El184
-- El185
-- El186
-- El5c
-- El5e
-- El151b
-- El152
-- El494
-- El152b
-- El494b
-- El161c
-- El163
-- El199b
-- El268
-- El222
-- El224a
-- El224c
-- El224d
-- El314
-- El316a
-- El506a
-- El510a
-- El321
-- El328
-- El270
-- El258c
-- El260a
-- El260b
-- El260g
-- El339c
-- El352
-- El359
-- El335f
-
 ### Question placée directement sous un chapitre (thème « Généralités » créé) (3)
 
 - El445
@@ -370,6 +381,10 @@ Le fichier `referentiel/tests/attendus_standards.csv` (2891 lignes, 7 combinaiso
 - El260g / el260g
 - El260h / el260h
 
+### Choix repris de la colonne « Choix de réponse » (ni liste déroulante, ni liste nommée) (1)
+
+- El325
+
 ### Niveau de standard écrit en minuscules (uniformisé) (4)
 
 - El328b / DAG_SOFI : sp
@@ -377,16 +392,12 @@ Le fichier `referentiel/tests/attendus_standards.csv` (2891 lignes, 7 combinaiso
 - El328b / Non_standardisé : sp
 - El33b / DAV : sp
 
-### Condition : critère absent des choix de la question mère (la fille ne peut jamais s'afficher par une liste) (8)
+### Condition : critère absent des choix de la question mère (la fille ne peut jamais s'afficher par une liste) (4)
 
 - El174 ← El164a = « Oui »
-- El332b ← El332 <> « Oui »
 - El353b ← El353 <> « Oui. Niveau minimal imposé »
 - El361b ← El361 <> « Guide de vente  »
-- El500 ← El59 <> « Autres »
-- El60d ← El60b <> « Autres »
-- El372 ← El370 <> « maintenance »
-- El103c ← El103 <> « Autre »
+- El73b ← El73 <> « autre »
 
 ### Condition : identifiant écrit différemment (majuscules) (3)
 

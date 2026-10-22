@@ -14,3 +14,16 @@
 4. L'utilisateur fait `git pull`, puis **ImporterReferentiel** et **TesterMoteur** (0 écart attendu), et la version du référentiel augmente.
 
 Pourquoi un fichier de corrections plutôt que modifier le classeur d'origine : l'outil d'origine reste intact (il sert encore), les corrections sont traçables et rejouables à chaque nouvelle extraction. Quand l'outil d'administration (`SGO_Admin.xlam`) existera, le référentiel sera modifié directement dans l'outil, avec un numéro de version et une note de version (cadrage P2), et ce fichier de corrections ne servira plus.
+
+## Intégrer une nouvelle version de l'outil d'origine
+Tant que l'outil d'origine sert de référence (avant `SGO_Admin.xlam`), ses évolutions (questions, standards, conditions mère/fille, listes de choix) sont reprises ainsi :
+1. L'utilisateur fournit le nouveau classeur d'origine (`02_PhaseElaborationOffre_*.xlsm`). **Il n'est jamais commité** (identifiant de connexion dans « 10-Entreprises Sourcées »).
+2. Claude lance `python outils/migrer_referentiel.py <classeur>.xlsm` :
+   - `referentiel/*.csv` est régénéré ; **le numéro de version augmente** si le contenu change ;
+   - `docs/rapport_migration.md` liste **les changements par rapport à la version précédente** (questions ajoutées, retirées, modifiées ; conditions ; standards ; structure), puis les anomalies et la preuve d'équivalence ;
+   - les corrections de `referentiel/corrections.csv` sont réappliquées.
+3. Claude relance `python outils/lister_anomalies.py <classeur>.xlsm` : les anomalies corrigées dans l'outil d'origine disparaissent du fichier du CDP.
+4. L'utilisateur fait `git pull`, **ImporterReferentiel**, **TesterMoteur** (0 écart). À leur ouverture, les dossiers existants signalent qu'ils ont été remplis avec une version antérieure (la mise à jour complète des dossiers, avec rapport et « À revoir », est prévue à l'itération 11).
+
+## Sources des listes de choix
+Comme dans l'outil d'origine : 1) la liste déroulante de la cellule Réponse (choix unique) ; 2) la liste nommée `ListeElxxx` de « 120-REF Listes » (fenêtre de choix multiples) ; 3) à défaut, le texte de la colonne « Choix de réponse ».

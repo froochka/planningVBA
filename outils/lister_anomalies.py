@@ -148,19 +148,26 @@ def main(classeur, sortie):
                     "Filles : " + ", ".join(c["fille"] for c in conditions if c["mere"].lower() == qid),
                     "Aucun (le nouvel outil se base sur les règles).", "Ajouter la marque (cohérence de la base)")
 
-    # --- 5. Liste déroulante différente du texte « Choix de réponse »
+    # --- 5. Liste proposée à l'acheteur différente du texte « Choix de réponse »
+    #      (liste déroulante de la cellule, ou liste nommée ListeElxxx des choix multiples)
     for qid, (i, r) in elab_par_id.items():
         q = questions.get(qid)
-        if not q or not q["mode"].startswith("Liste") or i not in dvs:
+        if not q or not q["mode"].startswith("Liste"):
             continue
-        dv = resoudre(dvs[i]) or []
+        if i in dvs:
+            liste, quoi = resoudre(dvs[i]) or [], "La liste déroulante de la cellule"
+        elif ("liste" + qid) in resoudre.noms:
+            nom = resoudre.noms["liste" + qid]
+            liste, quoi = resoudre(nom) or [], f"La liste nommée {nom} (fenêtre de choix multiples)"
+        else:
+            continue
         texte = [x.strip() for x in r[7].split(";") if x.strip()]
-        if dv and texte and [x.lower() for x in dv] != [x.lower() for x in texte]:
+        if liste and texte and [x.lower() for x in liste] != [x.lower() for x in texte]:
             ajouter("Liste de choix", "À vérifier", q["id"], "",
-                    "La liste déroulante de la cellule ne correspond pas au texte de la colonne « Choix de réponse ».",
-                    "Liste déroulante : " + " | ".join(dv) + "\nTexte : " + " | ".join(texte),
-                    "L'outil propose la liste déroulante (celle que les acheteurs utilisaient).",
-                    "Confirmer la liste déroulante, ou indiquer la bonne liste")
+                    quoi + " ne correspond pas au texte de la colonne « Choix de réponse ».",
+                    "Liste proposée : " + " | ".join(liste) + "\nTexte : " + " | ".join(texte),
+                    "L'outil propose la liste que voyaient les acheteurs dans l'outil d'origine.",
+                    "Confirmer cette liste, ou indiquer la bonne liste")
 
     # --- 6. Structure
     for c in categories.values():
@@ -203,8 +210,8 @@ def main(classeur, sortie):
                 auto.append(["Niveau de standard en minuscules", r[0], f"« sp » → « Sp » ({h[: -len(mig.ENTETE_NIVEAU)]})"])
     for qid, (i, r) in elab_par_id.items():
         q = questions.get(qid)
-        if q and q["mode"].startswith("Liste") and i not in dvs and q["choix"]:
-            auto.append(["Choix repris du texte « Choix de réponse » (pas de liste déroulante)", q["id"],
+        if q and q["mode"].startswith("Liste") and i not in dvs and ("liste" + qid) not in resoudre.noms and q["choix"]:
+            auto.append(["Choix repris du texte « Choix de réponse » (ni liste déroulante, ni liste nommée)", q["id"],
                          f"{q['mode']} : {court(q['choix'].replace('|', ' | '), 200)}"])
 
     # --- Écriture
