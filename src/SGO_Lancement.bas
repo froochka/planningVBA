@@ -99,6 +99,10 @@ Public Function InitialiserSession() As Boolean
         msg = msg & IIf(msg = "", "", vbCrLf) & inconnues & _
               " réponse(s) concernent des questions absentes du référentiel : elles restent dans le fichier."
     End If
+    If gRapportOuverture <> "" Then
+        msg = msg & IIf(msg = "", "", vbCrLf & vbCrLf) & "Contrôle du dossier à l'ouverture :" & gRapportOuverture
+    End If
+    gRapportOuverture = ""
     If msg <> "" Then MsgBox msg, vbInformation, "SGO"
     InitialiserSession = True
     Exit Function
@@ -164,7 +168,7 @@ Public Function ModifierPageGarde() As Boolean
     End If
 
     For Each k In Split(CHAMPS_OFFRE, ";")
-        If gGarde.Exists(k) And k <> "version_referentiel" And k <> "cree_le" And k <> "modifie_le" Then
+        If gGarde.Exists(k) And k <> "version_referentiel" And k <> "cree_le" And k <> "modifie_le" And k <> "modifie_par" Then
             DossierEcrire CStr(k), CStr(gGarde(k))
         End If
     Next k

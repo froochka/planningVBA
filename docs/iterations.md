@@ -130,6 +130,16 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
 - **Ruban** : onglet « SGO » du `.xlam` (Nouveau dossier, Ouvrir / récents, Saisir, Page de garde, Revue, Exporter, Aide), le dossier visé étant le **classeur actif** ; à faire avec la preuve de concept `.xlam`. D'ici là, la macro `SGO` reste le point d'entrée.
 - Avancement des thèmes et sous-thèmes : on garde les pictogrammes et les info-bulles (pas de barres).
 
+## Itération 7 : fiabiliser le dossier (en cours, 22/10/2026)
+- **Livré** (`SGO_Dossier.bas`, format de dossier 2) :
+  - une seule feuille visible, **Accueil** : résumé de l'offre (n°, libellé, direction, standards, avancement, dernière modification et auteur) et message « Ce fichier s'ouvre avec l'outil SGO » ;
+  - feuilles Offre, Reponses, Archives **très masquées**, structure du classeur **protégée** par mot de passe, marqueur interne `SGO_Dossier` ;
+  - **lecture robuste** : colonnes retrouvées par leur en-tête, colonnes en plus ignorées, colonnes manquantes recréées, doublons signalés ; **rapport de contrôle** affiché à l'ouverture si besoin ;
+  - **copie de sauvegarde** à chaque ouverture, dans le sous-dossier « Sauvegardes SGO » (5 dernières) ;
+  - les dossiers créés à l'itération 6 sont **convertis automatiquement** à leur première ouverture.
+- **Livré pour le CDP** : `docs/anomalies_referentiel.xlsx` (100 anomalies à trancher, 267 corrections automatiques), procédure d'intégration dans `docs/anomalies_referentiel.md`.
+- **Décision** : les numéros de cas ①②③④ sont conservés à l'écran.
+
 ## Prochaines itérations (indicatif)
 | N° | Contenu |
 |---|---|

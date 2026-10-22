@@ -34,7 +34,7 @@ xlSheetHidden xlSheetVisible xlSheetVeryHidden xlUp xlWhole xlWBATWorksheet xlOp
 MSForms ListBox TabStrip ComboBox TextBox OptionButton Label Frame MultiPage Page CheckBox ReturnInteger ReturnBoolean
 Controls Cells Rows Columns Unload Load Hide Show Space String
 UserForm_Initialize UserForm_QueryClose Cancel CloseMode KeyCode Shift
-Kill FileLen Environ Choose
+Kill FileLen Environ Choose ActiveWindow MkDir RmDir FileCopy
 """.split())
 
 def nettoyer(ligne):
@@ -263,6 +263,8 @@ for f in FICHIERS:
                 if avant.endswith("."):
                     continue
                 if nom in KEYWORDS or nom in BUILTINS or nom in locaux or nom in module_vars or nom in decl_globales:
+                    continue
+                if re.match(r"(xl|vb|mso|fm)[A-Z]", m.group(1)):      # constantes Excel / VBA / Office / MSForms
                     continue
                 # "As Type"
                 if re.search(r"(?i)\bas\s+(new\s+)?$", avant):

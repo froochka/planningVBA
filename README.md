@@ -74,7 +74,7 @@ Git ne peut pas fusionner deux versions d'un `.xlsm`. Il faut donc :
 - *Oui* : nouveau dossier → page de garde → choix du fichier `.xlsx` du dossier → écran de saisie ;
 - *Non* : ouvrir un dossier `.xlsx` existant.
 
-Le dossier d'une offre est un fichier `.xlsx` **séparé et sans macro** (feuilles Offre, Reponses, Archives). Ne le rangez pas dans le dépôt Git.
+Le dossier d'une offre est un fichier `.xlsx` **séparé et sans macro**. Il s'ouvre **avec l'outil** : seule sa feuille d'accueil est visible dans Excel, les données sont masquées et protégées. À chaque ouverture, une copie est faite dans le sous-dossier « Sauvegardes SGO » (5 dernières). Ne le rangez pas dans le dépôt Git.
 
 Après une mise à jour du référentiel (`git pull` qui modifie `referentiel/`), relancer **ImporterReferentiel**.
 
