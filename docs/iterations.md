@@ -139,6 +139,8 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
   - les dossiers créés à l'itération 6 sont **convertis automatiquement** à leur première ouverture.
 - **Livré pour le CDP** : `docs/anomalies_referentiel.xlsx` (100 anomalies à trancher, 267 corrections automatiques), procédure d'intégration dans `docs/anomalies_referentiel.md`.
 - **Décision** : les numéros de cas ①②③④ sont conservés à l'écran.
+- **Version de test pour le CDP** (0.7) : macro `PreparerVersionTest` (page « Démarrer » à 3 boutons, feuille « Remarques », feuilles techniques masquées) et fiche `docs/fiche_test_CDP.pdf`.
+- **Listes de choix** : listes nommées `ListeElxxx` en priorité, comme l'outil d'origine ; référentiel version 2 ; jusqu'à 12 choix affichés en entier.
 
 ## Prochaines itérations (indicatif)
 | N° | Contenu |

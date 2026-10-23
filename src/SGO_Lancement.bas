@@ -36,6 +36,15 @@ Public Sub SGO()
     End Select
 End Sub
 
+' Boutons de la page « Démarrer » (version de test)
+Public Sub SGONouveauDossier()
+    If PreparerReferentiel() Then NouveauDossier
+End Sub
+
+Public Sub SGOOuvrirDossier()
+    If PreparerReferentiel() Then OuvrirDossierExistant
+End Sub
+
 Private Function PreparerReferentiel() As Boolean
     If Not ReferentielPresent() Then
         MsgBox "Le référentiel n'est pas encore dans le classeur." & vbCrLf & _

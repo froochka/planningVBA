@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>Fiche de test SGO</title>
+<style>
+  @page { size: A4; margin: 10mm 13mm; }
+  body { font-family: "Segoe UI", "Liberation Sans", Arial, sans-serif; font-size: 9.6pt; color: #212529; line-height: 1.3; }
+  h1 { background: #16365c; color: #fff; font-size: 17pt; margin: 0 0 4px; padding: 10px 14px; }
+  .sous { color: #646c76; margin: 0 0 12px; }
+  h2 { color: #16365c; font-size: 12pt; border-bottom: 2px solid #9cc3e6; padding-bottom: 2px; margin: 10px 0 4px; }
+  ol, ul { margin: 4px 0 4px 20px; padding: 0; }
+  li { margin: 2px 0; }
+  .note { background: #fff9e6; border-left: 5px solid #d69e00; padding: 6px 10px; margin: 8px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 10pt; }
+  td { border-bottom: 1px solid #e3e7ec; padding: 3px 6px; vertical-align: top; }
+  td:first-child { width: 22px; color: #0063b1; font-weight: bold; }
+  .k { font-weight: bold; }
+  .pied { color: #969ca4; font-size: 8.5pt; margin-top: 10px; }
+</style></head><body>
+<h1>SGO · Version de test 0.7 · Fiche pour le chef de projet</h1>
+<p class="sous">Nouvel outil de saisie du Dossier de conception de l'offre (DCO). Aucune connaissance de VBA n'est nécessaire.</p>
+
+<h2>1. Avant d'ouvrir le fichier (une seule fois)</h2>
+<ol>
+  <li>Enregistrez <span class="k">SGO_test_CDP_v0.7.xlsm</span> dans un dossier de votre poste (pas directement depuis la messagerie ou Teams).</li>
+  <li>Clic droit sur le fichier › <span class="k">Propriétés</span> › en bas, cochez <span class="k">Débloquer</span> › OK.</li>
+  <li>Ouvrez-le. Si un bandeau jaune apparaît, cliquez sur <span class="k">Activer le contenu</span>.</li>
+</ol>
+<div class="note">Si Excel indique que les macros sont bloquées par votre organisation, prévenez l'équipe projet : le fichier devra être placé dans un dossier approuvé par la DSI.</div>
+
+<h2>2. Utiliser l'outil</h2>
+<p>Le classeur s'ouvre sur la page <span class="k">Démarrer</span>, avec trois boutons :</p>
+<ul>
+  <li><span class="k">Créer un nouveau dossier</span> : remplissez la page de garde (direction achat, standard de direction et d'univers obligatoires), puis choisissez où enregistrer le dossier (un fichier .xlsx par offre). L'écran de saisie s'ouvre.</li>
+  <li><span class="k">Ouvrir un dossier existant</span> : choisissez un dossier .xlsx déjà créé.</li>
+  <li><span class="k">Noter une remarque</span> : ajoute une ligne datée dans la feuille Remarques.</li>
+</ul>
+<p>Les réponses sont enregistrées automatiquement à chaque changement de question, et à la fermeture de l'écran.</p>
+
+<h2>3. Ce que nous vous proposons de tester</h2>
+<table>
+  <tr><td>1</td><td>Créer un dossier (par exemple DAI / Logiciels), puis naviguer : chapitres à gauche, thèmes en onglets, sous-thèmes en boutons, questions, détail.</td></tr>
+  <tr><td>2</td><td>Questions mère / fille : chapitre 03 › 03.2, question <span class="k">El77</span>, choisir « Offre non exécutée » : le sous-thème 03.2.2 apparaît et 03.2.3 se grise.</td></tr>
+  <tr><td>3</td><td>Les 4 cas : modifier une réponse avec standard (bandeau rouge, justification obligatoire en jaune) ; sur une question spécifique, choisir « Différente » (justification demandée).</td></tr>
+  <tr><td>4</td><td>Boutons « Reprendre le standard », « Non concerné », « Rétablir les standards du sous-thème », « Valider et suivante ».</td></tr>
+  <tr><td>5</td><td>Choix multiples : <span class="k">El111</span> (chapitre 04), 10 choix à cocher.</td></tr>
+  <tr><td>6</td><td>Filtre « Afficher » et case « Questions sans objet » ; recherche en haut à droite (« El84 » ou un mot comme « reconduction ») ; boutons A− / A+.</td></tr>
+  <tr><td>7</td><td>« Page de garde » : changer d'univers et lire l'analyse d'impact avant de valider.</td></tr>
+  <tr><td>8</td><td>Fermer, puis « Ouvrir un dossier existant » : les réponses sont conservées. Double-cliquer sur le .xlsx : seule une page d'accueil s'affiche (normal).</td></tr>
+</table>
+
+<h2>4. Vos remarques</h2>
+<ul>
+  <li>Bouton <span class="k">Noter une remarque</span> : choisissez l'écran, indiquez la question concernée si besoin (El…), décrivez ce que vous avez constaté ou souhaitez, et la gravité (Bloquant, Gênant, Suggestion).</li>
+  <li>Une capture d'écran est la bienvenue (touches Windows + Maj + S).</li>
+  <li>À la fin du test, <span class="k">enregistrez le classeur</span> et renvoyez-le à l'équipe projet : vos remarques sont dedans.</li>
+</ul>
+
+<h2>5. Limites de cette version</h2>
+<ul>
+  <li>Pas encore : écran de revue des cas dérogatoires, exports PDF / HTML, lots, annexes, outil d'administration.</li>
+  <li>Les questions de type « Annexe 10 » affichent seulement le nom de l'annexe.</li>
+  <li>Les dossiers créés pendant le test ne servent qu'au test.</li>
+</ul>
+<p class="pied">SGO · version de test 0.7 · référentiel version 2 (413 questions, migré de l'outil d'origine du 07/07/2026).</p>
+</body></html>

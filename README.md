@@ -78,3 +78,11 @@ Le dossier d'une offre est un fichier `.xlsx` **séparé et sans macro**. Il s'o
 
 Après une mise à jour du référentiel (`git pull` qui modifie `referentiel/`), relancer **ImporterReferentiel**.
 
+
+## Préparer une version de test pour le chef de projet
+1. `git pull`, puis dans Excel : **ImporterVBA**, **ImporterReferentiel**, **TesterMoteur** (0 écart).
+2. `Alt+F8` → **PreparerVersionTest** : crée la page « Démarrer » (3 boutons : nouveau dossier, ouvrir un dossier, noter une remarque) et la feuille « Remarques », masque les feuilles techniques, puis enregistre une copie, par exemple `SGO_test_CDP_v0.7.xlsm`, **hors du dossier Git**.
+3. Envoyer cette copie avec la fiche `docs/fiche_test_CDP.pdf`.
+4. Au retour, les remarques du chef de projet sont dans la feuille « Remarques » de son classeur.
+
+Le classeur de développement est lui aussi modifié (page « Démarrer », feuilles masquées) : vous pouvez le fermer sans l'enregistrer, ou le garder ainsi (clic droit sur un onglet › Afficher pour revoir une feuille).
