@@ -142,6 +142,19 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
 - **Version de test pour le CDP** (0.7) : macro `PreparerVersionTest` (page « Démarrer » à 3 boutons, feuille « Remarques », feuilles techniques masquées) et fiche `docs/fiche_test_CDP.pdf`.
 - **Listes de choix** : listes nommées `ListeElxxx` en priorité, comme l'outil d'origine ; référentiel version 2 ; jusqu'à 12 choix affichés en entier.
 
+## Retours du CDP sur la version de test 0.7 (lignes 2 à 30 du fichier « remarques CDP.xlsx », vus le 09/11/2026)
+- **Livré** (version de test 0.8) :
+  - **vocabulaire** : « DCO » au lieu de « dossier » dans tous les textes visibles (règle pour les futurs écrans) ; « puis saisie des réponses » ; sous-dossier « Sauvegardes DCO » ; nom proposé `DCO_AO_<n° de procédure>.xlsx` ;
+  - **filtre** : Toutes les questions / En attente de réponse / Dérogation à justifier / Dérogation au standard ; « Standard modifié » et la flèche ↻ supprimés (aussi dans « Question suivante à traiter ») ;
+  - **légende** en deux parties : questions (conforme, dérogation à justifier, spécifique offre, en attente de réponse, non concerné) et rubriques (complété, en cours, à compléter) ;
+  - **« Non concerné »** remplace « sans objet » partout, avec deux pictos : ⊘ question grisée, – réponse « Non concerné » de l'acheteur ;
+  - **libellés** : « Dérogation au standard », « Question précédente / suivante / suivante à traiter », « Comparaison avec l'offre précédente » ; mentions sur l'offre précédente retirées ;
+  - **thème choisi grisé**, comme le sous-thème ;
+  - **règle** : justification obligatoire uniquement pour une dérogation au standard (cas ②) ; le cas ④ n'en demande plus ;
+  - **écran non bloquant** : Excel reste accessible pendant la saisie (le DCO est masqué pendant ce temps, un seul écran à la fois) ; plein écran par défaut, bouton « Réduire » (petite fenêtre en bas à droite d'Excel) ; A+ / A- sans écran blanc.
+- **En attente du CDP** : zone « Comparaison avec l'offre précédente » (valeur par défaut, mêmes choix pour toutes les questions, rappel si le commentaire est vide) ; absence de copie de sauvegarde sur le Bureau (message vu ?).
+- **Lignes 31 et suivantes** : à voir plus tard (`docs/points_en_attente.md`).
+
 ## Prochaines itérations (indicatif)
 | N° | Contenu |
 |---|---|

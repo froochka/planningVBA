@@ -71,10 +71,12 @@ Git ne peut pas fusionner deux versions d'un `.xlsm`. Il faut donc :
 5. Enregistrer le classeur.
 
 **Ensuite** : `Alt+F8` → **SGO**
-- *Oui* : nouveau dossier → page de garde → choix du fichier `.xlsx` du dossier → écran de saisie ;
-- *Non* : ouvrir un dossier `.xlsx` existant.
+- *Oui* : nouveau DCO → page de garde → choix du fichier `.xlsx` → écran de saisie ;
+- *Non* : ouvrir un DCO `.xlsx` existant.
 
-Le dossier d'une offre est un fichier `.xlsx` **séparé et sans macro**. Il s'ouvre **avec l'outil** : seule sa feuille d'accueil est visible dans Excel, les données sont masquées et protégées. À chaque ouverture, une copie est faite dans le sous-dossier « Sauvegardes SGO » (5 dernières). Ne le rangez pas dans le dépôt Git.
+Le DCO d'une offre est un fichier `.xlsx` **séparé et sans macro**. Il s'ouvre **avec l'outil** : seule sa feuille d'accueil est visible dans Excel, les données sont masquées et protégées. À chaque ouverture, une copie est faite dans le sous-dossier « Sauvegardes DCO » (5 dernières). Ne le rangez pas dans le dépôt Git.
+
+L'écran de saisie **n'est pas bloquant** : Excel reste utilisable pendant la saisie (le DCO est masqué pendant ce temps et réapparaît à la fermeture de l'écran). Le bouton « Réduire » de l'en-tête le ramène à une petite fenêtre en bas à droite. Un seul écran de saisie peut être ouvert à la fois.
 
 Après une mise à jour du référentiel (`git pull` qui modifie `referentiel/`), relancer **ImporterReferentiel**.
 

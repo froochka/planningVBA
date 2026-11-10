@@ -182,15 +182,17 @@ Quand l'acheteur modifie la page de garde, l'outil calcule d'abord l'impact : *�
 
 | Statut | Signification |
 |---|---|
-| ○ Non répondue | |
+| ○ En attente de réponse | |
 | ✓ Conforme | Réponse conforme au standard |
-| ! À justifier | Réponse différente du standard, sans justification |
+| ! Dérogation à justifier | Réponse différente du standard, sans justification |
 | ✓ Justifiée | Réponse différente du standard, avec justification |
-| ⟳ À revoir | Après une mise à jour du référentiel ou un changement de page de garde |
+| ⟳ À revoir | Après une mise à jour du référentiel (P3). Supprimé pour le changement de page de garde (09/11/2026) : la conformité est simplement recalculée |
 | – Non concernée | |
 | (masquée) | Condition non remplie : n'apparaît pas et ne compte pas |
 
 L'avancement est affiché par chapitre, thème et sous-thème dans la navigation, et en global en haut de l'écran.
+
+**Décision du 09/11/2026** : la justification n'est obligatoire que pour une **dérogation au standard**. Une réponse spécifique (sans standard) n'en demande pas, même si elle diffère de l'offre précédente ; la comparaison avec l'offre précédente est une information facultative.
 
 ❓ La conformité doit-elle être **calculée automatiquement** quand c'est possible (réponse choisie dans une liste, comparée au standard), ou toujours **déclarée** par l'acheteur ?
 

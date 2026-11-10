@@ -7,8 +7,12 @@ Option Explicit
 '
 ' Navigation : chapitres (liste) > thèmes (onglets) > sous-thèmes (boutons)
 ' > questions > détail (Réponse / Standards / Commentaire).
-' Les réponses sont écrites dans le dossier de l'offre (.xlsx) à chaque
-' changement de question, et le fichier est enregistré (décision ES-13).
+' Les réponses sont écrites dans le DCO (.xlsx) à chaque passage d'une
+' question à une autre, et le fichier est enregistré (décision ES-13).
+' Fenêtre non bloquante (SGO_Lancement.AfficherSaisie) : plein écran, ou
+' réduite en bas à droite d'Excel (bouton de l'en-tête) pour travailler dans
+' Excel. Pour se reconstruire (taille du texte, page de garde, réduire /
+' agrandir), l'écran ouvre un nouvel écran puis se ferme (Rouvrir).
 ' =============================================================================
 
 ' --- Contrôles avec événements ------------------------------------------------
@@ -39,6 +43,7 @@ Private WithEvents btnAmoins As MSForms.Label
 Private WithEvents btnAplus As MSForms.Label
 Private WithEvents btnFermer As MSForms.Label
 Private WithEvents btnFermerRes As MSForms.Label
+Private WithEvents btnFenetre As MSForms.Label      ' réduire / agrandir l'écran
 
 Private mp As MSForms.MultiPage
 Private fraChap As MSForms.Frame        ' liste des chapitres (lignes de Labels)
@@ -59,6 +64,8 @@ Private chapSel As Long                 ' chapitre affiché (0 = premier)
 Private qSel As Long                    ' question sélectionnée dans listeQ (0 = première, -1 : aucune)
 Private chargement As Boolean           ' ignore les événements pendant un remplissage par le code
 Private sale As Boolean                 ' la question courante a changé depuis le dernier enregistrement
+Private qRetour As cQuestionSGO         ' question affichée à l'ouverture (et au retour de l'écran réduit)
+Private monNum As Long                  ' numéro de cet écran (voir gNumSaisie)
 
 ' --- Disposition ------------------------------------------------------------------
 Private M As Single, W As Single, H As Single      ' marge, largeur et hauteur utiles
@@ -66,7 +73,7 @@ Private wDet As Single, hDet As Single  ' taille utile des pages du détail
 Private xIn As Single, yIn As Single, wIn As Single, yBas As Single, wQ As Single
 Private hSST As Single, yZone As Single ' hauteur des onglets de sous-thèmes ; haut de la zone Questions
 
-Private Const FILTRES As String = "Toutes les questions;Sans réponse;Justification manquante;Standard modifié;Non conformes au standard"
+Private Const FILTRES As String = "Toutes les questions;En attente de réponse;Dérogation à justifier;Dérogation au standard"
 
 ' =============================================================================
 ' Ouverture, fermeture
@@ -74,22 +81,34 @@ Private Const FILTRES As String = "Toutes les questions;Sans réponse;Justificat
 Private Sub UserForm_Initialize()
     On Error GoTo erreur
     UIInit
+    gNumSaisie = gNumSaisie + 1
+    monNum = gNumSaisie
+    Set qRetour = gQuestionDepart
+    Set gQuestionDepart = Nothing
+    If gSaisieReduite Then
+        ConstruireReduit
+        Exit Sub
+    End If
     Construire
-    If gQuestionDepart Is Nothing Then
+    If qRetour Is Nothing Then
         AllerAQuestion PremiereQuestionVisible()
     Else
-        AllerAQuestion gQuestionDepart
-        Set gQuestionDepart = Nothing
+        AllerAQuestion qRetour
     End If
     Exit Sub
 erreur:
     MsgBox "Erreur à l'ouverture de l'écran de saisie : " & Err.Description, vbExclamation, "SGO"
 End Sub
 
+' Fermeture : seul le dernier écran ouvert termine la saisie (lors d'une
+' réouverture, l'ancien écran se ferme après l'ouverture du nouveau)
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     On Error Resume Next
+    If monNum <> gNumSaisie Then Exit Sub
     Valider
     SauverDossier
+    gSaisieReduite = False
+    MasquerDossier False                             ' le DCO réapparaît dans Excel
 End Sub
 
 Private Sub UserForm_Terminate()
@@ -114,7 +133,7 @@ Private Sub Construire()
     chapSel = -1: qSel = -1: yZone = -1
     M = UI_MARGE
     Me.Caption = "SGO - Élaboration du DCO   ·   " & gWbDossier.Name
-    UIDimensionner Me, 0.95, 760, 440, 1600, 1000
+    UIPleinEcran Me
     Me.BackColor = uiCoulFond
     W = Me.InsideWidth: H = Me.InsideHeight
     hEntete = 56: hPied = 44
@@ -128,9 +147,11 @@ Private Sub Construire()
     UIFond Me, "lblBandeau", 0, 0, W, hEntete, uiBandeau
     UILbl Me, "lblTitre", "Élaboration du DCO", M + 4, 6, 260, UILigneH(4), True, 4, uiBlanc
     wR = UIBorne(W * 0.3, 240, 340)
-    UILbl Me, "lblContexte", TexteContexte(), M + 4, 33, W - wR - 3 * M - 130, UILigneH(-1), False, -1, RGB(200, 216, 234)
+    UILbl Me, "lblContexte", TexteContexte(), M + 4, 33, W - wR - 3 * M - 130 - 36, UILigneH(-1), False, -1, RGB(200, 216, 234)
     Me.Controls("lblContexte").WordWrap = False
     Set btnPageGarde = UIBouton(Me, "btnPageGarde", "Page de garde", W - M - wR - M - 124, 30, 124, 20, 2, ICO_CRAYON)
+    Set btnFenetre = UIBouton(Me, "btnFenetre", "", W - M - wR - M - 124 - 8 - 28, 30, 28, 20, 2, ICO_REDUIRE)
+    btnFenetre.ControlTipText = "Réduire l'écran pour travailler dans Excel (il reste ouvert en bas à droite)"
     Set txtRecherche = UITxt(Me, "txtRecherche", "", W - M - wR, 7, wR - 30, 20)
     txtRecherche.ControlTipText = "Identifiant (El84) ou mot-clé, puis Entrée"
     Set btnRech = UIBouton(Me, "btnRech", "", W - M - 28, 7, 28, 20, 1, ICO_RECHERCHE)
@@ -141,12 +162,13 @@ Private Sub Construire()
 
     ' --- Chapitres ------------------------------------------------------------------
     UILbl Me, "lblChapTitre", "CHAPITRES", M + 4, yCorps, wNav - 8, UILigneH(-2), True, -2, uiGris
-    Set fraChap = NouvelleListe("fraChap", M, yCorps + 18, wNav, hCorps - 18 - 48, uiOngletFond)
-    Legende M + 2, yCorps + hCorps - 44, wNav - 4
+    y = Legende(M + 2, yCorps + hCorps - 2, wNav - 4)    ' renvoie le haut de la légende
+    Set fraChap = NouvelleListe("fraChap", M, yCorps + 18, wNav, UIBorne(y - 8 - (yCorps + 18), 60, 2000), uiOngletFond)
 
     ' --- Thèmes (onglets) et sous-thèmes (boutons) -----------------------------------
     Set tsThemes = UICtl(Me, "Forms.TabStrip.1", "tsThemes", x0, yCorps, wZone, hCorps)
     tsThemes.Font.Name = UI_POLICE_SYMB
+    tsThemes.Style = 1                               ' boutons : le thème choisi apparaît grisé, comme le sous-thème
     tsThemes.TabFixedHeight = UILigneH() + 8
     Set c = UILbl(Me, "lblThemesTitre", "Thèmes", x0 + wZone - 96, yCorps + 5, 90, UILigneH(-2), False, -2, uiGris)
     c.TextAlign = 3
@@ -172,13 +194,13 @@ Private Sub Construire()
     UILbl Me, "lblFiltre", "Afficher", xIn, yIn + 27, 52, UILigneH()
     Set cboFiltre = UICombo(Me, "cboFiltre", xIn + 54, yIn + 24, UIBorne(wQ - 54 - 190, 110, 260), UILigneH() + 8, Split(FILTRES, ";"))
     cboFiltre.ListIndex = 0
-    ' Afficher ou non les questions sans objet (grisées) ; réglage mémorisé, coché par défaut (ES-4)
+    ' Afficher ou non les questions non concernées (grisées) ; réglage mémorisé, coché par défaut (ES-4)
     Set chkSansObjet = UICtl(Me, "Forms.CheckBox.1", "chkSansObjet", cboFiltre.Left + cboFiltre.Width + 10, yIn + 26, _
                              UIBorne(wQ - (cboFiltre.Left + cboFiltre.Width + 10 - xIn), 60, 200), UILigneH() + 4)
-    chkSansObjet.Caption = "Questions sans objet"
+    chkSansObjet.Caption = "Questions non concernées"
     chkSansObjet.BackStyle = 0
     chkSansObjet.Value = (GetSetting("SGO", "Affichage", "SansObjet", "1") = "1")
-    chkSansObjet.ControlTipText = "Afficher les questions sans objet (grisées, non modifiables)"
+    chkSansObjet.ControlTipText = "Afficher les questions non concernées (grisées, non modifiables)"
     UILbl Me, "lblCompteur", "", xIn, yIn + 24 + UILigneH() + 12, wQ, UILigneH(-2), False, -2, uiGris
     Set fraQ = NouvelleListe("fraQ", xIn, yIn + 60, wQ, 100, uiBlanc)
     Set btnRetablir = UIBouton(Me, "btnRetablir", "Rétablir les standards du sous-thème", xIn, yBas - 28, wQ, 28, 0, ICO_COCHE)
@@ -203,18 +225,24 @@ Private Sub Construire()
     Set btnNC = UIBouton(Me, "btnNC", "Non concerné", xD + mp.Width - 196 - 8 - 128, yBas - 30, 128, 30, 0)
     btnNC.ControlTipText = "Répond « " & NC_OFFRE & " » (même règle que l'outil d'origine)"
 
-    ' --- Pied de page --------------------------------------------------------------------
+    ' --- Pied de page (largeur des boutons selon la taille du texte) ---------------------
     y = H - hPied + 8
-    Set btnPrec = UIBouton(Me, "btnPrec", "Précédente", M, y, 112, 28, 0, ICO_PRECEDENT)
-    Set btnSuiv = UIBouton(Me, "btnSuiv", "Suivante", M + 120, y, 104, 28, 0, ICO_SUIVANT)
-    Set btnSuivTraiter = UIBouton(Me, "btnSuivTraiter", "Suivante à traiter", M + 232, y, 170, 28, 0, ICO_SUIVANT)
-    btnSuivTraiter.ControlTipText = "Question suivante sans réponse, à justifier ou au standard modifié"
-    Set btnAmoins = UIBouton(Me, "btnAmoins", "A-", M + 410, y, 34, 28, 0)
+    x0 = M
+    Set btnPrec = UIBouton(Me, "btnPrec", "Question précédente", x0, y, LargeurBouton("Question précédente"), 28, 0, ICO_PRECEDENT)
+    x0 = x0 + LargeurBouton("Question précédente") + 8
+    Set btnSuiv = UIBouton(Me, "btnSuiv", "Question suivante", x0, y, LargeurBouton("Question suivante"), 28, 0, ICO_SUIVANT)
+    x0 = x0 + LargeurBouton("Question suivante") + 8
+    Set btnSuivTraiter = UIBouton(Me, "btnSuivTraiter", "Question suivante à traiter", x0, y, _
+                                  LargeurBouton("Question suivante à traiter"), 28, 0, ICO_SUIVANT)
+    btnSuivTraiter.ControlTipText = "Question suivante en attente de réponse ou dérogation à justifier"
+    x0 = x0 + LargeurBouton("Question suivante à traiter") + 8
+    Set btnAmoins = UIBouton(Me, "btnAmoins", "A-", x0, y, 34, 28, 0)
     btnAmoins.ControlTipText = "Réduire la taille du texte"
-    Set btnAplus = UIBouton(Me, "btnAplus", "A+", M + 448, y, 34, 28, 0)
+    Set btnAplus = UIBouton(Me, "btnAplus", "A+", x0 + 38, y, 34, 28, 0)
     btnAplus.ControlTipText = "Agrandir la taille du texte"
+    x0 = x0 + 38 + 34 + 12
     Set btnFermer = UIBouton(Me, "btnFermer", "Fermer", W - M - 126, y, 126, 28, 0)
-    Set c = UILbl(Me, "lblEnregistre", "", M + 500, y + 7, W - M - 126 - 8 - (M + 500), UILigneH(-1), True, -1, uiVert)
+    Set c = UILbl(Me, "lblEnregistre", "", x0, y + 7, UIBorne(W - M - 126 - 8 - x0, 20, 2000), UILigneH(-1), True, -1, uiVert)
     c.Font.Name = UI_POLICE_SYMB: c.TextAlign = 1: c.WordWrap = False
 
     PlacerZoneQuestions False, False
@@ -224,22 +252,60 @@ Private Sub Construire()
     chargement = False
 End Sub
 
-' Légende des pictogrammes, chacun dans sa couleur de statut
-Private Sub Legende(ByVal x0 As Single, ByVal y0 As Single, ByVal largeur As Single)
-    Dim items As Variant, coul As Variant, i As Long, x As Single, y As Single, w As Single, c As Object
-    items = Array(ChrW(&H2713) & " conforme", "! à justifier", ChrW(&H25C6) & " spécifique", _
-                  ChrW(&H25CB) & " à saisir", ChrW(&H21BB) & " standard modifié", ChrW(&H2298) & " sans objet")
-    coul = Array(uiVert, uiRouge, uiBleuStatut, uiGris, uiOrange, uiGrisClair)
+Private Function LargeurBouton(ByVal texte As String) As Single
+    LargeurBouton = Len(texte) * uiTaille * 0.55 + 34
+End Function
+
+' Légende des pictogrammes (questions, puis rubriques), chacun dans sa couleur ;
+' posée au-dessus de yFin, renvoie son haut
+Private Function Legende(ByVal x0 As Single, ByVal yFin As Single, ByVal largeur As Single) As Single
+    Dim hLeg As Single
+    hLeg = PlacerLegende(x0, 0, largeur, False)         ' mesure
+    PlacerLegende x0, yFin - hLeg, largeur, True
+    Legende = yFin - hLeg
+End Function
+
+' Place (ou mesure seulement, si Not creer) la légende ; renvoie sa hauteur.
+' Un élément qui commence par « | » est un titre.
+Private Function PlacerLegende(ByVal x0 As Single, ByVal y0 As Single, ByVal largeur As Single, ByVal creer As Boolean) As Single
+    Dim items As Variant, coul As Variant, bulle As Variant, i As Long, x As Single, y As Single, w As Single
+    Dim c As Object, txt As String, titre As Boolean
+    items = Array("|Questions", ChrW(&H2713) & " conforme", "! dérogation à justifier", ChrW(&H25C6) & " spécifique offre", _
+                  ChrW(&H25CB) & " en attente de réponse", ChrW(&H2013) & " non concerné (réponse)", _
+                  ChrW(&H2298) & " non concerné (grisée)", _
+                  "|Rubriques", ChrW(&H2713) & " complété", ChrW(&H25D0) & " en cours", ChrW(&H25CB) & " à compléter")
+    coul = Array(uiGris, uiVert, uiRouge, uiBleuStatut, uiGris, uiGris, uiGrisClair, uiGris, uiVert, uiGris, uiGris)
+    bulle = Array("", "Réponse conforme au standard", "Réponse différente du standard : la justification est obligatoire", _
+                  "Aucun standard : réponse propre à l'offre", "Aucune réponse pour l'instant", _
+                  "Réponse « " & NC_OFFRE & " » choisie par l'acheteur", _
+                  "Non concerné : dépend de la réponse à une question mère, ou standard « non concerné » pour votre direction/univers ; non modifiable", _
+                  "", "Toutes les questions de la rubrique sont traitées", "Une partie des questions est traitée", _
+                  "Aucune question traitée")
     x = x0: y = y0
     For i = 0 To UBound(items)
-        w = Len(items(i)) * (uiTaille - 2) * 0.52 + 10
-        If x + w > x0 + largeur Then x = x0: y = y + UILigneH(-2) + 2
-        Set c = UILbl(Me, "lblLeg" & i, CStr(items(i)), x, y, w, UILigneH(-2), (i = 1), -2, CLng(coul(i)))
-        c.Font.Name = UI_POLICE_SYMB: c.WordWrap = False
-        If i = 5 Then c.ControlTipText = "Sans objet : dépend de la réponse à une question mère, ou sans standard pour votre direction/univers"
-        x = x + w
+        txt = CStr(items(i))
+        titre = (Left$(txt, 1) = "|")
+        If titre Then
+            txt = UCase$(Mid$(txt, 2))
+            If i > 0 Then y = y + UILigneH(-2) + 6
+            x = x0: w = largeur
+        Else
+            w = Len(txt) * (uiTaille - 2) * 0.52 + 10
+            If x + w > x0 + largeur And x > x0 Then x = x0: y = y + UILigneH(-2) + 2
+        End If
+        If creer Then
+            Set c = UILbl(Me, "lblLeg" & i, txt, x, y, w, UILigneH(-2), titre Or (i = 2), -2, CLng(coul(i)))
+            c.Font.Name = UI_POLICE_SYMB: c.WordWrap = False
+            c.ControlTipText = CStr(bulle(i))
+        End If
+        If titre Then
+            y = y + UILigneH(-2) + 1
+        Else
+            x = x + w
+        End If
     Next i
-End Sub
+    PlacerLegende = y + UILigneH(-2) - y0
+End Function
 
 ' « 03 Montage contractuel › 03.2 Modalités d'intervention › 03.2.2 Offre non exécutée › El78b »
 Private Function FilAriane() As String
@@ -262,13 +328,38 @@ Private Function TexteContexte() As String
                     IIf(gUniversChoisi = "", "", " · Univers " & LibelleCode(gUniversChoisi))
 End Function
 
-' Tout reconstruire (taille du texte ou page de garde modifiée) : la fenêtre est
-' fermée puis rouverte sur la même question par SGO_Lancement.AfficherSaisie.
-' (On ne supprime jamais un contrôle pendant son propre événement.)
+' Tout reconstruire (taille du texte, page de garde modifiée, réduire /
+' agrandir) : un nouvel écran est ouvert sur la même question, puis celui-ci
+' est fermé, sans écran vide entre les deux. (On ne supprime jamais un
+' contrôle pendant son propre événement.)
 Private Sub Rouvrir()
-    Set gQuestionDepart = curQ
-    gRouvrirSaisie = True
-    Unload Me
+    If curQ Is Nothing Then Set gQuestionDepart = qRetour Else Set gQuestionDepart = curQ
+    Valider
+    If AfficherSaisie() Then Unload Me
+End Sub
+
+' Écran réduit : petite fenêtre en bas à droite d'Excel, pour travailler dans
+' Excel (feuille Remarques...) puis revenir à la saisie
+Private Sub ConstruireReduit()
+    Dim hTitre As Single
+    M = UI_MARGE
+    Me.Caption = "SGO - " & gWbDossier.Name
+    Me.BackColor = uiBlanc
+    Me.Width = UIBorne(330 * uiTaille / 10, 300, 480)
+    hTitre = Me.Height - Me.InsideHeight
+    Me.Height = hTitre + 14 + 2 * UILigneH(-1) + 12 + 28 + 10
+    W = Me.InsideWidth: H = Me.InsideHeight
+    UIEnBasADroite Me
+    UIFond Me, "lblBandeau", 0, 0, W, 6, uiBandeau
+    UILbl Me, "lblReduit", "Saisie en pause" & IIf(qRetour Is Nothing, "", " sur la question " & qRetour.Id) & "." & vbCrLf & _
+          "Excel reste utilisable pendant ce temps.", M + 4, 14, W - 2 * M - 8, 2 * UILigneH(-1), False, -1, uiGris
+    Set btnFenetre = UIBouton(Me, "btnFenetre", "Revenir à la saisie", M + 4, H - 38, UIBorne(W - 2 * M - 8 - 98, 120, 300), 28, 1, ICO_AGRANDIR)
+    Set btnFermer = UIBouton(Me, "btnFermer", "Fermer", W - M - 4 - 90, H - 38, 90, 28, 0)
+End Sub
+
+Private Sub btnFenetre_Click()
+    gSaisieReduite = Not gSaisieReduite
+    Rouvrir
 End Sub
 
 Private Sub LibererDetail()
@@ -380,7 +471,7 @@ End Sub
 
 Private Sub cboFiltre_Change()
     If chargement Then Exit Sub
-    chkSansObjet.Enabled = (cboFiltre.ListIndex <= 0)    ' les autres filtres excluent déjà les questions sans objet
+    chkSansObjet.Enabled = (cboFiltre.ListIndex <= 0)    ' les autres filtres excluent déjà les questions non concernées
     AppliquerFiltre
 End Sub
 
@@ -410,7 +501,7 @@ Private Sub AppliquerFiltre()
     End If
 End Sub
 
-' Affiche une question sans objet même si la case est décochée (recherche, lien direct)
+' Affiche une question non concernée même si la case est décochée (recherche, lien direct)
 Private Sub MontrerSansObjet()
     If chkSansObjet.Value Then Exit Sub
     chargement = True
@@ -476,7 +567,7 @@ Private Sub AfficherSousTheme(ByVal sst As cCategorieSGO, ByVal q As cQuestionSG
     Dim i As Long, cible As Long
     Set curSST = sst
     If sst.Grisee() Then
-        Me.Controls("lblMasque").Caption = ChrW(&H2298) & " « " & sst.Libelle & " » est sans objet : " & RaisonMasquage(sst.Id) & "."
+        Me.Controls("lblMasque").Caption = ChrW(&H2298) & " « " & sst.Libelle & " » : non concerné (" & RaisonMasquage(sst.Id) & ")."
     Else
         Me.Controls("lblMasque").Caption = ""
     End If
@@ -489,7 +580,7 @@ Private Sub AfficherSousTheme(ByVal sst As cCategorieSGO, ByVal q As cQuestionSG
         For i = 1 To listeQ.Count
             If listeQ(i) Is q Then cible = i - 1
         Next i
-        If cible < 0 Then                            ' filtrée : on revient à « Toutes », sans objet compris
+        If cible < 0 Then                            ' filtrée : on revient à « Toutes », non concernées comprises
             cboFiltre.ListIndex = 0
             chkSansObjet.Enabled = True
             If q.Statut = ST_MASQUEE Then MontrerSansObjet
@@ -529,10 +620,10 @@ Private Sub RemplirQuestions(ByVal reconstruire As Boolean)
     Next q
     If cboFiltre.ListIndex <= 0 And nMasq > 0 And Not chkSansObjet.Value Then
         Me.Controls("lblCompteur").Caption = nTot & " question" & IIf(nTot > 1, "s", "") & ", dont " & nMasq & _
-            " sans objet masquée" & IIf(nMasq > 1, "s", "")
+            " non concernée" & IIf(nMasq > 1, "s", "") & " masquée" & IIf(nMasq > 1, "s", "")
     ElseIf cboFiltre.ListIndex <= 0 Then
         Me.Controls("lblCompteur").Caption = nTot & " question" & IIf(nTot > 1, "s", "") & _
-            IIf(nMasq > 0, ", dont " & nMasq & " sans objet (grisée" & IIf(nMasq > 1, "s", "") & ", non modifiable" & IIf(nMasq > 1, "s", "") & ")", "")
+            IIf(nMasq > 0, ", dont " & nMasq & " non concernée" & IIf(nMasq > 1, "s", "") & " (grisée" & IIf(nMasq > 1, "s", "") & ", non modifiable" & IIf(nMasq > 1, "s", "") & ")", "")
     Else
         Me.Controls("lblCompteur").Caption = nouvelle.Count & " sur " & nTot & " question" & IIf(nTot > 1, "s", "")
     End If
@@ -549,8 +640,8 @@ Private Sub RemplirQuestions(ByVal reconstruire As Boolean)
     End If
     If identique Then
         For i = 1 To listeQ.Count
-            fraQ.Controls("Q" & (i - 1) & "_ico").Caption = UIPicto(listeQ(i).Statut, listeQ(i).StandardModifie)
-            fraQ.Controls("Q" & (i - 1) & "_ico").Tag = CStr(UICouleurStatut(listeQ(i).Statut, listeQ(i).StandardModifie))
+            fraQ.Controls("Q" & (i - 1) & "_ico").Caption = UIPicto(listeQ(i).Statut)
+            fraQ.Controls("Q" & (i - 1) & "_ico").Tag = CStr(UICouleurStatut(listeQ(i).Statut))
             CouleursLigne fraQ, "Q" & (i - 1), (i - 1 = qSel), listeQ(i).Statut = ST_MASQUEE
         Next i
         Exit Sub
@@ -565,8 +656,8 @@ Private Sub RemplirQuestions(ByVal reconstruire As Boolean)
         Set q = listeQ(i)
         lib = Replace(Replace(q.Libelle, vbCr, " "), vbLf, " ")
         If q.Statut = ST_MASQUEE Then lib = "(" & RaisonMasquage(q.Id) & ") " & lib
-        y = y + AjouterLigneListe(fraQ, "Q", i - 1, y, UIPicto(q.Statut, q.StandardModifie), _
-                                  UICouleurStatut(q.Statut, q.StandardModifie), q.Id, lib, "", 3, _
+        y = y + AjouterLigneListe(fraQ, "Q", i - 1, y, UIPicto(q.Statut), _
+                                  UICouleurStatut(q.Statut), q.Id, lib, "", 3, _
                                   q.Statut = ST_MASQUEE, q.Id & " · " & Replace(Replace(q.Libelle, vbCr, " "), vbLf, " "), -1)
     Next i
     AjusterDefilement fraQ, y
@@ -749,10 +840,9 @@ End Sub
 
 Private Function PasseFiltre(ByVal q As cQuestionSGO) As Boolean
     Select Case cboFiltre.ListIndex
-        Case 1: PasseFiltre = (q.Statut = ST_NON_REPONDUE)
-        Case 2: PasseFiltre = (q.Statut = ST_A_JUSTIFIER)
-        Case 3: PasseFiltre = q.StandardModifie
-        Case 4: PasseFiltre = (q.Conformite = CONF_NON_CONFORME)
+        Case 1: PasseFiltre = (q.Statut = ST_NON_REPONDUE)                ' en attente de réponse
+        Case 2: PasseFiltre = (q.Statut = ST_A_JUSTIFIER)                 ' dérogation à justifier
+        Case 3: PasseFiltre = (q.Conformite = CONF_NON_CONFORME)          ' dérogation au standard (justifiée ou non)
         Case Else: PasseFiltre = (q.Statut <> ST_MASQUEE Or chkSansObjet.Value)
     End Select
 End Function
@@ -805,7 +895,7 @@ Private Function Voisine(ByVal sens As Long, ByVal aTraiter As Boolean) As cQues
         i = ((depart - 1 + sens * k) Mod n + n) Mod n + 1
         Set q = gOrdre(i)
         If q.Statut <> ST_MASQUEE Then
-            If q.Statut = ST_NON_REPONDUE Or q.Statut = ST_A_JUSTIFIER Or q.StandardModifie Then
+            If q.Statut = ST_NON_REPONDUE Or q.Statut = ST_A_JUSTIFIER Then
                 Set Voisine = q: Exit Function
             End If
         End If
@@ -897,9 +987,9 @@ Private Sub ConstruirePageReponse()
     UILbl pg, "lblLibelle", curQ.Libelle, M, y, iw, hz, True, 2
     y = y + hz + 10
 
-    ' Encadré : standard, spécifique, sans objet, annexe ou standard incomplet
+    ' Encadré : standard, spécifique, non concerné, annexe ou standard incomplet
     If masquee Then
-        y = Encadre(pg, y, iw, ChrW(&H2298) & "  SANS OBJET POUR CETTE OFFRE", _
+        y = Encadre(pg, y, iw, ChrW(&H2298) & "  NON CONCERNÉ POUR CETTE OFFRE", _
                     RaisonMasquage(curQ.Id) & ". La question reste visible mais n'est pas modifiable." & _
                     IIf(curQ.AQuelqueChose, " Les réponses déjà saisies sont conservées et seront reprises si la question redevient applicable.", ""), _
                     uiCoulFond, uiGris, uiGris)
@@ -910,16 +1000,9 @@ Private Sub ConstruirePageReponse()
     ElseIf avecStd Then
         y = Encadre(pg, y, iw, ChrW(&H25A3) & "  STANDARD APPLICABLE  ·  " & UCase$(LibelleNiveau(curQ.Niveau)), curQ.Standard, _
                     uiStdFond, uiStdBarre, uiOrange, True)
-        If curQ.StandardModifie Then
-            Set c = UILbl(pg, "lblStdModifie", ChrW(&H21BB) & "  Le standard a changé depuis votre saisie (page de garde modifiée) : " & _
-                          "vérifiez la réponse, puis cliquez sur « Valider et suivante ».", _
-                          M, y - 6, iw, 2 * UILigneH(-2), True, -2, uiOrange)
-            c.Font.Name = UI_POLICE_SYMB
-            y = y + 2 * UILigneH(-2)
-        End If
     ElseIf sp Then
-        y = Encadre(pg, y, iw, "AUCUN STANDARD  ·  Spécifique à l'offre (Sp)", _
-                    "Réponse propre à cette offre. Indiquez si elle diffère de l'offre précédente.", uiCoulFond, uiGris, uiGris)
+        y = Encadre(pg, y, iw, "AUCUN STANDARD  ·  Spécifique offre (Sp)", _
+                    "Réponse propre à cette offre.", uiCoulFond, uiGris, uiGris)
     Else
         y = Encadre(pg, y, iw, "STANDARDS INCOMPLETS", _
                     "Aucun standard n'est défini pour cette question avec votre direction et votre univers : contactez votre administrateur.", _
@@ -975,16 +1058,16 @@ Private Sub ConstruirePageReponse()
     If Not masquee Then
         ' Conformité calculée
         y = BandeauConformite(pg, y, iw)
-        ' Différence avec l'offre précédente
+        ' Comparaison avec l'offre précédente (information, sans justification)
         If sp Then
-            UISection pg, "secDiff", "DIFFÉRENCE AVEC L'OFFRE PRÉCÉDENTE", M, y, iw
+            UISection pg, "secDiff", "COMPARAISON AVEC L'OFFRE PRÉCÉDENTE", M, y, iw
             y = y + 26
             Set optDiffId = UIOpt(pg, "optDiffId", DIFF_IDENTIQUE, M, y, 120, UILigneH() + 6, "grpDiff")
             Set optDiffDiff = UIOpt(pg, "optDiffDiff", DIFF_DIFFERENTE, M + 130, y, 120, UILigneH() + 6, "grpDiff")
             UILbl pg, "lblDiffInfo", "Par défaut « Identique » : à vérifier.", M + 260, y + 3, iw - 260, UILigneH(-2), False, -2, uiGris
             y = y + UILigneH() + 18
         ElseIf avecStd Then
-            UILbl pg, "lblDiffFac", "Différence avec l'offre précédente (facultatif)", M, y, iw, UILigneH(-2), False, -2, uiGris
+            UILbl pg, "lblDiffFac", "Comparaison avec l'offre précédente (facultatif)", M, y, iw, UILigneH(-2), False, -2, uiGris
             Set optDiffNC = UIOpt(pg, "optDiffNC", DIFF_NC, M, y + UILigneH(-2) + 2, 120, UILigneH() + 4, "grpDiff")
             Set optDiffId = UIOpt(pg, "optDiffId", DIFF_IDENTIQUE, M + 126, y + UILigneH(-2) + 2, 100, UILigneH() + 4, "grpDiff")
             Set optDiffDiff = UIOpt(pg, "optDiffDiff", DIFF_DIFFERENTE, M + 232, y + UILigneH(-2) + 2, 110, UILigneH() + 4, "grpDiff")
@@ -996,19 +1079,23 @@ Private Sub ConstruirePageReponse()
             Case Else: If Not optDiffNC Is Nothing Then optDiffNC.Value = True
         End Select
 
-        ' Justification (obligatoire pour les cas 2 et 4)
-        txt = IIf(sp, "JUSTIFICATION DU CAS DIFFÉRENCIANT", "JUSTIFICATION DE LA DÉROGATION AU STANDARD")
-        UISection pg, "secJustif", ChrW(&H270D) & "  " & txt, M, y, iw, True
-        Set c = UILbl(pg, "lblOblig", "obligatoire", M + 24 + Len(txt) * (uiTaille - 2) * 0.66, y, 90, UILigneH(-2), True, -2, RGB(176, 107, 0))
-        c.WordWrap = False
-        c.Visible = (curQ.Statut = ST_A_JUSTIFIER)
-        y = y + 26
-        hz = UIBorne(LignesTexte(curQ.Justification, iw, 0) + 1, 3, 8) * UILigneH() + 8
-        Set txtJustif = UITxt(pg, "txtJustif", curQ.Justification, M, y, iw, hz)
-        txtJustif.MultiLine = True: txtJustif.WordWrap = True: txtJustif.ScrollBars = 2
-        txtJustif.EnterKeyBehavior = True
-        StyleJustification
-        y = y + hz + 12
+        ' Justification : obligatoire pour une dérogation au standard (cas 2). Une
+        ' question spécifique n'en a pas besoin (décision du 09/11/2026) ; on
+        ' montre seulement une justification déjà saisie avec l'ancienne règle.
+        If Not sp Or Trim$(curQ.Justification) <> "" Then
+            txt = IIf(sp, "JUSTIFICATION (SAISIE AVEC L'ANCIENNE RÈGLE)", "JUSTIFICATION DE LA DÉROGATION AU STANDARD")
+            UISection pg, "secJustif", ChrW(&H270D) & "  " & txt, M, y, iw, True
+            Set c = UILbl(pg, "lblOblig", "obligatoire", M + 24 + Len(txt) * (uiTaille - 2) * 0.66, y, 90, UILigneH(-2), True, -2, RGB(176, 107, 0))
+            c.WordWrap = False
+            c.Visible = (curQ.Statut = ST_A_JUSTIFIER)
+            y = y + 26
+            hz = UIBorne(LignesTexte(curQ.Justification, iw, 0) + 1, 3, 8) * UILigneH() + 8
+            Set txtJustif = UITxt(pg, "txtJustif", curQ.Justification, M, y, iw, hz)
+            txtJustif.MultiLine = True: txtJustif.WordWrap = True: txtJustif.ScrollBars = 2
+            txtJustif.EnterKeyBehavior = True
+            StyleJustification
+            y = y + hz + 12
+        End If
     End If
 
     If y > hDet Then
@@ -1062,34 +1149,27 @@ Private Sub MettreAJourBandeau()
             ico = ChrW(&H2713): titre = "Conforme au standard"
             info = "Votre réponse " & IIf(curQ.Operateur = "=", "est égale au", "contient le") & " standard."
             coul = uiVert: fond = uiVertClair: bord = RGB(167, 214, 180)
-        Case ST_A_JUSTIFIER, ST_JUSTIFIEE
-            If curQ.Conformite = CONF_SPECIFIQUE Then
-                ico = ChrW(&H25C6): coul = uiBleuStatut: fond = uiBleuClair: bord = RGB(156, 195, 230)
-                titre = "Spécifique à l'offre · différente de l'offre précédente"
-                info = IIf(curQ.Statut = ST_A_JUSTIFIER, "Justification obligatoire : expliquez la différence ci-dessous.", _
-                           "Différence justifiée.")
-            Else
-                ico = ChrW(&H2717): coul = uiRouge: fond = uiRougeClair: bord = RGB(241, 184, 177)
-                titre = "Non conforme au standard"
-                info = "Votre réponse " & compare & " standard « " & Abrege(Ligne1(curQ.Standard), 110) & " »." & _
-                       IIf(curQ.Statut = ST_A_JUSTIFIER, " Expliquez la dérogation ci-dessous.", " Dérogation justifiée.")
-            End If
+        Case ST_A_JUSTIFIER, ST_JUSTIFIEE            ' dérogation au standard (cas 2)
+            ico = ChrW(&H2717): coul = uiRouge: fond = uiRougeClair: bord = RGB(241, 184, 177)
+            titre = "Dérogation au standard"
+            info = "Votre réponse " & compare & " standard « " & Abrege(Ligne1(curQ.Standard), 110) & " »." & _
+                   IIf(curQ.Statut = ST_A_JUSTIFIER, " Expliquez la dérogation ci-dessous.", " Dérogation justifiée.")
             If curQ.Statut = ST_A_JUSTIFIER Then titre = titre & " · justification obligatoire"
         Case ST_SPECIFIQUE
             ico = ChrW(&H25C6): coul = uiBleuStatut: fond = uiBleuClair: bord = RGB(156, 195, 230)
-            titre = "Spécifique à l'offre"
-            info = "Aucun standard pour cette question : réponse propre à l'offre, identique à l'offre précédente (à vérifier)."
+            titre = "Spécifique offre"
+            info = "Réponse propre à l'offre."
         Case ST_NON_CONCERNEE
             ico = ChrW(&H2013): coul = uiGris: fond = uiCoulFond: bord = uiLigne
             titre = "Non concerné"
-            info = "Cette question est sans objet pour l'offre."
+            info = "Réponse « Non concerné » : la question ne s'applique pas à cette offre."
         Case ST_INCOMPLET
             ico = "?": coul = uiOrange: fond = uiStdFond: bord = RGB(230, 199, 102)
             titre = "Standards incomplets"
             info = "Aucun standard n'est défini pour votre direction et votre univers : contactez votre administrateur."
         Case Else
             ico = ChrW(&H25CB): coul = uiGris: fond = uiCoulFond: bord = uiLigne
-            titre = "Réponse à saisir"
+            titre = "En attente de réponse"
             info = IIf(curQ.Niveau = "Sp", "Aucun standard pour cette question : saisissez la réponse propre à l'offre.", _
                        "Saisissez une réponse.")
     End Select
@@ -1338,7 +1418,6 @@ Private Sub MettreAJourDetail()
     Set pg = mp.Pages(0)
     On Error Resume Next
     pg.Controls("lblRepComplete").Caption = "Réponse retenue : " & IIf(curQ.Reponse = "", "(aucune)", curQ.Reponse)
-    If Not curQ.StandardModifie Then pg.Controls("lblStdModifie").Caption = ""
     pg.Controls("lblModifiee").Visible = ReponseModifiee()
     pg.Controls("lblOblig").Visible = (curQ.Statut = ST_A_JUSTIFIER)
     On Error GoTo 0
@@ -1396,11 +1475,6 @@ End Sub
 
 Private Sub btnValSuiv_Click()
     If curQ Is Nothing Then Exit Sub
-    If curQ.StandardModifie Then
-        curQ.StandardModifie = False
-        sale = True
-        EvaluerDossier
-    End If
     Aller Voisine(1, False), "Dernière question atteinte."
 End Sub
 
@@ -1415,7 +1489,7 @@ Private Sub Valider()
     Exit Sub
 erreur:
     MsgBox "Enregistrement impossible : " & Err.Description & vbCrLf & _
-           "Vérifiez que le dossier n'est pas ouvert en lecture seule.", vbExclamation, "SGO"
+           "Vérifiez que le DCO n'est pas ouvert en lecture seule.", vbExclamation, "SGO"
 End Sub
 
 ' Questions du sous-thème remises au standard
@@ -1519,7 +1593,7 @@ Private Sub Rechercher()
     For Each q In resultats
         chemin = Left$(gCategories(gCategories(gCategories(q.SousTheme).Parent).Parent).Libelle, 2) & " › " & _
                  gCategories(q.SousTheme).Libelle
-        UIAjouterLigne lstRes, q.Id, chemin, IIf(q.Statut = ST_MASQUEE, "(sans objet) ", "") & _
+        UIAjouterLigne lstRes, q.Id, chemin, IIf(q.Statut = ST_MASQUEE, "(non concerné) ", "") & _
                        Replace(Replace(q.Libelle, vbCr, " "), vbLf, " ")
     Next q
     If lstRes.ListCount > 0 Then lstRes.ListIndex = 0

@@ -3,13 +3,16 @@ Option Explicit
 ' =============================================================================
 ' Points d'entrée de l'application SGO (itération 6 : vraies données)
 '
-'   Alt+F8 > SGO                   : créer ou ouvrir un dossier d'offre, puis saisir
+'   Alt+F8 > SGO                   : créer ou ouvrir un DCO, puis saisir
 '   Alt+F8 > ImporterReferentiel   : (re)charger referentiel\*.csv dans le classeur
 '   Alt+F8 > TesterMoteur          : contrôle du moteur par rapport à l'outil d'origine
 '   Alt+F8 > CreerFormulairesSGO   : crée les UserForms vides frmGarde et frmSaisie
 '                                    (une seule fois, puis relancer ImporterVBA)
 '
-' Le dossier d'une offre est un fichier .xlsx séparé, sans macro (voir SGO_Dossier).
+' Le DCO d'une offre est un fichier .xlsx séparé, sans macro (voir SGO_Dossier).
+' L'écran de saisie n'est pas bloquant : Excel reste utilisable pendant la
+' saisie (feuille Remarques, autres classeurs). Le DCO est alors masqué, et un
+' seul écran de saisie peut être ouvert à la fois (SaisieDejaOuverte).
 ' =============================================================================
 
 ' Échange avec la page de garde (frmGarde)
@@ -17,20 +20,24 @@ Public gGarde As Object              ' champ -> valeur (voir CHAMPS_OFFRE) + "co
 Public gGardeValidee As Boolean
 Public gGardeCreation As Boolean     ' True : nouveau dossier (pas de choix « Conserver »)
 
-' Réouverture de l'écran de saisie (taille du texte ou page de garde modifiée)
-Public gRouvrirSaisie As Boolean
+' Écran de saisie : question à afficher à la (ré)ouverture, mode réduit, et
+' numéro du dernier écran ouvert (lors d'une réouverture, le nouvel écran est
+' affiché avant la fermeture de l'ancien : seul le dernier rend la main)
 Public gQuestionDepart As cQuestionSGO
+Public gSaisieReduite As Boolean
+Public gNumSaisie As Long
 
 Public Sub SGO()
+    If SaisieDejaOuverte() Then Exit Sub
     If Not PreparerReferentiel() Then Exit Sub
     If DossierOuvert() Then
-        If MsgBox("Reprendre le dossier ouvert « " & gWbDossier.Name & " » ?", vbYesNo + vbQuestion, "SGO") = vbYes Then
+        If MsgBox("Reprendre le DCO ouvert « " & gWbDossier.Name & " » ?", vbYesNo + vbQuestion, "SGO") = vbYes Then
             If InitialiserSession() Then AfficherSaisie
             Exit Sub
         End If
     End If
-    Select Case MsgBox("Oui : créer un nouveau dossier d'offre" & vbCrLf & _
-                       "Non : ouvrir un dossier existant (.xlsx)", vbYesNoCancel + vbQuestion, "SGO")
+    Select Case MsgBox("Oui : créer un nouveau DCO" & vbCrLf & _
+                       "Non : ouvrir un DCO existant (.xlsx)", vbYesNoCancel + vbQuestion, "SGO")
         Case vbYes: NouveauDossier
         Case vbNo: OuvrirDossierExistant
     End Select
@@ -38,12 +45,29 @@ End Sub
 
 ' Boutons de la page « Démarrer » (version de test)
 Public Sub SGONouveauDossier()
+    If SaisieDejaOuverte() Then Exit Sub
     If PreparerReferentiel() Then NouveauDossier
 End Sub
 
 Public Sub SGOOuvrirDossier()
+    If SaisieDejaOuverte() Then Exit Sub
     If PreparerReferentiel() Then OuvrirDossierExistant
 End Sub
+
+' Un seul écran de saisie à la fois (il utilise le référentiel et le DCO
+' chargés) : s'il est déjà ouvert, on le ramène au premier plan.
+Public Function SaisieDejaOuverte() As Boolean
+    Dim f As Object, ouverte As Object
+    For Each f In VBA.UserForms
+        If f.Name = "frmSaisie" Then Set ouverte = f
+    Next f
+    If ouverte Is Nothing Then Exit Function
+    SaisieDejaOuverte = True
+    MsgBox "L'écran de saisie du DCO est déjà ouvert" & IIf(DossierOuvert(), " (" & gWbDossier.Name & ")", "") & "." & vbCrLf & _
+           "Pour ouvrir ou créer un autre DCO, fermez d'abord cet écran.", vbInformation, "SGO"
+    On Error Resume Next
+    ouverte.Show vbModeless
+End Function
 
 Private Function PreparerReferentiel() As Boolean
     If Not ReferentielPresent() Then
@@ -68,13 +92,13 @@ Private Sub NouveauDossier()
     If Not AfficherForm("frmGarde") Then Exit Sub
     If Not gGardeValidee Then Exit Sub
 
-    nom = "Offre_" & NomFichier(gGarde("numero_procedure")) & ".xlsx"
-    If nom = "Offre_.xlsx" Then nom = "Offre_" & Format$(Date, "yyyy-mm-dd") & ".xlsx"
+    nom = "DCO_AO_" & NomFichier(gGarde("numero_procedure")) & ".xlsx"
+    If nom = "DCO_AO_.xlsx" Then nom = "DCO_AO_" & Format$(Date, "yyyy-mm-dd") & ".xlsx"
     chemin = Application.GetSaveAsFilename(InitialFileName:=nom, _
-                                           FileFilter:="Dossier SGO (*.xlsx), *.xlsx", Title:="Enregistrer le dossier de l'offre")
+                                           FileFilter:="DCO (*.xlsx), *.xlsx", Title:="Enregistrer le DCO")
     If VarType(chemin) = vbBoolean Then Exit Sub
     If Dir(CStr(chemin)) <> "" Then
-        MsgBox "Ce fichier existe déjà. Choisissez un autre nom, ou ouvrez-le avec « Non » au lancement.", _
+        MsgBox "Ce fichier existe déjà. Choisissez un autre nom, ou ouvrez-le avec « Ouvrir un DCO existant ».", _
                vbExclamation, "SGO"
         Exit Sub
     End If
@@ -84,13 +108,13 @@ End Sub
 
 Private Sub OuvrirDossierExistant()
     Dim chemin As Variant
-    chemin = Application.GetOpenFilename(FileFilter:="Dossier SGO (*.xlsx), *.xlsx", Title:="Ouvrir un dossier d'offre")
+    chemin = Application.GetOpenFilename(FileFilter:="DCO (*.xlsx), *.xlsx", Title:="Ouvrir un DCO")
     If VarType(chemin) = vbBoolean Then Exit Sub
     If Not OuvrirDossier(CStr(chemin)) Then Exit Sub
     If InitialiserSession() Then AfficherSaisie
 End Sub
 
-' Référentiel neuf + réponses du dossier + évaluation
+' Référentiel neuf + réponses du DCO + évaluation
 Public Function InitialiserSession() As Boolean
     Dim inconnues As Long, msg As String
     On Error GoTo erreur
@@ -100,7 +124,7 @@ Public Function InitialiserSession() As Boolean
     inconnues = ChargerReponses()
     EvaluerDossier
     If DossierValeur("version_referentiel") <> gVersionRef Then
-        msg = "Ce dossier a été rempli avec la version " & DossierValeur("version_referentiel") & _
+        msg = "Ce DCO a été rempli avec la version " & DossierValeur("version_referentiel") & _
               " du référentiel ; la version installée est la " & gVersionRef & "."
         DossierEcrire "version_referentiel", gVersionRef
     End If
@@ -109,14 +133,14 @@ Public Function InitialiserSession() As Boolean
               " réponse(s) concernent des questions absentes du référentiel : elles restent dans le fichier."
     End If
     If gRapportOuverture <> "" Then
-        msg = msg & IIf(msg = "", "", vbCrLf & vbCrLf) & "Contrôle du dossier à l'ouverture :" & gRapportOuverture
+        msg = msg & IIf(msg = "", "", vbCrLf & vbCrLf) & "Contrôle du DCO à l'ouverture :" & gRapportOuverture
     End If
     gRapportOuverture = ""
     If msg <> "" Then MsgBox msg, vbInformation, "SGO"
     InitialiserSession = True
     Exit Function
 erreur:
-    MsgBox "Chargement du dossier impossible : " & Err.Description, vbExclamation, "SGO"
+    MsgBox "Chargement du DCO impossible : " & Err.Description, vbExclamation, "SGO"
 End Function
 
 ' -----------------------------------------------------------------------------
@@ -155,22 +179,14 @@ Public Function ModifierPageGarde() As Boolean
         If MsgBox(n & " question(s) ont un standard différent avec la nouvelle direction ou le nouvel univers," & _
                   vbCrLf & "dont " & nSaisies & " déjà saisie(s)" & IIf(liste = "", "", " (" & liste & IIf(nSaisies > 12, "…", "") & ")") & "." & _
                   vbCrLf & vbCrLf & IIf(conserver, _
-                    "Les réponses saisies seront conservées ; celles dont le standard change seront marquées « Standard modifié ».", _
+                    "Les réponses saisies seront conservées : vérifiez celles dont le standard change (elles peuvent devenir des dérogations au standard).", _
                     "Toutes les réponses seront archivées (feuille Archives) et les questions repartiront du standard.") & _
                   vbCrLf & vbCrLf & "Appliquer le changement ?", vbOKCancel + vbQuestion, "SGO - Page de garde") = vbCancel Then
             Exit Function
         End If
-        If conserver Then
-            For Each k In gQuestions.Keys
-                Set q = gQuestions(k)
-                If q.Saisie And Not q.Systeme Then
-                    If ValeurStd(q.Id, nouvDir, nouvUniv, NiveauStd(q.Id, nouvDir, nouvUniv)) <> q.Standard Then
-                        q.StandardModifie = True
-                        EnregistrerQuestion q
-                    End If
-                End If
-            Next k
-        Else
+        ' Réponses conservées : la conformité est recalculée avec le nouveau standard
+        ' (le marquage « Standard modifié » a été supprimé le 09/11/2026)
+        If Not conserver Then
             ArchiverReponses "Page de garde : " & ancDir & " / " & ancUniv & " -> " & nouvDir & " / " & nouvUniv
         End If
         ModifierPageGarde = True
@@ -187,14 +203,23 @@ Public Function ModifierPageGarde() As Boolean
     ModifierPageGarde = True
 End Function
 
-' Écran de saisie ; rouvert tant qu'il le demande (gRouvrirSaisie)
-Public Sub AfficherSaisie()
-    Do
-        gRouvrirSaisie = False
-        If Not AfficherForm("frmSaisie") Then Exit Sub
-    Loop While gRouvrirSaisie
-    Set gQuestionDepart = Nothing
-End Sub
+' Écran de saisie, non bloquant : Excel reste accessible pendant la saisie et
+' le DCO est masqué (SGO_Dossier.MasquerDossier). Aussi appelé par l'écran
+' lui-même pour se rouvrir (taille du texte, page de garde, réduire / agrandir) :
+' le nouvel écran est affiché avant la fermeture de l'ancien (pas d'écran vide).
+Public Function AfficherSaisie() As Boolean
+    Dim f As Object
+    On Error GoTo erreur
+    Set f = VBA.UserForms.Add("frmSaisie")
+    f.Show vbModeless
+    MasquerDossier True
+    AfficherSaisie = True
+    Exit Function
+erreur:
+    MsgBox "Impossible d'ouvrir l'écran de saisie : " & Err.Description & vbCrLf & vbCrLf & _
+           "Si ce formulaire n'existe pas encore, lancez CreerFormulairesSGO puis ImporterVBA.", _
+           vbExclamation, "SGO"
+End Function
 
 ' Ouvre un formulaire par son nom : le module se compile même si le formulaire
 ' n'a pas encore été créé dans le classeur

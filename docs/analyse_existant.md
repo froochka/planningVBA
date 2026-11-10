@@ -68,6 +68,7 @@ C'est la réponse à la question Q6 du cadrage.
 
 - **« Différence vs précédent »** ne concerne que les questions `Sp`. Elle vaut **« Identique » par défaut**, et l'acheteur la passe à « Différent » si besoin. Le mode opératoire insiste : la revue des cas « identiques » est **impérative**.
 - **La justification** est obligatoire pour les cas ② et ④.
+- **Nouvel outil, décision du 09/11/2026** : la justification n'est plus demandée que pour le cas ② (dérogation au standard). La comparaison avec l'offre précédente devient une simple information (cas ④ sans justification).
 
 ### 2.4 Questions conditionnelles
 

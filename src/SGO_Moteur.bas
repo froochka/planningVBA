@@ -243,8 +243,9 @@ Private Function QuestionVisible(ByVal q As cQuestionSGO, ByVal pile As String) 
     End If
 End Function
 
-' Différence avec l'offre précédente : « Identique » par défaut pour les
-' questions spécifiques (Sp), « Non concerné » sinon (outil d'origine)
+' Comparaison avec l'offre précédente : « Identique » par défaut pour les
+' questions spécifiques (Sp), « Non concerné » sinon (outil d'origine).
+' Simple information depuis le 09/11/2026 : elle ne demande plus de justification.
 Public Function DifferenceEnVigueur(ByVal q As cQuestionSGO) As String
     If q.Difference <> "" Then
         DifferenceEnVigueur = q.Difference
@@ -255,20 +256,18 @@ Public Function DifferenceEnVigueur(ByVal q As cQuestionSGO) As String
     End If
 End Function
 
-' Statut d'une question visible (les 4 cas du mode opératoire)
+' Statut d'une question visible. Décision du 09/11/2026 : la justification
+' n'est demandée que pour une dérogation au standard (cas 2) ; une réponse
+' spécifique (cas 3 et 4) n'en demande pas, même différente de l'offre précédente.
 Public Function CalculerStatut(ByVal q As cQuestionSGO) As Long
     If q.Conformite = MSG_STANDARD_INCOMPLET Then
         CalculerStatut = ST_INCOMPLET
     ElseIf Trim$(q.Reponse) = "" Then
         CalculerStatut = ST_NON_REPONDUE
     ElseIf q.Conformite = CONF_NON_CONFORME Then
-        CalculerStatut = IIf(Trim$(q.Justification) = "", ST_A_JUSTIFIER, ST_JUSTIFIEE)       ' cas 2
+        CalculerStatut = IIf(Trim$(q.Justification) = "", ST_A_JUSTIFIER, ST_JUSTIFIEE)       ' cas 2 : dérogation
     ElseIf q.Conformite = CONF_SPECIFIQUE Then
-        If DifferenceEnVigueur(q) = DIFF_DIFFERENTE Then
-            CalculerStatut = IIf(Trim$(q.Justification) = "", ST_A_JUSTIFIER, ST_JUSTIFIEE)   ' cas 4
-        Else
-            CalculerStatut = ST_SPECIFIQUE                                                    ' cas 3
-        End If
+        CalculerStatut = ST_SPECIFIQUE                                                        ' cas 3 et 4
     ElseIf q.Conformite = CONF_NON_CONCERNE Then
         CalculerStatut = ST_NON_CONCERNEE
     Else
@@ -341,7 +340,7 @@ Public Function RaisonMasquage(ByVal id As String) As String
         Next cnd
         RaisonMasquage = "Dépend de la réponse à " & txt
     ElseIf gQuestions.Exists(cle) Then
-        RaisonMasquage = "Sa rubrique est sans objet : " & RaisonMasquage(gQuestions(cle).SousTheme)
+        RaisonMasquage = "Sa rubrique est non concernée : " & RaisonMasquage(gQuestions(cle).SousTheme)
     ElseIf gCategories.Exists(cle) Then
         If gCategories(cle).Parent <> "" Then
             If Not gCategories(gCategories(cle).Parent).Visible Then

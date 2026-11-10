@@ -36,6 +36,7 @@ Public Sub ImporterReferentiel()
     Dim dossier As String, noms As Variant, i As Long, t As Variant, ws As Worksheet
     Dim bilan As String, feuilleActive As Object
 
+    If SaisieDejaOuverte() Then Exit Sub             ' ne pas changer le référentiel sous l'écran de saisie
     dossier = ThisWorkbook.Path & "\" & DOSSIER_REF
     If Dir(dossier & "\R_Questions.csv") = "" Then
         MsgBox "Fichiers du référentiel introuvables dans :" & vbCrLf & dossier & vbCrLf & vbCrLf & _

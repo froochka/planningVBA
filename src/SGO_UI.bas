@@ -19,6 +19,8 @@ Public Const ICO_PRECEDENT As Long = &HE76B&
 Public Const ICO_SUIVANT As Long = &HE76C&
 Public Const ICO_COCHE As Long = &HE73E&
 Public Const ICO_FERMER As Long = &HE711&
+Public Const ICO_REDUIRE As Long = &HE73F&        ' BackToWindow
+Public Const ICO_AGRANDIR As Long = &HE740&       ' FullScreen
 
 ' Taille du texte (A- / A+), mémorisée pour l'utilisateur
 Public uiTaille As Single
@@ -83,6 +85,25 @@ Public Sub UIDimensionner(ByVal f As Object, ByVal ratio As Single, ByVal wMin A
     f.Width = UIBorne(Application.UsableWidth * ratio, wMin, wMax)
     f.Height = UIBorne(Application.UsableHeight * ratio, hMin, hMax)
     UICentrer f
+End Sub
+
+' Plein écran : la fenêtre occupe toute la fenêtre d'Excel (tout l'écran si
+' Excel est agrandi)
+Public Sub UIPleinEcran(ByVal f As Object)
+    On Error Resume Next
+    f.StartUpPosition = 0
+    f.Width = UIBorne(Application.Width, 760, 4000)
+    f.Height = UIBorne(Application.Height, 440, 3000)
+    f.Left = Application.Left
+    f.Top = Application.Top
+End Sub
+
+' Petite fenêtre en bas à droite de la fenêtre d'Excel (écran réduit)
+Public Sub UIEnBasADroite(ByVal f As Object)
+    On Error Resume Next
+    f.StartUpPosition = 0
+    f.Left = Application.Left + Application.Width - f.Width - 24
+    f.Top = Application.Top + Application.Height - f.Height - 36
 End Sub
 
 Public Sub UICentrer(ByVal f As Object)
@@ -251,11 +272,7 @@ Public Sub UIAjouterLigne(ByVal lst As Object, ParamArray valeurs() As Variant)
 End Sub
 
 ' Pictogramme de statut d'une question
-Public Function UIPicto(ByVal statut As Long, Optional ByVal standardModifie As Boolean = False) As String
-    If standardModifie And statut <> ST_MASQUEE Then
-        UIPicto = ChrW(&H21BB)                       ' standard modifié : à revoir
-        Exit Function
-    End If
+Public Function UIPicto(ByVal statut As Long) As String
     Select Case statut
         Case ST_MASQUEE: UIPicto = ChrW(&H2298)
         Case ST_NON_REPONDUE: UIPicto = ChrW(&H25CB)
@@ -268,12 +285,9 @@ Public Function UIPicto(ByVal statut As Long, Optional ByVal standardModifie As 
 End Function
 
 ' Couleur d'un statut : un seul code couleur dans tout l'écran
-' (vert conforme, rouge à justifier, bleu spécifique, gris à saisir ou sans objet)
-Public Function UICouleurStatut(ByVal statut As Long, Optional ByVal standardModifie As Boolean = False) As Long
-    If standardModifie And statut <> ST_MASQUEE Then
-        UICouleurStatut = uiOrange
-        Exit Function
-    End If
+' (vert conforme, rouge dérogation à justifier, bleu spécifique offre, gris en
+' attente de réponse ou non concerné)
+Public Function UICouleurStatut(ByVal statut As Long) As Long
     Select Case statut
         Case ST_CONFORME, ST_JUSTIFIEE: UICouleurStatut = uiVert
         Case ST_A_JUSTIFIER: UICouleurStatut = uiRouge

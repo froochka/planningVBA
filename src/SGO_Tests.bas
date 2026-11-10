@@ -20,6 +20,7 @@ Public Sub TesterMoteur()
     Dim chemin As String, debut As Single, dernier As String, k As Variant
 
     debut = Timer
+    If SaisieDejaOuverte() Then Exit Sub             ' le test recharge le référentiel
     If Not ReferentielPresent() Then
         MsgBox "Lancez d'abord ImporterReferentiel.", vbExclamation, "SGO"
         Exit Sub
@@ -99,10 +100,14 @@ Public Sub TesterMoteur()
     Set q = New cQuestionSGO
     q.Niveau = "Sp": q.Reponse = "x": q.Conformite = CONF_SPECIFIQUE
     Verifier "statut", "Sp identique (cas 3)", "-", CStr(ST_SPECIFIQUE), CStr(CalculerStatut(q))
+    ' Décision du 09/11/2026 : une réponse spécifique différente de l'offre précédente
+    ' ne demande pas de justification (cas 4)
     q.Difference = DIFF_DIFFERENTE
-    Verifier "statut", "Sp différente sans justification (cas 4)", "-", CStr(ST_A_JUSTIFIER), CStr(CalculerStatut(q))
+    Verifier "statut", "Sp différente, sans justification (cas 4)", "-", CStr(ST_SPECIFIQUE), CStr(CalculerStatut(q))
+    q.Conformite = CONF_NON_CONFORME
+    Verifier "statut", "dérogation sans justification (cas 2)", "-", CStr(ST_A_JUSTIFIER), CStr(CalculerStatut(q))
     q.Justification = "Motif"
-    Verifier "statut", "Sp différente justifiée (cas 4)", "-", CStr(ST_JUSTIFIEE), CStr(CalculerStatut(q))
+    Verifier "statut", "dérogation justifiée (cas 2)", "-", CStr(ST_JUSTIFIEE), CStr(CalculerStatut(q))
 
     wsRes.Columns("A:F").ColumnWidth = 24
     Application.ScreenUpdating = True

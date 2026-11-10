@@ -13,10 +13,14 @@ Option Explicit
 ' mot de passe est dans ce code.
 ' Lecture robuste : les colonnes sont retrouvées par leur en-tête, et un
 ' contrôle est fait à l'ouverture. Une copie de sauvegarde est faite à chaque
-' ouverture (sous-dossier « Sauvegardes SGO », 5 dernières copies).
+' ouverture (sous-dossier « Sauvegardes DCO », 5 dernières copies).
+' Pendant la saisie, la fenêtre du DCO est masquée (MasquerDossier) ; elle est
+' réaffichée le temps de chaque enregistrement, pour que le fichier enregistré
+' s'ouvre toujours sur sa page d'accueil.
 ' =============================================================================
 
 Public gWbDossier As Workbook
+Private gDossierMasque As Boolean        ' fenêtre du DCO masquée pendant la saisie
 Public gRapportOuverture As String       ' anomalies relevées à l'ouverture (affichées par InitialiserSession)
 
 Public Const CHAMPS_OFFRE As String = "numero_procedure;libelle_procedure;acheteur;assistant;chef_produit;" & _
@@ -31,7 +35,7 @@ Private Const FORMAT_DOSSIER As String = "2"           ' 1 : feuilles visibles (
 Private Const PROPRIETE As String = "SGO_Dossier"      ' marqueur d'un dossier SGO (propriété du classeur)
 Private Const MDP_DOSSIER As String = "SGO-dossier"    ' dissuasif uniquement (voir l'en-tête)
 Private Const NB_SAUVEGARDES As Long = 5
-Private Const DOSSIER_SAUVEGARDES As String = "Sauvegardes SGO"
+Private Const DOSSIER_SAUVEGARDES As String = "Sauvegardes DCO"
 
 ' -----------------------------------------------------------------------------
 ' Création, ouverture
@@ -80,7 +84,7 @@ Public Function CreerDossier(ByVal chemin As String, valeurs As Object) As Boole
 erreur:
     Application.DisplayAlerts = True
     Application.ScreenUpdating = True
-    MsgBox "Création du dossier impossible : " & Err.Description, vbExclamation, "SGO"
+    MsgBox "Création du DCO impossible : " & Err.Description, vbExclamation, "SGO"
 End Function
 
 Public Function OuvrirDossier(ByVal chemin As String) As Boolean
@@ -92,9 +96,10 @@ Public Function OuvrirDossier(ByVal chemin As String) As Boolean
     On Error GoTo erreur
     If wb Is Nothing Then Set wb = Workbooks.Open(chemin)
     If Not EstDossierSGO(wb) Then
-        MsgBox "Ce classeur n'est pas un dossier SGO.", vbExclamation, "SGO"
+        MsgBox "Ce classeur n'est pas un DCO créé avec l'outil SGO.", vbExclamation, "SGO"
         Exit Function
     End If
+    wb.Windows(1).Visible = True                      ' au cas où il serait resté masqué
     Sauvegarder wb
     Application.ScreenUpdating = False
     MettreAuFormat wb                                 ' anciens dossiers : protection ajoutée
@@ -104,7 +109,7 @@ Public Function OuvrirDossier(ByVal chemin As String) As Boolean
     Exit Function
 erreur:
     Application.ScreenUpdating = True
-    MsgBox "Ouverture du dossier impossible : " & Err.Description, vbExclamation, "SGO"
+    MsgBox "Ouverture du DCO impossible : " & Err.Description, vbExclamation, "SGO"
 End Function
 
 Public Function DossierOuvert() As Boolean
@@ -209,9 +214,9 @@ Private Sub ConstruireAccueil(wb As Workbook)
     ws.Range("B11:B14").Borders(xlEdgeLeft).Weight = xlThick
     ws.Range("B11").Value = "Ce fichier s'ouvre avec l'outil SGO."
     ws.Range("B11").Font.Bold = True: ws.Range("B11").Font.Size = 13
-    ws.Range("B12").Value = "Dans Excel : Alt+F8 › SGO › « Non : ouvrir un dossier existant », puis choisissez ce fichier."
+    ws.Range("B12").Value = "Dans l'outil SGO : « Ouvrir un DCO existant », puis choisissez ce fichier."
     ws.Range("B13").Value = "Ses données sont protégées : seules les modifications faites dans l'outil sont prises en compte."
-    ws.Range("B14").Value = "Pour lire ou diffuser le dossier, utilisez les exports de l'outil (PDF, HTML)."
+    ws.Range("B14").Value = "Pour lire ou diffuser le DCO, utilisez les exports de l'outil (PDF, HTML)."
     ws.Range("B12:B14").Font.Color = RGB(80, 70, 40)
     ws.Range("B16").Font.Size = 9
     ws.Range("B16").Font.Color = RGB(150, 156, 164)
@@ -243,7 +248,7 @@ Private Sub MettreAJourAccueil(wb As Workbook)
     End If
     ws.Range("C8").Value = TexteCellule(avt)
     ws.Range("C9").Value = TexteCellule(ValeurDe(wb, "modifie_le") & IIf(ValeurDe(wb, "modifie_par") = "", "", " par " & ValeurDe(wb, "modifie_par")))
-    ws.Range("B16").Value = TexteCellule("Format du dossier " & FORMAT_DOSSIER & " · référentiel version " & ValeurDe(wb, "version_referentiel") & _
+    ws.Range("B16").Value = TexteCellule("Format du DCO " & FORMAT_DOSSIER & " · référentiel version " & ValeurDe(wb, "version_referentiel") & _
                             " · créé le " & ValeurDe(wb, "cree_le"))
 fin:
     On Error Resume Next
@@ -259,7 +264,7 @@ Private Sub Sauvegarder(wb As Workbook)
     On Error GoTo erreur
     If wb.Path = "" Or LCase$(Left$(wb.Path, 4)) = "http" Then
         gRapportOuverture = gRapportOuverture & vbCrLf & _
-            "- Pas de copie de sauvegarde : le dossier n'est pas dans un dossier du poste (Teams / SharePoint en ligne)."
+            "- Pas de copie de sauvegarde : le DCO n'est pas enregistré sur le poste (Teams, SharePoint ou OneDrive en ligne)."
         Exit Sub
     End If
     dossier = wb.Path & "\" & DOSSIER_SAUVEGARDES
@@ -431,13 +436,50 @@ Public Sub EnregistrerQuestion(ByVal q As cQuestionSGO)
 End Sub
 
 Public Sub SauverDossier()
+    Dim ecran As Boolean, actif As Workbook, n As Long, d As String
     If Not DossierOuvert() Then Exit Sub
     DossierEcrire "modifie_le", Format$(Now, "yyyy-mm-dd hh:nn")
     DossierEcrire "modifie_par", Application.UserName
     MettreAJourAccueil gWbDossier
+    ' Un classeur enregistré masqué s'ouvrirait sans fenêtre : on le réaffiche le
+    ' temps de l'enregistrement, sans rafraîchir l'écran
+    ecran = Application.ScreenUpdating
+    If gDossierMasque Then
+        Application.ScreenUpdating = False
+        Set actif = ActiveWorkbook
+        gWbDossier.Windows(1).Visible = True
+    End If
+    On Error GoTo erreur
     Application.DisplayAlerts = False
     gWbDossier.Save
+suite:
+    On Error Resume Next
     Application.DisplayAlerts = True
+    If gDossierMasque Then
+        gWbDossier.Windows(1).Visible = False
+        If Not actif Is Nothing Then
+            If Not actif Is gWbDossier Then actif.Activate
+        End If
+        Application.ScreenUpdating = ecran
+    End If
+    On Error GoTo 0
+    If n <> 0 Then Err.Raise n, , d                   ' l'appelant affiche l'erreur
+    Exit Sub
+erreur:
+    n = Err.Number: d = Err.Description
+    Resume suite
+End Sub
+
+' Masque (pendant la saisie) ou réaffiche la fenêtre du DCO : masqué, il ne
+' peut être ni fermé ni modifié par erreur depuis Excel
+Public Sub MasquerDossier(ByVal masquer As Boolean)
+    If Not DossierOuvert() Then Exit Sub
+    On Error Resume Next
+    ' Enregistrement automatique d'Office 365 (OneDrive) : il garderait l'état masqué
+    If masquer Then CallByName gWbDossier, "AutoSaveOn", VbLet, False
+    gWbDossier.Windows(1).Visible = Not masquer
+    gDossierMasque = masquer
+    If Not masquer Then gWbDossier.Activate
 End Sub
 
 ' Déplace toutes les réponses dans la feuille Archives et remet les questions à

@@ -11,7 +11,7 @@ Option Explicit
 ' Les boutons appellent SGONouveauDossier, SGOOuvrirDossier et NoterRemarque.
 ' =============================================================================
 
-Public Const VERSION_TEST As String = "0.7"
+Public Const VERSION_TEST As String = "0.8"
 Private Const FEUILLE_DEMARRER As String = "Démarrer"
 Private Const FEUILLE_REMARQUES As String = "Remarques"
 
@@ -90,30 +90,31 @@ Private Sub ConstruireDemarrer(ByVal versionRef As String)
         .Interior.Color = RGB(22, 54, 92)
         .Font.Color = RGB(255, 255, 255)
     End With
-    ws.Range("B2").Value = "SGO · Dossier de conception de l'offre"
+    ws.Range("B2").Value = "SGO · Dossier de conception de l'offre (DCO)"
     ws.Range("B2").Font.Size = 18: ws.Range("B2").Font.Bold = True
     ws.Range("J2").Value = "Version de test " & VERSION_TEST
     ws.Range("J2").Font.Color = RGB(200, 216, 234)
 
     y = ws.Range("B5").Top
-    Bouton ws, "btnNouveau", "+   Créer un nouveau dossier", y, "SGONouveauDossier", RGB(0, 99, 177), RGB(255, 255, 255)
-    Legende ws, y, "Page de garde, puis saisie des questions."
+    Bouton ws, "btnNouveau", "+   Créer un nouveau DCO", y, "SGONouveauDossier", RGB(0, 99, 177), RGB(255, 255, 255)
+    Legende ws, y, "Page de garde, puis saisie des réponses."
     y = y + 56
-    Bouton ws, "btnOuvrir", "Ouvrir un dossier existant", y, "SGOOuvrirDossier", RGB(255, 255, 255), RGB(33, 37, 41)
-    Legende ws, y, "Reprendre un dossier .xlsx déjà créé."
+    Bouton ws, "btnOuvrir", "Ouvrir un DCO existant", y, "SGOOuvrirDossier", RGB(255, 255, 255), RGB(33, 37, 41)
+    Legende ws, y, "Reprendre un DCO (.xlsx) déjà créé."
     y = y + 56
     Bouton ws, "btnRemarque", "Noter une remarque", y, "NoterRemarque", RGB(255, 249, 230), RGB(122, 90, 0)
     Legende ws, y, "Vos retours pour l'équipe projet (feuille « Remarques »)."
 
     ws.Range("B15").Value = "Bon à savoir"
     ws.Range("B15").Font.Bold = True: ws.Range("B15").Font.Color = RGB(22, 54, 92)
-    ws.Range("B16").Value = "· À la création, vous choisissez où enregistrer le dossier (un fichier .xlsx par offre)."
-    ws.Range("B17").Value = "· Les réponses sont enregistrées automatiquement à chaque changement de question."
-    ws.Range("B18").Value = "· Le dossier s'ouvre uniquement avec ce classeur : double-cliquer dessus n'affiche qu'une page d'accueil."
-    ws.Range("B19").Value = "· Une copie de sauvegarde est faite à chaque ouverture (sous-dossier « Sauvegardes SGO »)."
-    ws.Range("B16:B19").Font.Color = RGB(80, 86, 94)
-    ws.Range("B21").Value = "Référentiel version " & versionRef & " · version de test : les réponses saisies servent uniquement à tester l'outil."
-    ws.Range("B21").Font.Size = 9: ws.Range("B21").Font.Color = RGB(150, 156, 164)
+    ws.Range("B16").Value = "· À la création, vous choisissez où enregistrer le DCO (un fichier .xlsx par offre)."
+    ws.Range("B17").Value = "· Les réponses sont enregistrées automatiquement à chaque passage d'une question à une autre."
+    ws.Range("B18").Value = "· Le DCO s'ouvre uniquement avec ce classeur : double-cliquer dessus n'affiche qu'une page d'accueil."
+    ws.Range("B19").Value = "· Une copie de sauvegarde est faite à chaque ouverture (sous-dossier « Sauvegardes DCO »)."
+    ws.Range("B20").Value = "· Pendant la saisie, Excel reste accessible : vous pouvez noter vos remarques sans fermer l'écran."
+    ws.Range("B16:B20").Font.Color = RGB(80, 86, 94)
+    ws.Range("B22").Value = "Référentiel version " & versionRef & " · version de test : les réponses saisies servent uniquement à tester l'outil."
+    ws.Range("B22").Font.Size = 9: ws.Range("B22").Font.Color = RGB(150, 156, 164)
 
     On Error Resume Next
     ws.Activate

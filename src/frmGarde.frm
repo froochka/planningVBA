@@ -1,7 +1,7 @@
 Option Explicit
 
 ' =============================================================================
-' Page de garde du dossier (décisions PG-1 à PG-6 du chef de projet).
+' Page de garde du DCO (décisions PG-1 à PG-6 du chef de projet).
 ' Formulaire vide dans le classeur : tout est construit par ce code.
 ' Échange avec l'appelant par gGarde / gGardeValidee (module SGO_Lancement).
 ' =============================================================================
@@ -32,7 +32,7 @@ Private Sub Construire()
     Dim M As Single
 
     M = UI_MARGE
-    Me.Caption = "SGO - Page de garde du dossier"
+    Me.Caption = "SGO - Page de garde du DCO"
     Me.BackColor = uiBlanc
     Me.Width = UIBorne(780 * uiTaille / 10, 700, Application.UsableWidth * 0.95)
     Me.Height = UIBorne(560 * uiTaille / 10, 480, Application.UsableHeight * 0.95)
@@ -43,7 +43,7 @@ Private Sub Construire()
     wLib = UIBorne(wCol * 0.42, 130, 170)
 
     UIFond Me, "lblBandeau", 0, 0, W, 44, uiBandeau
-    UILbl Me, "lblTitre", "Dossier de conception de l'offre  ·  Élaboration de l'offre", M + 4, 10, W - 2 * M, _
+    UILbl Me, "lblTitre", "Dossier de conception de l'offre (DCO)  ·  Élaboration de l'offre", M + 4, 10, W - 2 * M, _
           UILigneH(4), True, 4, uiBlanc
 
     ' --- Colonne gauche : procédure et équipe projet -----------------------------
@@ -114,7 +114,7 @@ Private Sub Construire()
 
     ' --- Boutons --------------------------------------------------------------------
     Set btnAnnuler = UIBouton(Me, "btnAnnuler", "Annuler", W - M - 4 - 238, H - 40, 110, 30, 0)
-    Set btnValider = UIBouton(Me, "btnValider", IIf(gGardeCreation, "Créer le dossier", "Valider"), _
+    Set btnValider = UIBouton(Me, "btnValider", IIf(gGardeCreation, "Créer le DCO", "Valider"), _
                               W - M - 4 - 120, H - 40, 120, 30, 1)
 End Sub
 
