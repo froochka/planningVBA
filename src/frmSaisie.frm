@@ -10,7 +10,8 @@ Option Explicit
 ' Les réponses sont écrites dans le DCO (.xlsx) à chaque passage d'une
 ' question à une autre, et le fichier est enregistré (décision ES-13).
 ' Fenêtre non bloquante (SGO_Lancement.AfficherSaisie) : plein écran, ou
-' réduite en bas à droite d'Excel (bouton de l'en-tête) pour travailler dans
+' réduite en bas à droite d'Excel (bouton de l'en-tête, ou automatiquement
+' quand l'utilisateur active une autre fenêtre Excel) pour travailler dans
 ' Excel. Pour se reconstruire (taille du texte, page de garde, réduire /
 ' agrandir), l'écran ouvre un nouvel écran puis se ferme (Rouvrir).
 ' =============================================================================
@@ -111,7 +112,15 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     Valider
     SauverDossier
     gSaisieReduite = False
-    MasquerDossier False                             ' le DCO réapparaît dans Excel
+    ArreterSurveillance
+    ActiverDossier                                   ' le DCO revient au premier plan d'Excel
+End Sub
+
+' Appelé quand l'utilisateur active une autre fenêtre Excel (SGO_Lancement.ReduireSaisie)
+Public Sub PasserEnReduit()
+    If gSaisieReduite Then Exit Sub
+    gSaisieReduite = True
+    Rouvrir
 End Sub
 
 Private Sub UserForm_Terminate()

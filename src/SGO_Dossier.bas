@@ -14,13 +14,11 @@ Option Explicit
 ' Lecture robuste : les colonnes sont retrouvées par leur en-tête, et un
 ' contrôle est fait à l'ouverture. Une copie de sauvegarde est faite à chaque
 ' ouverture (sous-dossier « Sauvegardes DCO », 5 dernières copies).
-' Pendant la saisie, la fenêtre du DCO est masquée (MasquerDossier) ; elle est
-' réaffichée le temps de chaque enregistrement, pour que le fichier enregistré
-' s'ouvre toujours sur sa page d'accueil.
+' Pendant la saisie, le DCO reste ouvert derrière l'écran, sur sa page
+' d'accueil ; sa fermeture est refusée tant que l'écran est ouvert (cAppSGO).
 ' =============================================================================
 
 Public gWbDossier As Workbook
-Private gDossierMasque As Boolean        ' fenêtre du DCO masquée pendant la saisie
 Public gRapportOuverture As String       ' anomalies relevées à l'ouverture (affichées par InitialiserSession)
 
 Public Const CHAMPS_OFFRE As String = "numero_procedure;libelle_procedure;acheteur;assistant;chef_produit;" & _
@@ -99,7 +97,7 @@ Public Function OuvrirDossier(ByVal chemin As String) As Boolean
         MsgBox "Ce classeur n'est pas un DCO créé avec l'outil SGO.", vbExclamation, "SGO"
         Exit Function
     End If
-    wb.Windows(1).Visible = True                      ' au cas où il serait resté masqué
+    wb.Windows(1).Visible = True                      ' au cas où il aurait été enregistré masqué (version 0.8)
     Sauvegarder wb
     Application.ScreenUpdating = False
     MettreAuFormat wb                                 ' anciens dossiers : protection ajoutée
@@ -436,51 +434,29 @@ Public Sub EnregistrerQuestion(ByVal q As cQuestionSGO)
 End Sub
 
 Public Sub SauverDossier()
-    Dim ecran As Boolean, actif As Workbook, n As Long, d As String
     If Not DossierOuvert() Then Exit Sub
     DossierEcrire "modifie_le", Format$(Now, "yyyy-mm-dd hh:nn")
     DossierEcrire "modifie_par", Application.UserName
     MettreAJourAccueil gWbDossier
-    ' Un classeur enregistré masqué s'ouvrirait sans fenêtre : on le réaffiche le
-    ' temps de l'enregistrement, sans rafraîchir l'écran
-    ecran = Application.ScreenUpdating
-    If gDossierMasque Then
-        Application.ScreenUpdating = False
-        Set actif = ActiveWorkbook
-        gWbDossier.Windows(1).Visible = True
-    End If
-    On Error GoTo erreur
     Application.DisplayAlerts = False
     gWbDossier.Save
-suite:
-    On Error Resume Next
     Application.DisplayAlerts = True
-    If gDossierMasque Then
-        gWbDossier.Windows(1).Visible = False
-        If Not actif Is Nothing Then
-            If Not actif Is gWbDossier Then actif.Activate
-        End If
-        Application.ScreenUpdating = ecran
-    End If
-    On Error GoTo 0
-    If n <> 0 Then Err.Raise n, , d                   ' l'appelant affiche l'erreur
-    Exit Sub
-erreur:
-    n = Err.Number: d = Err.Description
-    Resume suite
 End Sub
 
-' Masque (pendant la saisie) ou réaffiche la fenêtre du DCO : masqué, il ne
-' peut être ni fermé ni modifié par erreur depuis Excel
-Public Sub MasquerDossier(ByVal masquer As Boolean)
+' Met la fenêtre du DCO au premier plan d'Excel
+Public Sub ActiverDossier()
     If Not DossierOuvert() Then Exit Sub
     On Error Resume Next
-    ' Enregistrement automatique d'Office 365 (OneDrive) : il garderait l'état masqué
-    If masquer Then CallByName gWbDossier, "AutoSaveOn", VbLet, False
-    gWbDossier.Windows(1).Visible = Not masquer
-    gDossierMasque = masquer
-    If Not masquer Then gWbDossier.Activate
+    gWbDossier.Windows(1).Visible = True
+    gWbDossier.Activate
 End Sub
+
+' Le classeur est-il le DCO ouvert ? (comparaison par le chemin complet)
+Public Function EstLeDossier(ByVal wb As Workbook) As Boolean
+    If Not DossierOuvert() Or wb Is Nothing Then Exit Function
+    On Error Resume Next
+    EstLeDossier = (StrComp(wb.FullName, gWbDossier.FullName, vbTextCompare) = 0)
+End Function
 
 ' Déplace toutes les réponses dans la feuille Archives et remet les questions à
 ' leur état initial (réponses pré-remplies avec le standard)

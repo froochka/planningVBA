@@ -11,8 +11,10 @@ Option Explicit
 '
 ' Le DCO d'une offre est un fichier .xlsx séparé, sans macro (voir SGO_Dossier).
 ' L'écran de saisie n'est pas bloquant : Excel reste utilisable pendant la
-' saisie (feuille Remarques, autres classeurs). Le DCO est alors masqué, et un
-' seul écran de saisie peut être ouvert à la fois (SaisieDejaOuverte).
+' saisie (feuille Remarques, autres classeurs). Le DCO reste ouvert derrière
+' l'écran. Pendant la saisie, cAppSGO surveille Excel : une autre fenêtre
+' activée fait passer l'écran en mode réduit, et la fermeture du DCO est
+' refusée. Un seul écran de saisie peut être ouvert à la fois (SaisieDejaOuverte).
 ' =============================================================================
 
 ' Échange avec la page de garde (frmGarde)
@@ -26,6 +28,7 @@ Public gGardeCreation As Boolean     ' True : nouveau dossier (pas de choix « C
 Public gQuestionDepart As cQuestionSGO
 Public gSaisieReduite As Boolean
 Public gNumSaisie As Long
+Public gApp As cAppSGO               ' surveillance d'Excel pendant la saisie
 
 Public Sub SGO()
     If SaisieDejaOuverte() Then Exit Sub
@@ -57,10 +60,8 @@ End Sub
 ' Un seul écran de saisie à la fois (il utilise le référentiel et le DCO
 ' chargés) : s'il est déjà ouvert, on le ramène au premier plan.
 Public Function SaisieDejaOuverte() As Boolean
-    Dim f As Object, ouverte As Object
-    For Each f In VBA.UserForms
-        If f.Name = "frmSaisie" Then Set ouverte = f
-    Next f
+    Dim ouverte As Object
+    Set ouverte = SaisieOuverte()
     If ouverte Is Nothing Then Exit Function
     SaisieDejaOuverte = True
     MsgBox "L'écran de saisie du DCO est déjà ouvert" & IIf(DossierOuvert(), " (" & gWbDossier.Name & ")", "") & "." & vbCrLf & _
@@ -68,6 +69,33 @@ Public Function SaisieDejaOuverte() As Boolean
     On Error Resume Next
     ouverte.Show vbModeless
 End Function
+
+' Dernier écran de saisie chargé (Nothing s'il n'y en a pas)
+Public Function SaisieOuverte() As Object
+    Dim f As Object
+    For Each f In VBA.UserForms
+        If f.Name = "frmSaisie" Then Set SaisieOuverte = f
+    Next f
+End Function
+
+' Appelé par cAppSGO quand une autre fenêtre Excel que celle du DCO est activée
+Public Sub ReduireSaisie()
+    Dim f As Object
+    If gSaisieReduite Then Exit Sub
+    Set f = SaisieOuverte()
+    If f Is Nothing Then Exit Sub
+    f.PasserEnReduit
+End Sub
+
+Public Sub DemarrerSurveillance()
+    If gApp Is Nothing Then Set gApp = New cAppSGO
+    Set gApp.xl = Application
+End Sub
+
+Public Sub ArreterSurveillance()
+    If Not gApp Is Nothing Then Set gApp.xl = Nothing
+    Set gApp = Nothing
+End Sub
 
 Private Function PreparerReferentiel() As Boolean
     If Not ReferentielPresent() Then
@@ -203,19 +231,20 @@ Public Function ModifierPageGarde() As Boolean
     ModifierPageGarde = True
 End Function
 
-' Écran de saisie, non bloquant : Excel reste accessible pendant la saisie et
-' le DCO est masqué (SGO_Dossier.MasquerDossier). Aussi appelé par l'écran
-' lui-même pour se rouvrir (taille du texte, page de garde, réduire / agrandir) :
-' le nouvel écran est affiché avant la fermeture de l'ancien (pas d'écran vide).
+' Écran de saisie, non bloquant : Excel reste accessible pendant la saisie.
+' Aussi appelé par l'écran lui-même pour se rouvrir (taille du texte, page de
+' garde, réduire / agrandir) : le nouvel écran est affiché avant la fermeture
+' de l'ancien (pas d'écran vide).
 Public Function AfficherSaisie() As Boolean
     Dim f As Object
     On Error GoTo erreur
     Set f = VBA.UserForms.Add("frmSaisie")
-    ' Masquer le DCO AVANT d'afficher l'écran : l'écran se rattache à la fenêtre
-    ' Excel active au moment où il s'affiche ; si c'était celle du DCO, il
-    ' passerait derrière les autres fenêtres une fois le DCO masqué
-    MasquerDossier True
+    ' L'écran se rattache à la fenêtre Excel active au moment où il s'affiche :
+    ' en plein écran, celle du DCO ; en mode réduit, celle que l'utilisateur
+    ' vient d'activer (la petite fenêtre reste ainsi visible par-dessus)
+    If Not gSaisieReduite Then ActiverDossier
     f.Show vbModeless
+    DemarrerSurveillance
     AfficherSaisie = True
     Exit Function
 erreur:

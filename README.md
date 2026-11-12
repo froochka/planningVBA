@@ -76,7 +76,7 @@ Git ne peut pas fusionner deux versions d'un `.xlsm`. Il faut donc :
 
 Le DCO d'une offre est un fichier `.xlsx` **séparé et sans macro**. Il s'ouvre **avec l'outil** : seule sa feuille d'accueil est visible dans Excel, les données sont masquées et protégées. À chaque ouverture, une copie est faite dans le sous-dossier « Sauvegardes DCO » (5 dernières). Ne le rangez pas dans le dépôt Git.
 
-L'écran de saisie **n'est pas bloquant** : Excel reste utilisable pendant la saisie (le DCO est masqué pendant ce temps et réapparaît à la fermeture de l'écran). Le bouton « Réduire » de l'en-tête le ramène à une petite fenêtre en bas à droite. Un seul écran de saisie peut être ouvert à la fois.
+L'écran de saisie **n'est pas bloquant** : Excel reste utilisable pendant la saisie. Le DCO reste ouvert derrière l'écran (sa fermeture est refusée tant que l'écran est ouvert). Le bouton « Réduire » de l'en-tête ramène l'écran à une petite fenêtre en bas à droite ; il passe aussi en mode réduit tout seul quand vous cliquez sur une autre fenêtre Excel. Un seul écran de saisie peut être ouvert à la fois.
 
 Après une mise à jour du référentiel (`git pull` qui modifie `referentiel/`), relancer **ImporterReferentiel**.
 
