@@ -211,8 +211,11 @@ Public Function AfficherSaisie() As Boolean
     Dim f As Object
     On Error GoTo erreur
     Set f = VBA.UserForms.Add("frmSaisie")
-    f.Show vbModeless
+    ' Masquer le DCO AVANT d'afficher l'écran : l'écran se rattache à la fenêtre
+    ' Excel active au moment où il s'affiche ; si c'était celle du DCO, il
+    ' passerait derrière les autres fenêtres une fois le DCO masqué
     MasquerDossier True
+    f.Show vbModeless
     AfficherSaisie = True
     Exit Function
 erreur:

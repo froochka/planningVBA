@@ -34,7 +34,7 @@ Hors périmètre (feuilles non reprises dans SGO) : 10-Entreprises sourcées, 10
 
 ## Retours du CDP (fichier « remarques CDP.xlsx », 10/11/2026)
 
-- [ ] Lignes 31 et suivantes du fichier : à étudier plus tard (dont « Reprendre le standard » → « Rétablir le standard », et la position de l'encadré « Justification de la dérogation »).
+- [ ] Lignes 31 et suivantes du fichier : à étudier plus tard (dont « Reprendre le standard » → « Rétablir le standard »). La ligne 32 (encadré « Justification de la dérogation » remonté) est faite le 12/11/2026.
 - [ ] Onglet « Standards » de l'écran de saisie : à garder pendant le développement, **à retirer en production**.
-- [ ] Zone « Comparaison avec l'offre précédente » : en attente de la réponse du CDP (valeur par défaut « Non concerné », mêmes choix pour toutes les questions, rappel non bloquant si « Différente » sans commentaire).
+- [ ] Zone « Comparaison avec l'offre précédente » : en attente de la réponse du CDP (valeur par défaut « Non concerné », mêmes choix pour toutes les questions). Le message « Justifiez le cas différenciant dans l'onglet Commentaire » est fait (12/11/2026, décision de l'utilisateur).
 - [ ] Pas de copie de sauvegarde quand le DCO est sur le Bureau : le CDP doit confirmer s'il a vu le message « Pas de copie de sauvegarde » (Bureau synchronisé avec OneDrive ?).

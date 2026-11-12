@@ -44,6 +44,8 @@ Private WithEvents btnAplus As MSForms.Label
 Private WithEvents btnFermer As MSForms.Label
 Private WithEvents btnFermerRes As MSForms.Label
 Private WithEvents btnFenetre As MSForms.Label      ' réduire / agrandir l'écran
+Private WithEvents poigneeNav As MSForms.Label      ' poignée entre Chapitres et la zone des thèmes
+Private WithEvents poigneeDet As MSForms.Label      ' poignée entre la liste des questions et le détail
 
 Private mp As MSForms.MultiPage
 Private fraChap As MSForms.Frame        ' liste des chapitres (lignes de Labels)
@@ -66,6 +68,7 @@ Private chargement As Boolean           ' ignore les événements pendant un rem
 Private sale As Boolean                 ' la question courante a changé depuis le dernier enregistrement
 Private qRetour As cQuestionSGO         ' question affichée à l'ouverture (et au retour de l'écran réduit)
 Private monNum As Long                  ' numéro de cet écran (voir gNumSaisie)
+Private xAppui As Single                ' position de la souris à l'appui sur une poignée
 
 ' --- Disposition ------------------------------------------------------------------
 Private M As Single, W As Single, H As Single      ' marge, largeur et hauteur utiles
@@ -126,7 +129,7 @@ End Sub
 Private Sub Construire()
     Dim hEntete As Single, hPied As Single, yCorps As Single, hCorps As Single, wNav As Single
     Dim x0 As Single, wZone As Single
-    Dim xD As Single, wR As Single, y As Single, c As Object, wDetail As Single
+    Dim xD As Single, wR As Single, y As Single, c As Object, wDetail As Single, v As Single
 
     chargement = True
     Set lignes = New Collection
@@ -140,6 +143,8 @@ Private Sub Construire()
     yCorps = hEntete + M
     hCorps = H - yCorps - hPied
     wNav = UIBorne(W * 0.2, 180, 260)
+    v = Val(GetSetting("SGO", "Affichage", "LargeurNav", "0"))      ' réglée avec la poignée
+    If v > 0 Then wNav = UIBorne(v, 150, W * 0.35)
     x0 = M + wNav + M
     wZone = W - M - x0
 
@@ -147,10 +152,10 @@ Private Sub Construire()
     UIFond Me, "lblBandeau", 0, 0, W, hEntete, uiBandeau
     UILbl Me, "lblTitre", "Élaboration du DCO", M + 4, 6, 260, UILigneH(4), True, 4, uiBlanc
     wR = UIBorne(W * 0.3, 240, 340)
-    UILbl Me, "lblContexte", TexteContexte(), M + 4, 33, W - wR - 3 * M - 130 - 36, UILigneH(-1), False, -1, RGB(200, 216, 234)
+    UILbl Me, "lblContexte", TexteContexte(), M + 4, 33, W - wR - 3 * M - 130 - 100, UILigneH(-1), False, -1, RGB(200, 216, 234)
     Me.Controls("lblContexte").WordWrap = False
     Set btnPageGarde = UIBouton(Me, "btnPageGarde", "Page de garde", W - M - wR - M - 124, 30, 124, 20, 2, ICO_CRAYON)
-    Set btnFenetre = UIBouton(Me, "btnFenetre", "", W - M - wR - M - 124 - 8 - 28, 30, 28, 20, 2, ICO_REDUIRE)
+    Set btnFenetre = UIBouton(Me, "btnFenetre", "Réduire", W - M - wR - M - 124 - 8 - 92, 30, 92, 20, 2, ICO_REDUIRE)
     btnFenetre.ControlTipText = "Réduire l'écran pour travailler dans Excel (il reste ouvert en bas à droite)"
     Set txtRecherche = UITxt(Me, "txtRecherche", "", W - M - wR, 7, wR - 30, 20)
     txtRecherche.ControlTipText = "Identifiant (El84) ou mot-clé, puis Entrée"
@@ -189,7 +194,9 @@ Private Sub Construire()
     ' --- Questions : le détail garde une largeur de lecture confortable, la liste
     '     prend le reste (les libellés passent à la ligne)
     wDetail = UIBorne(wIn * 0.5, 430, 700)
-    wQ = UIBorne(wIn - 2 * M - wDetail, 230, 900)
+    v = Val(GetSetting("SGO", "Affichage", "LargeurDetail", "0"))   ' réglée avec la poignée
+    If v > 0 Then wDetail = UIBorne(v, 330, wIn - 2 * M - 200)
+    wQ = UIBorne(wIn - 2 * M - wDetail, 200, 2000)
     UISection Me, "secQuestions", "QUESTIONS", xIn, yIn, wQ
     UILbl Me, "lblFiltre", "Afficher", xIn, yIn + 27, 52, UILigneH()
     Set cboFiltre = UICombo(Me, "cboFiltre", xIn + 54, yIn + 24, UIBorne(wQ - 54 - 190, 110, 260), UILigneH() + 8, Split(FILTRES, ";"))
@@ -244,6 +251,13 @@ Private Sub Construire()
     Set btnFermer = UIBouton(Me, "btnFermer", "Fermer", W - M - 126, y, 126, 28, 0)
     Set c = UILbl(Me, "lblEnregistre", "", x0, y + 7, UIBorne(W - M - 126 - 8 - x0, 20, 2000), UILigneH(-1), True, -1, uiVert)
     c.Font.Name = UI_POLICE_SYMB: c.TextAlign = 1: c.WordWrap = False
+
+    ' --- Poignées de largeur (glisser ; double-clic : largeurs par défaut) -----------------
+    UIFond Me, "lblTraitNav", M + wNav + M / 2, yCorps + 18, 1, hCorps - 18, uiLigne
+    Set poigneeNav = Poignee("lblPoigneeNav", M + wNav, yCorps, M, hCorps)
+    Set poigneeDet = Poignee("lblPoigneeDet", xIn + wQ + 2, yIn, 2 * M - 4, yBas - yIn)
+    Set c = UIFond(Me, "lblGuide", 0, yCorps, 2, hCorps, uiAction)
+    c.Visible = False
 
     PlacerZoneQuestions False, False
     ConstruireResultats
@@ -359,6 +373,82 @@ End Sub
 
 Private Sub btnFenetre_Click()
     gSaisieReduite = Not gSaisieReduite
+    Rouvrir
+End Sub
+
+' -----------------------------------------------------------------------------
+' Poignées de largeur : pendant le glisser, une ligne guide suit la souris ; au
+' relâchement, la largeur est mémorisée et l'écran est reconstruit (Rouvrir).
+' -----------------------------------------------------------------------------
+Private Function Poignee(nom As String, ByVal l As Single, ByVal t As Single, ByVal w As Single, ByVal h As Single) As MSForms.Label
+    Dim c As MSForms.Label
+    Set c = UILbl(Me, nom, "", l, t, w, h)
+    c.MousePointer = 9                               ' fmMousePointerSizeWE : flèche gauche-droite
+    c.ControlTipText = "Faire glisser pour régler la largeur (double-clic : largeurs par défaut)"
+    Set Poignee = c
+End Function
+
+Private Sub poigneeNav_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    xAppui = X
+End Sub
+
+Private Sub poigneeNav_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    If Button = 1 Then DeplacerGuide poigneeNav.Left + X
+End Sub
+
+Private Sub poigneeNav_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    If Button = 1 Then FinGlisser True, poigneeNav.Left + X, X
+End Sub
+
+Private Sub poigneeNav_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    LargeursParDefaut
+End Sub
+
+Private Sub poigneeDet_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    xAppui = X
+End Sub
+
+Private Sub poigneeDet_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    If Button = 1 Then DeplacerGuide poigneeDet.Left + X
+End Sub
+
+Private Sub poigneeDet_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    If Button = 1 Then FinGlisser False, poigneeDet.Left + X, X
+End Sub
+
+Private Sub poigneeDet_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    LargeursParDefaut
+End Sub
+
+Private Sub DeplacerGuide(ByVal x As Single)
+    With Me.Controls("lblGuide")
+        .Left = UIBorne(x, M + 100, W - M - 100)
+        .Visible = True
+        .ZOrder 0
+    End With
+End Sub
+
+' x : position finale (dans la fenêtre) ; xLocal : position dans la poignée
+Private Sub FinGlisser(ByVal estNav As Boolean, ByVal x As Single, ByVal xLocal As Single)
+    Me.Controls("lblGuide").Visible = False
+    If Abs(xLocal - xAppui) < 3 Then Exit Sub        ' simple clic : rien à faire
+    If estNav Then
+        ' le centre de la poignée est à M + largeur + M / 2
+        SaveSetting "SGO", "Affichage", "LargeurNav", CStr(CLng(UIBorne(x - M - M / 2, 150, W * 0.35)))
+    Else
+        ' le centre de la poignée est au milieu de l'espace (2 M) entre la liste et le détail
+        SaveSetting "SGO", "Affichage", "LargeurDetail", CStr(CLng(UIBorne(xIn + wIn - (x + M), 330, 3000)))
+    End If
+    Valider
+    Rouvrir
+End Sub
+
+Private Sub LargeursParDefaut()
+    On Error Resume Next
+    DeleteSetting "SGO", "Affichage", "LargeurNav"
+    DeleteSetting "SGO", "Affichage", "LargeurDetail"
+    On Error GoTo 0
+    Valider
     Rouvrir
 End Sub
 
@@ -960,7 +1050,7 @@ Private Sub ConstruirePageReponse()
     LibererDetail
     pg.Controls.Clear
     pg.ScrollBars = 0: pg.ScrollTop = 0
-    iw = UIBorne(wDet - 2 * M - 14, 200, 660)
+    iw = UIBorne(wDet - 2 * M - 14, 200, 1000)
     If curQ Is Nothing Then
         UILbl pg, "lblVide", IIf(cboFiltre.ListIndex > 0, "Aucune question ne correspond au filtre.", "Aucune question."), _
               M, 12, iw, UILigneH(), False, 0, uiGris
@@ -1058,6 +1148,24 @@ Private Sub ConstruirePageReponse()
     If Not masquee Then
         ' Conformité calculée
         y = BandeauConformite(pg, y, iw)
+        ' Justification : obligatoire pour une dérogation au standard (cas 2). Une
+        ' question spécifique n'en a pas besoin (décision du 09/11/2026) ; on
+        ' montre seulement une justification déjà saisie avec l'ancienne règle.
+        If Not sp Or Trim$(curQ.Justification) <> "" Then
+            txt = IIf(sp, "JUSTIFICATION (SAISIE AVEC L'ANCIENNE RÈGLE)", "JUSTIFICATION DE LA DÉROGATION AU STANDARD")
+            UISection pg, "secJustif", ChrW(&H270D) & "  " & txt, M, y, iw, True
+            Set c = UILbl(pg, "lblOblig", "obligatoire", M + 24 + Len(txt) * (uiTaille - 2) * 0.66, y, 90, UILigneH(-2), True, -2, RGB(176, 107, 0))
+            c.WordWrap = False
+            c.Visible = (curQ.Statut = ST_A_JUSTIFIER)
+            y = y + 26
+            hz = UIBorne(LignesTexte(curQ.Justification, iw, 0) + 1, 3, 8) * UILigneH() + 8
+            Set txtJustif = UITxt(pg, "txtJustif", curQ.Justification, M, y, iw, hz)
+            txtJustif.MultiLine = True: txtJustif.WordWrap = True: txtJustif.ScrollBars = 2
+            txtJustif.EnterKeyBehavior = True
+            StyleJustification
+            y = y + hz + 16
+        End If
+
         ' Comparaison avec l'offre précédente (information, sans justification)
         If sp Then
             UISection pg, "secDiff", "COMPARAISON AVEC L'OFFRE PRÉCÉDENTE", M, y, iw
@@ -1078,23 +1186,12 @@ Private Sub ConstruirePageReponse()
             Case DIFF_DIFFERENTE: If Not optDiffDiff Is Nothing Then optDiffDiff.Value = True
             Case Else: If Not optDiffNC Is Nothing Then optDiffNC.Value = True
         End Select
-
-        ' Justification : obligatoire pour une dérogation au standard (cas 2). Une
-        ' question spécifique n'en a pas besoin (décision du 09/11/2026) ; on
-        ' montre seulement une justification déjà saisie avec l'ancienne règle.
-        If Not sp Or Trim$(curQ.Justification) <> "" Then
-            txt = IIf(sp, "JUSTIFICATION (SAISIE AVEC L'ANCIENNE RÈGLE)", "JUSTIFICATION DE LA DÉROGATION AU STANDARD")
-            UISection pg, "secJustif", ChrW(&H270D) & "  " & txt, M, y, iw, True
-            Set c = UILbl(pg, "lblOblig", "obligatoire", M + 24 + Len(txt) * (uiTaille - 2) * 0.66, y, 90, UILigneH(-2), True, -2, RGB(176, 107, 0))
-            c.WordWrap = False
-            c.Visible = (curQ.Statut = ST_A_JUSTIFIER)
-            y = y + 26
-            hz = UIBorne(LignesTexte(curQ.Justification, iw, 0) + 1, 3, 8) * UILigneH() + 8
-            Set txtJustif = UITxt(pg, "txtJustif", curQ.Justification, M, y, iw, hz)
-            txtJustif.MultiLine = True: txtJustif.WordWrap = True: txtJustif.ScrollBars = 2
-            txtJustif.EnterKeyBehavior = True
-            StyleJustification
-            y = y + hz + 12
+        ' « Différente » : la différence s'explique dans l'onglet Commentaire (sans blocage)
+        If sp Or avecStd Then
+            Set c = UILbl(pg, "lblDiffMsg", "", M, y - 8, iw, UILigneH(-1), False, -1, uiOrange)
+            c.Font.Name = UI_POLICE_SYMB
+            y = y + UILigneH(-1) + 4
+            MettreAJourMsgDiff
         End If
     End If
 
@@ -1423,7 +1520,29 @@ Private Sub MettreAJourDetail()
     On Error GoTo 0
     MettreAJourBandeau
     StyleJustification
+    MettreAJourMsgDiff
     MettreAJourBoutons
+End Sub
+
+' Message sous la comparaison : orange tant que la différence n'est pas
+' expliquée dans l'onglet Commentaire
+Private Sub MettreAJourMsgDiff()
+    Dim c As Object
+    If curQ Is Nothing Then Exit Sub
+    On Error Resume Next
+    Set c = mp.Pages(0).Controls("lblDiffMsg")
+    On Error GoTo 0
+    If c Is Nothing Then Exit Sub
+    c.Visible = (DifferenceEnVigueur(curQ) = DIFF_DIFFERENTE)
+    If Trim$(curQ.Commentaire) = "" Then
+        c.Caption = "!  Justifiez le cas différenciant dans l'onglet Commentaire."
+        c.ForeColor = uiOrange
+        c.Font.Bold = True
+    Else
+        c.Caption = ChrW(&H2713) & "  Cas différenciant expliqué dans l'onglet Commentaire."
+        c.ForeColor = uiGris
+        c.Font.Bold = False
+    End If
 End Sub
 
 ' Reconstruit le détail de la question courante (appelé uniquement depuis un
@@ -1471,6 +1590,7 @@ Private Sub txtCom_Change()
     curQ.Commentaire = txtCom.Text
     sale = True
     AfficherCompteurCom
+    MettreAJourMsgDiff
 End Sub
 
 Private Sub btnValSuiv_Click()
