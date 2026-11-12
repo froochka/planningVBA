@@ -1170,15 +1170,17 @@ Private Sub ConstruirePageReponse()
         If sp Then
             UISection pg, "secDiff", "COMPARAISON AVEC L'OFFRE PRÉCÉDENTE", M, y, iw
             y = y + 26
+            ' Questions spécifiques : « Identique » par défaut (décision du CDP, 12/11/2026)
             Set optDiffId = UIOpt(pg, "optDiffId", DIFF_IDENTIQUE, M, y, 120, UILigneH() + 6, "grpDiff")
-            Set optDiffDiff = UIOpt(pg, "optDiffDiff", DIFF_DIFFERENTE, M + 130, y, 120, UILigneH() + 6, "grpDiff")
-            UILbl pg, "lblDiffInfo", "Par défaut « Identique » : à vérifier.", M + 260, y + 3, iw - 260, UILigneH(-2), False, -2, uiGris
+            Set optDiffDiff = UIOpt(pg, "optDiffDiff", DIFF_DIFFERENTE, M + 130, y, LargeurOption(DIFF_DIFFERENTE), UILigneH() + 6, "grpDiff")
+            MentionDifferente pg, optDiffDiff.Left + optDiffDiff.Width, y + 3, M + iw - (optDiffDiff.Left + optDiffDiff.Width)
             y = y + UILigneH() + 18
         ElseIf avecStd Then
             UILbl pg, "lblDiffFac", "Comparaison avec l'offre précédente (facultatif)", M, y, iw, UILigneH(-2), False, -2, uiGris
             Set optDiffNC = UIOpt(pg, "optDiffNC", DIFF_NC, M, y + UILigneH(-2) + 2, 120, UILigneH() + 4, "grpDiff")
             Set optDiffId = UIOpt(pg, "optDiffId", DIFF_IDENTIQUE, M + 126, y + UILigneH(-2) + 2, 100, UILigneH() + 4, "grpDiff")
-            Set optDiffDiff = UIOpt(pg, "optDiffDiff", DIFF_DIFFERENTE, M + 232, y + UILigneH(-2) + 2, 110, UILigneH() + 4, "grpDiff")
+            Set optDiffDiff = UIOpt(pg, "optDiffDiff", DIFF_DIFFERENTE, M + 232, y + UILigneH(-2) + 2, LargeurOption(DIFF_DIFFERENTE), UILigneH() + 4, "grpDiff")
+            MentionDifferente pg, optDiffDiff.Left + optDiffDiff.Width, y + UILigneH(-2) + 5, M + iw - (optDiffDiff.Left + optDiffDiff.Width)
             y = y + UILigneH(-2) + UILigneH() + 16
         End If
         Select Case DifferenceEnVigueur(curQ)
@@ -1186,7 +1188,7 @@ Private Sub ConstruirePageReponse()
             Case DIFF_DIFFERENTE: If Not optDiffDiff Is Nothing Then optDiffDiff.Value = True
             Case Else: If Not optDiffNC Is Nothing Then optDiffNC.Value = True
         End Select
-        ' « Différente » : la différence s'explique dans l'onglet Commentaire (sans blocage)
+        ' Rappel (non bloquant) : « Différente » coché et commentaire encore vide
         If sp Or avecStd Then
             Set c = UILbl(pg, "lblDiffMsg", "", M, y - 8, iw, UILigneH(-1), False, -1, uiOrange)
             c.Font.Name = UI_POLICE_SYMB
@@ -1524,8 +1526,8 @@ Private Sub MettreAJourDetail()
     MettreAJourBoutons
 End Sub
 
-' Message sous la comparaison : orange tant que la différence n'est pas
-' expliquée dans l'onglet Commentaire
+' Rappel sous la comparaison : visible si « Différente » est coché et que
+' l'onglet Commentaire est vide (non bloquant)
 Private Sub MettreAJourMsgDiff()
     Dim c As Object
     If curQ Is Nothing Then Exit Sub
@@ -1533,17 +1535,23 @@ Private Sub MettreAJourMsgDiff()
     Set c = mp.Pages(0).Controls("lblDiffMsg")
     On Error GoTo 0
     If c Is Nothing Then Exit Sub
-    c.Visible = (DifferenceEnVigueur(curQ) = DIFF_DIFFERENTE)
-    If Trim$(curQ.Commentaire) = "" Then
-        c.Caption = "!  Justifiez le cas différenciant dans l'onglet Commentaire."
-        c.ForeColor = uiOrange
-        c.Font.Bold = True
-    Else
-        c.Caption = ChrW(&H2713) & "  Cas différenciant expliqué dans l'onglet Commentaire."
-        c.ForeColor = uiGris
-        c.Font.Bold = False
-    End If
+    c.Caption = "!  Justifiez le cas différenciant dans l'onglet Commentaire."
+    c.Font.Bold = True
+    c.Visible = (DifferenceEnVigueur(curQ) = DIFF_DIFFERENTE And Trim$(curQ.Commentaire) = "")
 End Sub
+
+' Mention fixe à côté de « Différente » (version courte si la place manque)
+Private Sub MentionDifferente(ByVal pg As Object, ByVal x As Single, ByVal y As Single, ByVal largeur As Single)
+    Dim txt As String, c As Object
+    txt = "(justifier la différence dans l'onglet Commentaire)"
+    If Len(txt) * (uiTaille - 2) * 0.5 > largeur Then txt = "(à justifier dans l'onglet Commentaire)"
+    Set c = UILbl(pg, "lblDiffAide", txt, x, y, UIBorne(largeur, 20, 2000), UILigneH(-2), False, -2, uiGris)
+    c.WordWrap = False
+End Sub
+
+Private Function LargeurOption(ByVal texte As String) As Single
+    LargeurOption = Len(texte) * uiTaille * 0.55 + 26
+End Function
 
 ' Reconstruit le détail de la question courante (appelé uniquement depuis un
 ' contrôle situé hors de la page Réponse)

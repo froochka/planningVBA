@@ -153,7 +153,8 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
   - **règle** : justification obligatoire uniquement pour une dérogation au standard (cas ②) ; le cas ④ n'en demande plus ;
   - **écran non bloquant** : Excel reste accessible pendant la saisie (le DCO est masqué pendant ce temps, un seul écran à la fois) ; plein écran par défaut, bouton « Réduire » (petite fenêtre en bas à droite d'Excel) ; A+ / A- sans écran blanc.
 - **Retours de l'utilisateur (12/11/2026)** : justification de la dérogation placée au-dessus de la comparaison avec l'offre précédente ; « Différente » affiche « Justifiez le cas différenciant dans l'onglet Commentaire » (orange tant que le commentaire est vide, sans blocage) ; **poignées** pour régler la largeur des zones (glisser, double-clic pour revenir aux largeurs par défaut, largeurs mémorisées) ; bouton « Réduire » avec texte ; correction : l'écran de saisie s'affiche au premier plan.
-- **En attente du CDP** : zone « Comparaison avec l'offre précédente » (valeur par défaut, mêmes choix pour toutes les questions, rappel si le commentaire est vide) ; absence de copie de sauvegarde sur le Bureau (message vu ?).
+- **Réponse du CDP (12/11/2026) sur la comparaison avec l'offre précédente** : questions spécifiques, Identique (par défaut) / Différente ; questions avec standard, Non concerné (par défaut) / Identique / Différente, que la réponse soit conforme ou en dérogation ; mention « (justifier la différence dans l'onglet Commentaire) » à côté de « Différente » ; rappel orange si le commentaire est vide. Fait.
+- **En attente du CDP** : absence de copie de sauvegarde sur le Bureau (message vu ?).
 - **Lignes 31 et suivantes** : à voir plus tard (`docs/points_en_attente.md`).
 
 ## Prochaines itérations (indicatif)
