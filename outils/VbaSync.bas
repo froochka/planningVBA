@@ -3,10 +3,17 @@ Attribute VB_Name = "VbaSync"
 ' VbaSync - synchronise le code VBA du classeur ACTIF avec le dossier src\
 '           situe a cote de ce classeur (dans le depot Git).
 '
-'   ImporterVBA : src\  -> classeur  (apres un git pull)
+'   ImporterVBA : src\  -> classeur, puis compilation (apres un git pull)
 '   ExporterVBA : classeur -> src\   (avant un git commit)
+'   CompilerVBA : Debogage > Compiler sur le projet du classeur actif
+'
+' Menu "VbaSync" dans l'onglet Complements du ruban, cree a chaque demarrage
+' d'Excel (Auto_Open) : Importer, Exporter, Compiler, Menu Git du projet
+' (menu.bat a la racine du depot), Ouvrir le dossier du projet.
 '
 ' Installation : importer ce fichier dans PERSONAL.XLSB (voir README.md).
+' Si PERSONAL.XLSB a deja une macro Auto_Open, y ajouter l'appel
+' CreerMenuVbaSync et supprimer celle de ce module.
 ' Prerequis    : Options Excel > Centre de gestion de la confidentialite >
 '                Parametres des macros > "Acces approuve au modele d'objet
 '                du projet VBA".
@@ -24,6 +31,62 @@ Private Const CT_STD As Long = 1
 Private Const CT_CLASS As Long = 2
 Private Const CT_FORM As Long = 3
 Private Const CT_DOC As Long = 100
+
+Private Const MENU_NOM As String = "VbaSync"
+Private Const ID_COMPILER As Long = 578      ' commande Debogage > Compiler de l'editeur VBA
+
+' -----------------------------------------------------------------------------
+' Menu VbaSync (onglet Complements du ruban)
+' -----------------------------------------------------------------------------
+Public Sub Auto_Open()
+    CreerMenuVbaSync
+End Sub
+
+Public Sub CreerMenuVbaSync()
+    Dim barre As Object, menu As Object
+    On Error Resume Next
+    Application.CommandBars("Worksheet Menu Bar").Controls(MENU_NOM).Delete
+    On Error GoTo 0
+    Set barre = Application.CommandBars("Worksheet Menu Bar")
+    Set menu = barre.Controls.Add(Type:=10, Temporary:=True)       ' 10 : menu deroulant
+    menu.Caption = MENU_NOM
+    AjouterEntree menu, "Importer le code (src -> classeur) et compiler", "ImporterVBA", 1952, False
+    AjouterEntree menu, "Exporter le code (classeur -> src)", "ExporterVBA", 1953, False
+    AjouterEntree menu, "Compiler le projet", "CompilerVBA", 2950, False
+    AjouterEntree menu, "Menu Git du projet (mise a jour, envoi...)", "OuvrirMenuGit", 2645, True
+    AjouterEntree menu, "Ouvrir le dossier du projet", "OuvrirDossierProjet", 23, False
+End Sub
+
+Private Sub AjouterEntree(menu As Object, texte As String, macro As String, ByVal icone As Long, ByVal separe As Boolean)
+    Dim b As Object
+    Set b = menu.Controls.Add(Type:=1, Temporary:=True)             ' 1 : bouton
+    b.Caption = texte
+    b.OnAction = "'" & ThisWorkbook.Name & "'!" & macro
+    b.BeginGroup = separe
+    On Error Resume Next
+    b.FaceId = icone
+End Sub
+
+' Lance menu.bat (racine du depot, a cote du classeur actif)
+Public Sub OuvrirMenuGit()
+    Dim wb As Workbook, chemin As String
+    Set wb = ActiveWorkbook
+    If wb Is Nothing Then Exit Sub
+    chemin = wb.Path & "\menu.bat"
+    If wb.Path = "" Or Dir(chemin) = "" Then
+        MsgBox "menu.bat introuvable a cote du classeur actif :" & vbCrLf & chemin, vbExclamation, "VbaSync"
+        Exit Sub
+    End If
+    CreateObject("WScript.Shell").Run "cmd /c start """" """ & chemin & """", 0, False
+End Sub
+
+Public Sub OuvrirDossierProjet()
+    Dim wb As Workbook
+    Set wb = ActiveWorkbook
+    If wb Is Nothing Then Exit Sub
+    If wb.Path = "" Then Exit Sub
+    Shell "explorer.exe """ & wb.Path & """", vbNormalFocus
+End Sub
 
 ' -----------------------------------------------------------------------------
 ' src\ -> classeur actif
@@ -100,9 +163,42 @@ Public Sub ImporterVBA()
 
     MsgBox nbImportes & " module(s) importe(s) dans " & wb.Name & "." & _
            IIf(avertissements <> "", vbCrLf & vbCrLf & "Attention :" & avertissements, "") & _
+           vbCrLf & vbCrLf & ResultatCompilation(wb) & _
            vbCrLf & vbCrLf & "Pensez a enregistrer le classeur apres vos tests.", _
            vbInformation, "VbaSync"
 End Sub
+
+' -----------------------------------------------------------------------------
+' Compilation (Debogage > Compiler)
+' -----------------------------------------------------------------------------
+Public Sub CompilerVBA()
+    Dim wb As Workbook
+    If Not ClasseurCible(wb) Then Exit Sub
+    MsgBox ResultatCompilation(wb), vbInformation, "VbaSync"
+End Sub
+
+' Compile le projet du classeur. Apres une compilation reussie, la commande
+' Compiler est grisee : c'est ce qui permet de savoir si elle a reussi. En cas
+' d'erreur, l'editeur VBA affiche lui-meme le message et la ligne en cause.
+Private Function ResultatCompilation(wb As Workbook) As String
+    Dim ctl As Object
+    On Error GoTo erreur
+    Set Application.VBE.ActiveVBProject = wb.VBProject
+    Set ctl = Application.VBE.CommandBars.FindControl(ID:=ID_COMPILER)
+    If ctl Is Nothing Then
+        ResultatCompilation = "Compilation non verifiee : lancez Debogage > Compiler dans l'editeur VBA."
+        Exit Function
+    End If
+    If ctl.Enabled Then ctl.Execute
+    If ctl.Enabled Then
+        ResultatCompilation = "ERREUR DE COMPILATION : voir la ligne surlignee dans l'editeur VBA (Alt+F11)."
+    Else
+        ResultatCompilation = "Compilation OK."
+    End If
+    Exit Function
+erreur:
+    ResultatCompilation = "Compilation non verifiee (" & Err.Description & ")."
+End Function
 
 ' -----------------------------------------------------------------------------
 ' classeur actif -> src\

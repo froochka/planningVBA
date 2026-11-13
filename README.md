@@ -35,6 +35,13 @@ Les macros `ImporterVBA` et `ExporterVBA` sont alors disponibles dans tous vos c
 
 > Elles agissent sur le **classeur actif**, et lisent ou écrivent dans le dossier `src\` situé à côté de lui.
 
+## Menu Git et menu VbaSync (depuis le 13/11/2026)
+
+- **`menu.bat`** (racine du dépôt) : double-clic → menu du projet : 1 Récupérer (`git pull`, en proposant d'annuler les changements du classeur dus à l'import), 2 État, 3 Envoyer (commit + push), 4 Historique, 5 Ouvrir le classeur, 6 Console. Faites-en un raccourci sur le Bureau.
+- **Menu Excel *Compléments › VbaSync*** : Importer le code (avec **compilation automatique**), Exporter, Compiler, Menu Git, Ouvrir le dossier. Pour l'obtenir, remplacez le module `VbaSync` de `PERSONAL.XLSB` par la nouvelle version de `outils/VbaSync.bas` (supprimer l'ancien module, importer, enregistrer, redémarrer Excel).
+
+Méthode complète, réutilisable pour un autre projet : `docs/methode_vba_git.md`.
+
 ## Cycle de travail
 
 ### Récupérer des modifications (faites par Claude ou un collègue)

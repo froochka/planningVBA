@@ -25,7 +25,7 @@ lbound ubound collection
 
 BUILTINS = set(x.lower() for x in """
 Len Mid Mid$ InStr InStrRev Replace Split Trim Trim$ LCase LCase$ UCase UCase$ Format Format$ CStr CLng CInt CDbl CSng CBool
-Val IsArray Array ChrW Chr Chr$ IIf Now Timer MsgBox Dir CreateObject GetSetting SaveSetting IsDate CDate IsEmpty
+Val IsArray Array ChrW Chr Chr$ IIf Now Timer MsgBox Dir CreateObject GetSetting SaveSetting DeleteSetting Shell CallByName VbLet VbGet VbMethod VbSet IsDate CDate IsEmpty
 IsError Int StrComp Left Left$ Right Right$ RGB Err Application ThisWorkbook Workbooks ActiveSheet ActiveWorkbook
 Worksheets Worksheet Workbook Range VBA UserForms Debug DoEvents IsNumeric IsObject TypeName VarType Abs Round
 vbCrLf vbCr vbLf vbTab vbTextCompare vbBinaryCompare vbYes vbNo vbYesNo vbYesNoCancel vbOKCancel vbCancel vbQuestion

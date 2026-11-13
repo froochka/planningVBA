@@ -2,7 +2,8 @@
 
 *Guide réutilisable, d'un projet à l'autre. Il s'adresse à Claude au début d'une nouvelle session, et à l'utilisateur.*
 *Il ne couvre que la chaîne « code VBA ↔ Git ↔ Excel » ; le contenu métier de chaque projet reste dans son propre dépôt.*
-*Les sources complètes des deux outils sont en annexe : ce fichier suffit pour mettre en place la méthode dans un nouveau dépôt.*
+*Les sources complètes des outils sont en annexe : ce fichier suffit pour mettre en place la méthode dans un nouveau dépôt.*
+*Version 2 (13/11/2026) : menu Git `menu.bat` par projet, menu VbaSync dans Excel, compilation automatique après l'import.*
 
 ---
 
@@ -15,13 +16,14 @@ Un classeur `.xlsm` est un **fichier binaire** (un zip qui contient lui-même un
 ```
         Claude (session cloud)                     Utilisateur (poste Windows)
         ─────────────────────                      ───────────────────────────
-        modifie src/*.bas, *.cls, *.frm            git pull
-        vérifie, commit, git push      ──GitHub──► Excel : macro ImporterVBA
+        modifie src/*.bas, *.cls, *.frm            menu.bat › 1 Récupérer (git pull)
+        vérifie, commit, git push      ──GitHub──► Excel : Compléments › VbaSync › Importer
                                                      → le code de src/ remplace celui du classeur
+                                                     → compilation automatique
                                                    teste dans Excel
                                                    (s'il modifie du code dans Excel :
-                                                     macro ExporterVBA → src/)
-                                       ◄─GitHub──  enregistre le classeur, git add/commit/push
+                                                     VbaSync › Exporter → src/)
+                                       ◄─GitHub──  menu.bat › 3 Envoyer (commit + push)
 ```
 
 ## 2. Les pièces du dispositif
@@ -29,7 +31,9 @@ Un classeur `.xlsm` est un **fichier binaire** (un zip qui contient lui-même un
 | Élément | Rôle |
 |---|---|
 | `src/` | Le code VBA en texte : `Module.bas` (modules standards), `Classe.cls` (classes, mais aussi `ThisWorkbook` et les feuilles), `Formulaire.frm` (code des UserForms). **UTF-8, sans les en-têtes `Attribute VB_…`**, fins de ligne Windows. |
-| `outils/VbaSync.bas` | Deux macros, installées **une seule fois par poste** dans le classeur de macros personnel (`PERSONAL.XLSB`) : `ImporterVBA` (src → classeur actif) et `ExporterVBA` (classeur actif → src). Source en annexe A. |
+| `outils/VbaSync.bas` | Macros installées **une seule fois par poste** dans le classeur de macros personnel (`PERSONAL.XLSB`) : `ImporterVBA` (src → classeur actif, **puis compilation**), `ExporterVBA` (classeur actif → src), `CompilerVBA`. Elles créent au démarrage d'Excel un **menu « VbaSync »** dans l'onglet *Compléments* du ruban (plus besoin de `Alt+F8`). Source en annexe A. |
+| `menu.bat` | **Menu Git du projet**, à la racine de chaque dépôt (double-clic, ou VbaSync › Menu Git) : récupérer, état, envoyer, historique, ouvrir le classeur, console. Il travaille toujours dans **son** dossier et affiche le dépôt et la branche : impossible de se tromper de projet. Source en annexe C. |
+| `outils/verifier_vba.py` | Vérificateur statique pour Claude, qui ne peut pas compiler : blocs, déclarations, identifiants, noms ambigus, caractères hors cp1252. Source en annexe D. |
 | `outils/extraire_vba.py` | Extraction **sans Excel** (pour Claude) : `pip install oletools` puis `python outils/extraire_vba.py Classeur.xlsm`. Produit exactement le même format qu'`ExporterVBA`. Source en annexe B. |
 | `.gitattributes` | Déclare les classeurs comme binaires et les fichiers de code en texte avec fins de ligne Windows. |
 | `.gitignore` | Ignore les fichiers de verrouillage d'Excel (`~$*`). |
@@ -47,6 +51,8 @@ Pour chaque fichier `.bas`, `.cls`, `.frm` de `src\` :
 
 Enfin, les modules standards et de classe **présents dans le classeur mais absents de `src\`** sont listés, et la macro propose de les supprimer.
 
+Puis la macro **compile le projet** (commande *Débogage > Compiler* de l'éditeur VBA) et l'annonce dans son message final : « Compilation OK » ou « ERREUR DE COMPILATION » (l'éditeur VBA montre alors la ligne en cause). Une compilation réussie grise la commande *Compiler* : c'est ce qui permet de le savoir.
+
 `ExporterVBA` fait l'inverse : chaque composant est écrit dans `src\` (UTF-8 sans BOM, sans en-têtes), et les fichiers de `src\` qui ne correspondent plus à aucun module sont supprimés.
 
 **Pourquoi « remplacer le code » plutôt que « supprimer puis réimporter le fichier »** (la méthode habituelle avec `VBComponents.Import`) :
@@ -59,29 +65,35 @@ Enfin, les modules standards et de classe **présents dans le classeur mais abse
 ### Mise en place sur un poste (une seule fois)
 1. Excel : *Fichier > Options > Centre de gestion de la confidentialité > Paramètres… > Paramètres des macros* → cocher **« Accès approuvé au modèle d'objet du projet VBA »**.
 2. Créer le classeur de macros personnel s'il n'existe pas (*Développeur > Enregistrer une macro* → « Classeur de macros personnel », puis arrêter l'enregistrement).
-3. `Alt+F11` → clic droit sur `VBAProject (PERSONAL.XLSB)` → *Importer un fichier…* → `outils/VbaSync.bas` → enregistrer.
+3. `Alt+F11` → clic droit sur `VBAProject (PERSONAL.XLSB)` → *Importer un fichier…* → `outils/VbaSync.bas` → enregistrer (`Ctrl+S`), puis **redémarrer Excel** : le menu **Compléments › VbaSync** apparaît.
+   - Mise à jour de VbaSync : supprimer l'ancien module `VbaSync` de PERSONAL.XLSB, réimporter le nouveau, enregistrer.
+   - Si PERSONAL.XLSB contient déjà une macro `Auto_Open`, y ajouter l'appel `CreerMenuVbaSync` et supprimer celle de VbaSync.
 4. Git : `git clone …`, et de préférence `git config --global core.editor notepad` (évite l'éditeur Vim lors des fusions).
+5. Créer sur le Bureau un **raccourci vers le `menu.bat`** de chaque projet (clic droit › Envoyer vers › Bureau), renommé avec le nom du projet.
 
 ### Récupérer le travail de Claude
-1. `git pull` (classeur **fermé**, ou au moins sans modification non enregistrée).
-2. Ouvrir le classeur → `Alt+F8` → **ImporterVBA**.
+1. Fermer le classeur, puis **menu.bat › 1 Récupérer** : le menu vérifie qu'Excel n'a pas le classeur ouvert, propose d'annuler les changements du `.xlsm` dus au dernier import (cas habituel), fait le `git pull` et affiche la version reçue.
+2. **menu.bat › 5** (ouvrir le classeur) → **Compléments › VbaSync › Importer le code** : le message final doit dire « Compilation OK ».
 3. Tester.
-4. Si c'est bon : enregistrer le classeur, puis `git add -A`, `git commit -m "…"`, `git push`. Le `.xlsm` du dépôt contient alors le même code que `src/`.
 
 ### Envoyer ses propres modifications
 1. Modifier le code dans l'éditeur VBA (et/ou les feuilles, les UserForms).
-2. `Alt+F8` → **ExporterVBA** (met `src/` à jour).
-3. Enregistrer le classeur, puis `git add -A`, `git commit -m "…"`, `git push`.
+2. **VbaSync › Exporter le code** (met `src/` à jour).
+3. Enregistrer et fermer le classeur, puis **menu.bat › 3 Envoyer** (message, commit, push).
+
+### Quand commiter le `.xlsm`
+Uniquement quand **sa structure** change : nouveau UserForm, nouvelle feuille, nouvelle référence, mise en forme. Un simple import du code ne mérite pas de commit : le code est déjà dans `src/`, et le menu propose d'annuler ce changement au prochain « Récupérer ».
 
 ### Revenir en arrière
-`git log --oneline` pour trouver la version, puis `git checkout <commit> -- src/ Classeur.xlsm` (ou `git revert <commit>`), et **ImporterVBA**.
+**menu.bat › 4** (historique) pour trouver la version, puis dans la console (**menu.bat › 6**) : `git checkout <commit> -- src/` (ou `git revert <commit>`), et **VbaSync › Importer**.
 
 ## 5. Bonnes pratiques
 
 **Organisation**
 - **`src/` fait foi pour le code.** On ne corrige jamais le code directement dans le `.xlsm` sans faire ensuite `ExporterVBA`. Claude ne modifie jamais le `.xlsm` pour changer du code.
 - **Une seule personne modifie le classeur à la fois** : Git ne fusionne pas les `.xlsm`. Toujours `git pull` **avant** d'ouvrir le classeur. En cas de conflit sur le `.xlsm` : garder une des deux versions (`git checkout --theirs Classeur.xlsm` ou `--ours`), puis **ImporterVBA** pour réappliquer le code de `src/`.
-- **Commiter le `.xlsm` après chaque import réussi** : on garde ainsi des points de retour qui fonctionnent.
+- **Un dépôt = un dossier = un `menu.bat`** : toujours passer par le menu du projet (raccourci sur le Bureau) plutôt que par une console ouverte « quelque part ». Le menu affiche le dépôt et la branche.
+- **Commiter le `.xlsm` seulement quand sa structure change** (voir §4).
 - **Travailler par petites itérations** : un objectif, un livrable testable, un commit. Tenir un journal (`docs/iterations.md`) qui sert aussi de point de reprise entre deux sessions de Claude.
 - **Aucune donnée sensible dans le dépôt** : pas de mot de passe dans le code, pas de classeur réel contenant des identifiants ou des données personnelles. Les données de travail (fichiers produits par l'outil) se rangent hors du dépôt.
 
@@ -91,7 +103,8 @@ Enfin, les modules standards et de classe **présents dans le classeur mais abse
 - **VBA ne distingue pas majuscules et minuscules** : une variable `uiFond` et une fonction `UIFond` provoquent « nom ambigu » ; `wc` et `wC` sont la même variable.
 - Paramètres objets passés `ByVal` (évite « type d'argument ByRef incompatible ») ; pas de `CStr` d'un nombre décimal dans une chaîne lue par Excel (virgule décimale en français) : utiliser `CLng` ou `Format$`.
 - Ne pas dépendre de la langue d'Excel : `CStr(True)` vaut « Vrai » en français.
-- **Avant chaque commit**, Claude relit son code et le passe dans un vérificateur statique (équilibre des blocs `If/For/Do/Select/With`, déclarations en double, identifiants non déclarés, noms ambigus, caractères hors cp1252). Il en écrit un si le projet n'en a pas.
+- **Avant chaque commit**, Claude relit son code et le passe dans le vérificateur statique : `python outils/verifier_vba.py src` (équilibre des blocs `If/For/Do/Select/With`, déclarations en double, identifiants non déclarés, noms ambigus, caractères hors cp1252). Il ne compare que les nouvelles remarques à celles d'avant sa modification.
+- Côté utilisateur, **VbaSync › Importer** compile automatiquement : toute erreur restante est signalée dès l'import.
 - Les règles métier se testent dans Excel avec une macro de tests (valeurs attendues générées hors Excel quand c'est possible), plutôt qu'à la main.
 
 **UserForms**
@@ -102,7 +115,7 @@ Enfin, les modules standards et de classe **présents dans le classeur mais abse
 
 ## 6. Mise en place dans un nouveau projet (checklist pour Claude)
 
-1. Créer `outils/VbaSync.bas` et `outils/extraire_vba.py` à partir des **annexes A et B** (copie exacte).
+1. Créer `outils/VbaSync.bas`, `outils/extraire_vba.py`, `menu.bat` et `outils/verifier_vba.py` à partir des **annexes A à D** (copie exacte ; `menu.bat` en ASCII avec fins de ligne Windows).
 2. Créer `.gitattributes` :
    ```
    *.xlsm binary
@@ -113,6 +126,7 @@ Enfin, les modules standards et de classe **présents dans le classeur mais abse
    *.bas text eol=crlf
    *.cls text eol=crlf
    *.frm text eol=crlf
+   *.bat text eol=crlf
    ```
    et `.gitignore` :
    ```
@@ -141,6 +155,8 @@ Enfin, les modules standards et de classe **présents dans le classeur mais abse
 
 - Ne sont pas versionnés en texte : la mise en page des UserForms, les attributs cachés (`VB_PredeclaredId`, descriptions de procédures), les références du projet (*Outils > Références*), les feuilles et leurs formules. Ils restent dans le `.xlsm`.
 - Le projet VBA ne doit pas être protégé par mot de passe.
+- La compilation automatique repose sur l'état grisé de la commande *Compiler* (identifiant 578) : si une version d'Excel ne la trouve pas, le message le dit, et il suffit de compiler à la main (*Débogage > Compiler*).
+- Le menu VbaSync est un menu « classique » (onglet *Compléments*), recréé à chaque démarrage d'Excel par `Auto_Open` de PERSONAL.XLSB.
 - Les macros agissent sur le **classeur actif** : pour un complément `.xlam` (jamais actif), il faudra adapter `ClasseurCible` pour choisir le classeur.
 - Excel Online n'exécute pas le VBA : tout se fait dans Excel de bureau.
 
@@ -154,10 +170,17 @@ Attribute VB_Name = "VbaSync"
 ' VbaSync - synchronise le code VBA du classeur ACTIF avec le dossier src\
 '           situe a cote de ce classeur (dans le depot Git).
 '
-'   ImporterVBA : src\  -> classeur  (apres un git pull)
+'   ImporterVBA : src\  -> classeur, puis compilation (apres un git pull)
 '   ExporterVBA : classeur -> src\   (avant un git commit)
+'   CompilerVBA : Debogage > Compiler sur le projet du classeur actif
+'
+' Menu "VbaSync" dans l'onglet Complements du ruban, cree a chaque demarrage
+' d'Excel (Auto_Open) : Importer, Exporter, Compiler, Menu Git du projet
+' (menu.bat a la racine du depot), Ouvrir le dossier du projet.
 '
 ' Installation : importer ce fichier dans PERSONAL.XLSB (voir README.md).
+' Si PERSONAL.XLSB a deja une macro Auto_Open, y ajouter l'appel
+' CreerMenuVbaSync et supprimer celle de ce module.
 ' Prerequis    : Options Excel > Centre de gestion de la confidentialite >
 '                Parametres des macros > "Acces approuve au modele d'objet
 '                du projet VBA".
@@ -175,6 +198,62 @@ Private Const CT_STD As Long = 1
 Private Const CT_CLASS As Long = 2
 Private Const CT_FORM As Long = 3
 Private Const CT_DOC As Long = 100
+
+Private Const MENU_NOM As String = "VbaSync"
+Private Const ID_COMPILER As Long = 578      ' commande Debogage > Compiler de l'editeur VBA
+
+' -----------------------------------------------------------------------------
+' Menu VbaSync (onglet Complements du ruban)
+' -----------------------------------------------------------------------------
+Public Sub Auto_Open()
+    CreerMenuVbaSync
+End Sub
+
+Public Sub CreerMenuVbaSync()
+    Dim barre As Object, menu As Object
+    On Error Resume Next
+    Application.CommandBars("Worksheet Menu Bar").Controls(MENU_NOM).Delete
+    On Error GoTo 0
+    Set barre = Application.CommandBars("Worksheet Menu Bar")
+    Set menu = barre.Controls.Add(Type:=10, Temporary:=True)       ' 10 : menu deroulant
+    menu.Caption = MENU_NOM
+    AjouterEntree menu, "Importer le code (src -> classeur) et compiler", "ImporterVBA", 1952, False
+    AjouterEntree menu, "Exporter le code (classeur -> src)", "ExporterVBA", 1953, False
+    AjouterEntree menu, "Compiler le projet", "CompilerVBA", 2950, False
+    AjouterEntree menu, "Menu Git du projet (mise a jour, envoi...)", "OuvrirMenuGit", 2645, True
+    AjouterEntree menu, "Ouvrir le dossier du projet", "OuvrirDossierProjet", 23, False
+End Sub
+
+Private Sub AjouterEntree(menu As Object, texte As String, macro As String, ByVal icone As Long, ByVal separe As Boolean)
+    Dim b As Object
+    Set b = menu.Controls.Add(Type:=1, Temporary:=True)             ' 1 : bouton
+    b.Caption = texte
+    b.OnAction = "'" & ThisWorkbook.Name & "'!" & macro
+    b.BeginGroup = separe
+    On Error Resume Next
+    b.FaceId = icone
+End Sub
+
+' Lance menu.bat (racine du depot, a cote du classeur actif)
+Public Sub OuvrirMenuGit()
+    Dim wb As Workbook, chemin As String
+    Set wb = ActiveWorkbook
+    If wb Is Nothing Then Exit Sub
+    chemin = wb.Path & "\menu.bat"
+    If wb.Path = "" Or Dir(chemin) = "" Then
+        MsgBox "menu.bat introuvable a cote du classeur actif :" & vbCrLf & chemin, vbExclamation, "VbaSync"
+        Exit Sub
+    End If
+    CreateObject("WScript.Shell").Run "cmd /c start """" """ & chemin & """", 0, False
+End Sub
+
+Public Sub OuvrirDossierProjet()
+    Dim wb As Workbook
+    Set wb = ActiveWorkbook
+    If wb Is Nothing Then Exit Sub
+    If wb.Path = "" Then Exit Sub
+    Shell "explorer.exe """ & wb.Path & """", vbNormalFocus
+End Sub
 
 ' -----------------------------------------------------------------------------
 ' src\ -> classeur actif
@@ -251,9 +330,42 @@ Public Sub ImporterVBA()
 
     MsgBox nbImportes & " module(s) importe(s) dans " & wb.Name & "." & _
            IIf(avertissements <> "", vbCrLf & vbCrLf & "Attention :" & avertissements, "") & _
+           vbCrLf & vbCrLf & ResultatCompilation(wb) & _
            vbCrLf & vbCrLf & "Pensez a enregistrer le classeur apres vos tests.", _
            vbInformation, "VbaSync"
 End Sub
+
+' -----------------------------------------------------------------------------
+' Compilation (Debogage > Compiler)
+' -----------------------------------------------------------------------------
+Public Sub CompilerVBA()
+    Dim wb As Workbook
+    If Not ClasseurCible(wb) Then Exit Sub
+    MsgBox ResultatCompilation(wb), vbInformation, "VbaSync"
+End Sub
+
+' Compile le projet du classeur. Apres une compilation reussie, la commande
+' Compiler est grisee : c'est ce qui permet de savoir si elle a reussi. En cas
+' d'erreur, l'editeur VBA affiche lui-meme le message et la ligne en cause.
+Private Function ResultatCompilation(wb As Workbook) As String
+    Dim ctl As Object
+    On Error GoTo erreur
+    Set Application.VBE.ActiveVBProject = wb.VBProject
+    Set ctl = Application.VBE.CommandBars.FindControl(ID:=ID_COMPILER)
+    If ctl Is Nothing Then
+        ResultatCompilation = "Compilation non verifiee : lancez Debogage > Compiler dans l'editeur VBA."
+        Exit Function
+    End If
+    If ctl.Enabled Then ctl.Execute
+    If ctl.Enabled Then
+        ResultatCompilation = "ERREUR DE COMPILATION : voir la ligne surlignee dans l'editeur VBA (Alt+F11)."
+    Else
+        ResultatCompilation = "Compilation OK."
+    End If
+    Exit Function
+erreur:
+    ResultatCompilation = "Compilation non verifiee (" & Err.Description & ")."
+End Function
 
 ' -----------------------------------------------------------------------------
 ' classeur actif -> src\
@@ -498,4 +610,448 @@ if __name__ == "__main__":
         sys.exit(__doc__)
     extraire(pathlib.Path(sys.argv[1]),
              pathlib.Path(sys.argv[2] if len(sys.argv) > 2 else "src"))
+```
+
+## Annexe C : `menu.bat` (racine du dépôt ; ASCII, fins de ligne Windows)
+
+```bat
+@echo off
+rem ==========================================================================
+rem  Menu Git du projet : a placer a la racine du depot, a cote du classeur.
+rem  Double-clic pour l'ouvrir (ou Excel : Complements > VbaSync > Menu Git).
+rem  Il travaille toujours dans SON dossier : impossible de se tromper de projet.
+rem  Fichier en ASCII (pas d'accents) avec fins de ligne Windows.
+rem ==========================================================================
+setlocal
+cd /d "%~dp0"
+title Menu Git - %~dp0
+
+git rev-parse --is-inside-work-tree >nul 2>&1
+if errorlevel 1 (
+    echo Ce dossier n'est pas un depot Git : %CD%
+    pause
+    exit /b 1
+)
+
+:menu
+cls
+set BRANCHE=
+for /f "delims=" %%b in ('git branch --show-current') do set BRANCHE=%%b
+set DEPOT=
+for /f "delims=" %%r in ('git config --get remote.origin.url') do set DEPOT=%%r
+echo ==========================================================================
+echo   Dossier : %CD%
+echo   Depot   : %DEPOT%
+echo   Branche : %BRANCHE%
+echo ==========================================================================
+echo.
+echo   1 - Recuperer les mises a jour (git pull)
+echo   2 - Etat : fichiers modifies
+echo   3 - Envoyer mes modifications (commit + push)
+echo   4 - Historique (10 dernieres versions)
+echo   5 - Ouvrir le classeur
+echo   6 - Console Git dans ce dossier
+echo   Q - Quitter
+echo.
+choice /c 123456Q /n /m "Votre choix : "
+if errorlevel 7 goto :eof
+if errorlevel 6 goto console
+if errorlevel 5 goto ouvrir
+if errorlevel 4 goto historique
+if errorlevel 3 goto envoyer
+if errorlevel 2 goto etat
+if errorlevel 1 goto maj
+goto menu
+
+rem --------------------------------------------------------------------------
+:maj
+echo.
+call :excel_ferme || goto pause
+rem Le classeur est souvent modifie par un simple import du code (ImporterVBA) :
+rem on propose d'annuler ces changements pour que le pull puisse passer.
+git diff --quiet -- "*.xlsm"
+if errorlevel 1 (
+    echo Le classeur .xlsm a ete modifie depuis la derniere mise a jour.
+    echo  - si c'est seulement un import du code : repondez O, le code sera reimporte apres ;
+    echo  - si vous avez modifie des feuilles a garder : repondez N, puis utilisez le choix 3.
+    choice /c ON /m "Annuler les modifications du classeur"
+    if errorlevel 2 goto pause
+    git checkout -- "*.xlsm"
+)
+git pull
+if errorlevel 1 goto pause
+echo.
+echo Version recue :
+git log --oneline -1
+echo.
+echo Ensuite : ouvrez le classeur (choix 5), puis Complements ^> VbaSync ^> Importer le code.
+goto pause
+
+rem --------------------------------------------------------------------------
+:etat
+echo.
+git status
+goto pause
+
+rem --------------------------------------------------------------------------
+:envoyer
+echo.
+call :excel_ferme || goto pause
+git status -s
+echo.
+set MSG=
+set /p MSG=Message decrivant vos modifications (vide = annuler) :
+if "%MSG%"=="" goto menu
+git add -A
+git commit -m "%MSG%"
+git push
+goto pause
+
+rem --------------------------------------------------------------------------
+:historique
+echo.
+git log --oneline -10
+goto pause
+
+rem --------------------------------------------------------------------------
+:ouvrir
+for %%f in (*.xlsm) do (
+    start "" "%%f"
+    goto menu
+)
+echo Aucun classeur .xlsm dans ce dossier.
+goto pause
+
+rem --------------------------------------------------------------------------
+:console
+start "Git - %CD%" cmd /k "git status"
+goto menu
+
+rem --------------------------------------------------------------------------
+:pause
+echo.
+pause
+goto menu
+
+rem --------------------------------------------------------------------------
+rem Verifie qu'aucun classeur .xlsm du dossier n'est ouvert dans Excel
+rem (un fichier ouvert dans Excel ne peut pas etre ouvert en ecriture).
+:excel_ferme
+set OUVERT=
+for %%f in (*.xlsm) do (
+    2>nul ( >>"%%f" (call ) ) || set OUVERT=%%f
+)
+if defined OUVERT (
+    echo Le classeur %OUVERT% est ouvert dans Excel : enregistrez-le et fermez-le d'abord.
+    exit /b 1
+)
+exit /b 0
+```
+
+## Annexe D : `outils/verifier_vba.py`
+
+```python
+"""Vérificateur statique approximatif du VBA de src/ (pour Claude : le VBA n'est pas compilable hors d'Excel).
+
+Usage : python outils/verifier_vba.py src [fichiers à contrôler pour les identifiants...]
+
+- encodage : caractères hors cp1252 (Excel lit les fichiers en ANSI)
+- blocs : If/End If, For/Next, Do/Loop, Select/End Select, With/End With, Sub/Function
+- continuations de ligne (max 24)
+- déclarations en double dans une procédure (sans casse)
+- identifiants non déclarés (heuristique)
+"""
+import re, sys, os, glob
+
+SRC = sys.argv[1]
+FICHIERS = sorted(glob.glob(os.path.join(SRC, "*.bas")) + glob.glob(os.path.join(SRC, "*.cls")) + glob.glob(os.path.join(SRC, "*.frm")))
+CIBLES = set(sys.argv[2:])  # fichiers à vérifier pour les identifiants
+
+KEYWORDS = set("""
+and as boolean byref byval call case const date dim do double each else elseif end enum
+error exit explicit false for function get global gosub goto if in integer is let like long loop
+me mod new next not nothing null object on option optional or paramarray preserve private property
+public redim resume select set single static step string sub then to true type until variant wend
+while with withevents xor currency byte decimal empty friend implements raiseevent attribute
+lbound ubound collection
+""".split())
+
+BUILTINS = set(x.lower() for x in """
+Len Mid Mid$ InStr InStrRev Replace Split Trim Trim$ LCase LCase$ UCase UCase$ Format Format$ CStr CLng CInt CDbl CSng CBool
+Val IsArray Array ChrW Chr Chr$ IIf Now Timer MsgBox Dir CreateObject GetSetting SaveSetting DeleteSetting Shell CallByName VbLet VbGet VbMethod VbSet IsDate CDate IsEmpty
+IsError Int StrComp Left Left$ Right Right$ RGB Err Application ThisWorkbook Workbooks ActiveSheet ActiveWorkbook
+Worksheets Worksheet Workbook Range VBA UserForms Debug DoEvents IsNumeric IsObject TypeName VarType Abs Round
+vbCrLf vbCr vbLf vbTab vbTextCompare vbBinaryCompare vbYes vbNo vbYesNo vbYesNoCancel vbOKCancel vbCancel vbQuestion
+vbInformation vbExclamation vbCritical vbBoolean vbObjectError vbNullString vbString
+xlSheetHidden xlSheetVisible xlSheetVeryHidden xlUp xlWhole xlWBATWorksheet xlOpenXMLWorkbook
+MSForms ListBox TabStrip ComboBox TextBox OptionButton Label Frame MultiPage Page CheckBox ReturnInteger ReturnBoolean
+Controls Cells Rows Columns Unload Load Hide Show Space String
+UserForm_Initialize UserForm_QueryClose Cancel CloseMode KeyCode Shift
+Kill FileLen Environ Choose ActiveWindow MkDir RmDir FileCopy
+""".split())
+
+def nettoyer(ligne):
+    """Retire chaînes et commentaire."""
+    out, i, dans = [], 0, False
+    while i < len(ligne):
+        ch = ligne[i]
+        if ch == '"':
+            if dans and i + 1 < len(ligne) and ligne[i + 1] == '"':
+                i += 2; continue
+            dans = not dans; out.append('""' if not dans else ''); i += 1; continue
+        if not dans and ch == "'":
+            break
+        if not dans:
+            out.append(ch)
+        i += 1
+    return "".join(out)
+
+def lignes_logiques(texte):
+    """Joint les continuations ; renvoie (n° ligne, ligne nettoyée, nb continuations)."""
+    res, acc, debut, nb = [], "", None, 0
+    for n, l in enumerate(texte.splitlines(), 1):
+        c = nettoyer(l).rstrip()
+        if debut is None:
+            debut = n
+        if c.endswith(" _"):
+            acc += c[:-2] + " "; nb += 1
+            continue
+        acc += c
+        res.append((debut, acc, nb))
+        acc, debut, nb = "", None, 0
+    return res
+
+def instructions(ligne):
+    """Découpe une ligne logique sur les ':' hors chaîne (chaînes déjà vidées)."""
+    # attention aux étiquettes "erreur:" : traitées comme instruction vide
+    return [p.strip() for p in re.split(r":(?!=)", ligne)]
+
+erreurs = []
+decl_globales = {}   # nom -> fichier
+membres_classe = {}
+
+def module_nom(f):
+    return os.path.splitext(os.path.basename(f))[0]
+
+# --- 1er passage : déclarations publiques et noms de modules
+for f in FICHIERS:
+    texte = open(f, encoding="utf-8").read()
+    decl_globales[module_nom(f).lower()] = f
+    for (n, l, nb) in lignes_logiques(texte):
+        s = l.strip()
+        m = re.match(r"(?i)^(public|global)?\s*(private\s+)?(sub|function|property\s+(get|let|set))\s+(\w+)", s)
+        if m and not re.match(r"(?i)^private", s):
+            decl_globales[m.group(5).lower()] = f
+        m = re.match(r"(?i)^(public|global)\s+(const\s+)?(withevents\s+)?(.*)$", s)
+        if m and not re.match(r"(?i)^public\s+(sub|function|property)", s):
+            for part in m.group(4).split(","):
+                mm = re.match(r"\s*(\w+)", part)
+                if mm:
+                    decl_globales[mm.group(1).lower()] = f
+
+for f in FICHIERS:
+    texte = open(f, encoding="utf-8").read()
+    nomf = os.path.basename(f)
+    # encodage
+    for n, l in enumerate(texte.splitlines(), 1):
+        try:
+            l.encode("cp1252")
+        except UnicodeEncodeError as e:
+            erreurs.append(f"{nomf}:{n}: caractère hors cp1252 : {l[e.start:e.end]!r}")
+    ll = lignes_logiques(texte)
+    for (n, l, nb) in ll:
+        if nb > 24:
+            erreurs.append(f"{nomf}:{n}: {nb} continuations (max 24)")
+        if len(l) > 1023:
+            erreurs.append(f"{nomf}:{n}: ligne logique trop longue ({len(l)})")
+    # blocs
+    pile = []
+    module_vars = set()
+    proc = None
+    locaux = {}
+    for (n, l, nb) in ll:
+        for ins in instructions(l):
+            s = ins.strip()
+            if not s:
+                continue
+            low = s.lower()
+            low = re.sub(r"^(public|private|friend|static)\s+", "", low)
+            if re.match(r"^(sub|function|property\s+(get|let|set))\s+\w+", low):
+                if proc:
+                    erreurs.append(f"{nomf}:{n}: procédure ouverte dans {proc}")
+                proc = re.match(r"^(?:sub|function|property\s+\w+)\s+(\w+)", low).group(1)
+                pile = []
+                locaux = {}
+                # paramètres
+                mpar = re.search(r"\((.*)\)", s)
+                if mpar:
+                    for p in mpar.group(1).split(","):
+                        mm = re.match(r"(?i)\s*(optional\s+)?(byval\s+|byref\s+)?(paramarray\s+)?(\w+)", p)
+                        if mm and mm.group(4):
+                            k = mm.group(4).lower()
+                            if k in locaux:
+                                erreurs.append(f"{nomf}:{n}: paramètre en double {k}")
+                            locaux[k] = n
+                continue
+            if re.match(r"^end\s+(sub|function|property)\b", low):
+                if pile:
+                    erreurs.append(f"{nomf}:{n}: bloc(s) non fermé(s) dans {proc} : {pile}")
+                proc = None
+                continue
+            if re.match(r"^exit\s+(sub|function|property|for|do)", low):
+                continue
+            # déclarations
+            m = re.match(r"^(dim|static|const|redim(\s+preserve)?)\s+(.*)$", low) if proc else \
+                re.match(r"^(dim|const|withevents|private|public|global)?\s*(const\s+|withevents\s+)?(.*)$", low)
+            if proc and m and m.group(1).startswith(("dim", "static", "const")):
+                for part in re.split(r",(?![^(]*\))", m.group(3)):
+                    mm = re.match(r"\s*(withevents\s+)?(\w+)", part)
+                    if mm:
+                        k = mm.group(2)
+                        if k in locaux:
+                            erreurs.append(f"{nomf}:{n}: déclaration en double « {k} » dans {proc}")
+                        locaux[k] = n
+            low0 = s.lower()
+            if re.match(r"^(private|public|friend)?\s*(sub|function|property)\b", low0):
+                pass
+            if not proc and re.match(r"^(dim|private|public|global|const)\b", low0) and not re.search(r"\b(sub|function|property|type|enum)\b", low0.split("(")[0]):
+                body = re.sub(r"^(dim|private|public|global)\s+", "", low0)
+                body = re.sub(r"^(const|withevents)\s+", "", body)
+                for part in re.split(r",(?![^(]*\))", body):
+                    mm = re.match(r"\s*(withevents\s+)?(\w+)", part)
+                    if mm:
+                        module_vars.add(mm.group(2))
+            # blocs
+            if re.match(r"^if\b.*\bthen\s*$", low):
+                pile.append("If")
+            elif re.match(r"^elseif\b", low) or low == "else":
+                if not pile or pile[-1] != "If":
+                    erreurs.append(f"{nomf}:{n}: {s.split()[0]} hors If")
+            elif re.match(r"^end\s+if\b", low):
+                if not pile or pile.pop() != "If":
+                    erreurs.append(f"{nomf}:{n}: End If sans If")
+            elif re.match(r"^for\b", low):
+                pile.append("For")
+            elif re.match(r"^next\b", low):
+                if not pile or pile.pop() != "For":
+                    erreurs.append(f"{nomf}:{n}: Next sans For")
+            elif re.match(r"^do\b", low):
+                pile.append("Do")
+            elif re.match(r"^loop\b", low):
+                if not pile or pile.pop() != "Do":
+                    erreurs.append(f"{nomf}:{n}: Loop sans Do")
+            elif re.match(r"^while\b", low):
+                pile.append("While")
+            elif re.match(r"^wend\b", low):
+                if not pile or pile.pop() != "While":
+                    erreurs.append(f"{nomf}:{n}: Wend sans While")
+            elif re.match(r"^select\s+case\b", low):
+                pile.append("Select")
+            elif re.match(r"^end\s+select\b", low):
+                if not pile or pile.pop() != "Select":
+                    erreurs.append(f"{nomf}:{n}: End Select sans Select")
+            elif re.match(r"^with\b", low):
+                pile.append("With")
+            elif re.match(r"^end\s+with\b", low):
+                if not pile or pile.pop() != "With":
+                    erreurs.append(f"{nomf}:{n}: End With sans With")
+            elif re.match(r"^if\b.*\bthen\b", low):
+                # If sur une ligne : vérifier les sous-instructions (rien à empiler)
+                pass
+    if proc:
+        erreurs.append(f"{nomf}: procédure {proc} non fermée")
+
+    for (n, l, nb) in ll:
+        mm = re.match(r"(?i)^\s*(?:private\s+|public\s+|friend\s+)?(?:sub|function|property\s+(?:get|let|set))\s+(\w+)", l)
+        if mm:
+            module_vars.add(mm.group(1).lower())
+        mm = re.match(r"^(\w+):\s*$", l.strip())
+        if mm:
+            module_vars.add(mm.group(1).lower())
+    # identifiants non déclarés (fichiers ciblés)
+    if CIBLES and os.path.basename(f) not in CIBLES:
+        continue
+    proc = None
+    locaux = set()
+    for (n, l, nb) in ll:
+        s = l.strip()
+        low = re.sub(r"^(public|private|friend|static)\s+", "", s.lower())
+        if re.match(r"^(sub|function|property\s+(get|let|set))\s+\w+", low):
+            proc = True
+            locaux = set()
+            mpar = re.search(r"\((.*)\)", s)
+            if mpar:
+                for p in mpar.group(1).split(","):
+                    mm = re.match(r"(?i)\s*(optional\s+)?(byval\s+|byref\s+)?(paramarray\s+)?(\w+)", p)
+                    if mm and mm.group(4):
+                        locaux.add(mm.group(4).lower())
+            nom = re.match(r"^(?:sub|function|property\s+\w+)\s+(\w+)", low).group(1)
+            locaux.add(nom)
+            continue
+        if re.match(r"^end\s+(sub|function|property)\b", low):
+            proc = None
+            continue
+        if not proc:
+            continue
+        for ins in instructions(l):
+            li = ins.strip().lower()
+            m = re.match(r"^(dim|static|const)\s+(.*)$", li)
+            if m:
+                for part in re.split(r",(?![^(]*\))", m.group(2)):
+                    mm = re.match(r"\s*(\w+)", part)
+                    if mm:
+                        locaux.add(mm.group(1))
+                # type names after As are fine; skip checking
+                continue
+            if re.match(r"^\w+:$", ins.strip() + ":") and re.match(r"^\w+$", ins.strip()):
+                # étiquette ou appel sans argument
+                pass
+            # retirer les noms d'arguments nommés (Filename:=)
+            texte_ins = re.sub(r"\w+\s*:=", "", ins)
+            texte_ins = re.sub(r"&H[0-9A-Fa-f]+&?", "0", texte_ins)
+            for m in re.finditer(r"(?<![\w.$])([A-Za-z_]\w*)\$?", texte_ins):
+                nom = m.group(1).lower()
+                debut = m.start(1)
+                avant = texte_ins[:debut].rstrip()
+                if avant.endswith("."):
+                    continue
+                if nom in KEYWORDS or nom in BUILTINS or nom in locaux or nom in module_vars or nom in decl_globales:
+                    continue
+                if re.match(r"(xl|vb|mso|fm)[A-Z]", m.group(1)):      # constantes Excel / VBA / Office / MSForms
+                    continue
+                # "As Type"
+                if re.search(r"(?i)\bas\s+(new\s+)?$", avant):
+                    continue
+                # étiquettes GoTo
+                if re.search(r"(?i)\b(goto|resume)\s+$", avant):
+                    continue
+                erreurs.append(f"{nomf}:{n}: identifiant non déclaré ? « {m.group(1)} »")
+
+# Noms de module (procédures, variables, constantes) qui ne diffèrent que par la
+# casse : VBA ne distingue pas majuscules et minuscules (« nom ambigu »)
+import collections
+noms = collections.defaultdict(set)
+for f in FICHIERS:
+    mod = os.path.basename(f)
+    for l in open(f, encoding="utf-8"):
+        l = nettoyer(l.rstrip("\n"))
+        mp = re.match(r"\s*(?:Public\s+|Private\s+|Friend\s+)?(?:Sub|Function|Property\s+\w+)\s+(\w+)", l)
+        mm = re.match(r"(?:Public|Private|Global|Dim)\s+(?:Const\s+|WithEvents\s+)?(.*)$", l)
+        if mp:
+            noms[mp.group(1).lower()].add((mod, mp.group(1)))
+        elif mm and not l.startswith((" ", "\t")):
+            for part in re.split(r",(?![^(]*\))", mm.group(1)):
+                x = re.match(r"\s*(\w+)", part)
+                if x:
+                    noms[x.group(1).lower()].add((mod, x.group(1)))
+for k, v in noms.items():
+    if len({n for _, n in v}) > 1 and len({m for m, _ in v}) < len(v) + 1:
+        modules = {m for m, _ in v}
+        publics_ou_meme_module = len(modules) == 1 or any(m.endswith(".bas") for m in modules)
+        if publics_ou_meme_module:
+            erreurs.append(f"nom ambigu (casse différente) : {sorted(v)}")
+
+for e in erreurs:
+    print(e)
+print(f"{len(erreurs)} remarque(s)")
 ```

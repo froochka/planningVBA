@@ -10,3 +10,6 @@
 *.cls text eol=crlf
 *.frm text eol=crlf
 *.csv -text
+
+# Scripts Windows : fins de ligne Windows obligatoires
+*.bat text eol=crlf
