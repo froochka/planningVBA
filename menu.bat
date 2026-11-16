@@ -98,12 +98,39 @@ goto pause
 
 rem --------------------------------------------------------------------------
 :ouvrir
-for %%f in (*.xlsm) do (
-    start "" "%%f"
+rem Un seul classeur : il est ouvert ; plusieurs : on demande lequel
+set NB=0
+set F=
+set N=
+for %%f in (*.xlsm) do call :compter "%%f"
+if %NB%==0 (
+    echo Aucun classeur .xlsm dans ce dossier.
+    goto pause
+)
+if %NB%==1 (
+    start "" "%F1%"
     goto menu
 )
-echo Aucun classeur .xlsm dans ce dossier.
-goto pause
+echo.
+set I=0
+for %%f in (*.xlsm) do call :lister "%%f"
+echo.
+set /p N=Numero du classeur a ouvrir (vide = annuler) : 
+if "%N%"=="" goto menu
+call set F=%%F%N%%%
+if not defined F goto menu
+start "" "%F%"
+goto menu
+
+:compter
+set /a NB+=1
+set F%NB%=%~1
+exit /b
+
+:lister
+set /a I+=1
+echo   %I% - %~1
+exit /b
 
 rem --------------------------------------------------------------------------
 :console

@@ -32,7 +32,7 @@ Un classeur `.xlsm` est un **fichier binaire** (un zip qui contient lui-même un
 |---|---|
 | `src/` | Le code VBA en texte : `Module.bas` (modules standards), `Classe.cls` (classes, mais aussi `ThisWorkbook` et les feuilles), `Formulaire.frm` (code des UserForms). **UTF-8, sans les en-têtes `Attribute VB_…`**, fins de ligne Windows. |
 | `outils/VbaSync.bas` | Macros installées **une seule fois par poste** dans le classeur de macros personnel (`PERSONAL.XLSB`) : `ImporterVBA` (src → classeur actif, **puis compilation**), `ExporterVBA` (classeur actif → src), `CompilerVBA`. Elles créent au démarrage d'Excel un **menu « VbaSync »** dans l'onglet *Compléments* du ruban (plus besoin de `Alt+F8`). Source en annexe A. |
-| `menu.bat` | **Menu Git du projet**, à la racine de chaque dépôt (double-clic, ou VbaSync › Menu Git) : récupérer, état, envoyer, historique, ouvrir le classeur, console. Il travaille toujours dans **son** dossier et affiche le dépôt et la branche : impossible de se tromper de projet. Source en annexe C. |
+| `menu.bat` | **Menu Git du projet**, à la racine de chaque dépôt (double-clic, ou VbaSync › Menu Git) : récupérer, état, envoyer, historique, ouvrir le classeur (au choix s'il y en a plusieurs), console. Il travaille toujours dans **son** dossier et affiche le dépôt et la branche : impossible de se tromper de projet. Source en annexe C. |
 | `outils/verifier_vba.py` | Vérificateur statique pour Claude, qui ne peut pas compiler : blocs, déclarations, identifiants, noms ambigus, caractères hors cp1252. Source en annexe D. |
 | `outils/extraire_vba.py` | Extraction **sans Excel** (pour Claude) : `pip install oletools` puis `python outils/extraire_vba.py Classeur.xlsm`. Produit exactement le même format qu'`ExporterVBA`. Source en annexe B. |
 | `.gitattributes` | Déclare les classeurs comme binaires et les fichiers de code en texte avec fins de ligne Windows. |
@@ -715,12 +715,39 @@ goto pause
 
 rem --------------------------------------------------------------------------
 :ouvrir
-for %%f in (*.xlsm) do (
-    start "" "%%f"
+rem Un seul classeur : il est ouvert ; plusieurs : on demande lequel
+set NB=0
+set F=
+set N=
+for %%f in (*.xlsm) do call :compter "%%f"
+if %NB%==0 (
+    echo Aucun classeur .xlsm dans ce dossier.
+    goto pause
+)
+if %NB%==1 (
+    start "" "%F1%"
     goto menu
 )
-echo Aucun classeur .xlsm dans ce dossier.
-goto pause
+echo.
+set I=0
+for %%f in (*.xlsm) do call :lister "%%f"
+echo.
+set /p N=Numero du classeur a ouvrir (vide = annuler) : 
+if "%N%"=="" goto menu
+call set F=%%F%N%%%
+if not defined F goto menu
+start "" "%F%"
+goto menu
+
+:compter
+set /a NB+=1
+set F%NB%=%~1
+exit /b
+
+:lister
+set /a I+=1
+echo   %I% - %~1
+exit /b
 
 rem --------------------------------------------------------------------------
 :console
