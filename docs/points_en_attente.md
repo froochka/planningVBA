@@ -44,8 +44,8 @@ Hors périmètre (feuilles non reprises dans SGO) : 10-Entreprises sourcées, 10
 - [x] 1, 2, 3, 5, 6, 11, 13 : faits le 16/11/2026 (7, 8, 9 déjà réglés en 0.8).
 - [ ] 4 : utilité de « Rétablir les standards du sous-thème » (garder, renommer, supprimer) : décision à prendre.
 - [ ] 10 : liens vers les autres onglets (cartographie ORECA, annexes) : à cadrer avec les annexes.
-- [ ] 12 : voir en entier une réponse texte longue (bouton « Agrandir »).
-- [ ] 14a : choix trop longs coupés dans la liste (liste « maison » avec retour à la ligne).
-- [ ] 14b : « Autres » absent de la liste d'El73 (condition El73b impossible) : correction du référentiel par le CDP.
+- [x] 12 : bouton « Agrandir » sous la réponse texte et la justification (16/11/2026).
+- [x] 14a : liste des choix « maison », les choix longs passent à la ligne (16/11/2026).
+- [ ] 14b : « Autres » absent de la liste nommée ListeEl73 de l'outil d'origine (la colonne « Choix de réponse » l'a) : condition El73b impossible ; correction du référentiel à valider par le CDP.
 - [ ] 15 : « Valider et suivante » fait doublon avec « Question suivante » depuis la 0.8 : décision à prendre.
-- [ ] 16 : El222, choix Oui/Non au lieu de « sur devis / en pourcentage » : vérifier dans le classeur d'origine.
+- [x] 16 : El222 corrigé (deux listes déroulantes se chevauchaient dans l'outil d'origine ; la plus précise est retenue) ; 9 autres questions corrigées au passage. Référentiel version 3 (16/11/2026).

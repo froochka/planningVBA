@@ -21,7 +21,6 @@ Private WithEvents tsThemes As MSForms.TabStrip
 Private WithEvents tsSST As MSForms.TabStrip
 Private WithEvents cboFiltre As MSForms.ComboBox
 Private WithEvents chkSansObjet As MSForms.CheckBox
-Private WithEvents lstChoix As MSForms.ListBox
 Private WithEvents cboChoix As MSForms.ComboBox
 Private WithEvents txtRep As MSForms.TextBox
 Private WithEvents optDiffNC As MSForms.OptionButton
@@ -46,6 +45,10 @@ Private WithEvents btnFermer As MSForms.Label
 Private WithEvents btnFermerRes As MSForms.Label
 Private WithEvents btnFenetre As MSForms.Label      ' réduire / agrandir l'écran
 Private WithEvents poigneeNav As MSForms.Label      ' poignée entre Chapitres et la zone des thèmes
+Private WithEvents btnZoomRep As MSForms.Label      ' « Agrandir » sous la réponse texte
+Private WithEvents btnZoomJust As MSForms.Label     ' « Agrandir » sous la justification
+Private WithEvents btnZoomOK As MSForms.Label       ' fenêtre « Agrandir » : Valider
+Private WithEvents btnZoomAnnuler As MSForms.Label  ' fenêtre « Agrandir » : Annuler
 Private WithEvents poigneeDet As MSForms.Label      ' poignée entre la liste des questions et le détail
 
 Private mp As MSForms.MultiPage
@@ -53,6 +56,11 @@ Private fraChap As MSForms.Frame        ' liste des chapitres (lignes de Labels)
 Private fraQ As MSForms.Frame           ' liste des questions (lignes de Labels)
 Private lignes As Collection            ' cClicLigne des deux listes
 Private fraRes As MSForms.Frame         ' résultats de recherche (créé une fois, masqué ou affiché)
+Private fraZoom As MSForms.Frame        ' saisie agrandie d'un texte long (créé une fois, masqué ou affiché)
+Private txtZoom As MSForms.TextBox
+Private zoomCible As Object             ' zone de texte agrandie (réponse ou justification)
+Private choixCoches() As Boolean        ' choix cochés de la liste « maison » des choix (ligne R)
+Private nbChoixAff As Long              ' nombre de choix affichés (0 : pas de liste de choix)
 
 ' --- État -----------------------------------------------------------------------
 Private curChap As cCategorieSGO
@@ -132,6 +140,7 @@ End Sub
 Private Sub UserForm_Terminate()
     LibererLignes "C"
     LibererLignes "Q"
+    LibererLignes "R"
 End Sub
 
 Private Sub btnFermer_Click()
@@ -276,6 +285,7 @@ Private Sub Construire()
 
     PlacerZoneQuestions False, False
     ConstruireResultats
+    ConstruireZoom
     RemplirChapitres
     AfficherAvancement
     chargement = False
@@ -468,7 +478,9 @@ Private Sub LargeursParDefaut()
 End Sub
 
 Private Sub LibererDetail()
-    Set lstChoix = Nothing: Set cboChoix = Nothing: Set txtRep = Nothing
+    Set cboChoix = Nothing: Set txtRep = Nothing
+    Set btnZoomRep = Nothing: Set btnZoomJust = Nothing
+    LibererLignes "R": nbChoixAff = 0
     Set optDiffNC = Nothing: Set optDiffId = Nothing: Set optDiffDiff = Nothing
     Set txtJustif = Nothing: Set btnReprendre = Nothing
 End Sub
@@ -549,7 +561,9 @@ End Sub
 ' Clic sur une ligne d'une liste maison (appelé par cClicLigne)
 Public Sub LigneCliquee(ByVal liste As String, ByVal index As Long)
     If chargement Then Exit Sub
-    If liste = "C" Then
+    If liste = "R" Then
+        ChoixClique index
+    ElseIf liste = "C" Then
         If index = chapSel Then Exit Sub
         Valider
         AfficherChapitre gChapitres(index + 1), Nothing
@@ -1049,6 +1063,7 @@ End Sub
 ' Détail d'une question
 ' =============================================================================
 Private Sub AfficherQuestion(ByVal q As cQuestionSGO)
+    FermerZoom False                                 ' déjà fermée par Valider, en principe
     Set curQ = q
     sale = False
     Me.Controls("lblAriane").Caption = FilAriane()
@@ -1137,22 +1152,8 @@ Private Sub ConstruirePageReponse()
         UILbl pg, "lblRepAnnexe", curQ.Reponse, M, y, iw, UILigneH(), True
         y = y + UILigneH() + 12
     ElseIf curQ.EstListe And curQ.NbChoix > 0 And InStr(1, curQ.Mode, "texte", vbTextCompare) = 0 Then
-        ' Jusqu'à 12 choix affichés en entier ; au-delà, la liste défile
-        hz = UIBorne(curQ.NbChoix, 2, 12) * UILigneH() + 8
-        Set lstChoix = UIListe(pg, "lstChoix", M, y, iw, hz, "")
-        lstChoix.ListStyle = 1                       ' cases à cocher / boutons d'option
-        lstChoix.MultiSelect = IIf(curQ.EstChoixMultiple, 1, 0)
-        For i = 0 To UBound(curQ.Choix)
-            lstChoix.AddItem curQ.Choix(i)
-        Next i
-        SelectionnerChoix
-        lstChoix.Enabled = Not masquee
-        y = y + hz + 4
-        If curQ.NbChoix > 12 Then
-            UILbl pg, "lblDefiler", curQ.NbChoix & " choix : faites défiler la liste pour les voir tous.", _
-                  M, y, iw, UILigneH(-2), False, -2, uiOrange
-            y = y + UILigneH(-2) + 4
-        End If
+        ' Liste « maison » : chaque choix passe à la ligne (choix longs, El73)
+        y = ConstruireChoix(pg, y, iw, masquee) + 6
         hz = UIBorne(LignesTexte("Réponse retenue : " & curQ.Reponse, iw, -1), 1, 4) * UILigneH(-1)
         UILbl pg, "lblRepComplete", "Réponse retenue : " & IIf(curQ.Reponse = "", "(aucune)", curQ.Reponse), _
               M, y, iw, hz, False, -1, uiGris
@@ -1169,7 +1170,13 @@ Private Sub ConstruirePageReponse()
         txtRep.MultiLine = True: txtRep.WordWrap = True: txtRep.ScrollBars = 2
         txtRep.EnterKeyBehavior = True
         txtRep.Enabled = Not masquee
-        y = y + hz + 14
+        y = y + hz + 2
+        If Not masquee Then
+            Set btnZoomRep = UIBouton(pg, "btnZoomRep", "Agrandir", M + iw - 96, y, 96, UILigneH() + 4, 0, ICO_AGRANDIR)
+            btnZoomRep.ControlTipText = "Lire et saisir la réponse dans une grande zone"
+            y = y + UILigneH() + 4
+        End If
+        y = y + 12
     End If
 
     If Not masquee Then
@@ -1190,7 +1197,10 @@ Private Sub ConstruirePageReponse()
             txtJustif.MultiLine = True: txtJustif.WordWrap = True: txtJustif.ScrollBars = 2
             txtJustif.EnterKeyBehavior = True
             StyleJustification
-            y = y + hz + 16
+            y = y + hz + 2
+            Set btnZoomJust = UIBouton(pg, "btnZoomJust", "Agrandir", M + iw - 96, y, 96, UILigneH() + 4, 0, ICO_AGRANDIR)
+            btnZoomJust.ControlTipText = "Lire et saisir la justification dans une grande zone"
+            y = y + UILigneH() + 4 + 14
         End If
 
         ' Comparaison avec l'offre précédente (information, sans justification)
@@ -1435,42 +1445,174 @@ Private Function LignesTexte(ByVal s As String, ByVal largeur As Single, ByVal d
     LignesTexte = n
 End Function
 
-' Coche dans la liste les choix contenus dans la réponse
+' -----------------------------------------------------------------------------
+' Liste « maison » des choix : une ligne par choix (symbole + texte qui passe à
+' la ligne), lignes « R0 », « R1 »... ; un clic coche ou décoche, sur place
+' -----------------------------------------------------------------------------
+Private Function ConstruireChoix(ByVal pg As Object, ByVal y As Single, ByVal iw As Single, ByVal grisee As Boolean) As Single
+    Dim i As Long, nb As Long, h As Single, wTxt As Single, y0 As Single, c As Object, ligne As cClicLigne, nom As String
+    LibererLignes "R"
+    nbChoixAff = curQ.NbChoix
+    ReDim choixCoches(0 To nbChoixAff - 1)
+    y0 = y
+    Set c = UIFond(pg, "R_cadre", M, y, iw, 10, uiBlanc)
+    c.BorderStyle = 1: c.BorderColor = RGB(170, 178, 189)
+    y = y + 2
+    wTxt = iw - 34
+    For i = 0 To nbChoixAff - 1
+        nom = "R" & i
+        nb = UIBorne(LignesTexte(CStr(curQ.Choix(i)), wTxt, 0), 1, 8)
+        h = nb * UILigneH() + 6
+        UIFond pg, nom & "_fond", M + 1, y, iw - 2, h, uiBlanc
+        Set c = UILbl(pg, nom & "_ico", "", M + 8, y + 2, 20, UILigneH(1), False, 1)
+        c.Font.Name = UI_POLICE_SYMB
+        UILbl pg, nom & "_txt", CStr(curQ.Choix(i)), M + 30, y + 3, wTxt, nb * UILigneH(), False, 0, _
+              IIf(grisee, uiGrisClair, uiTexte)
+        Set ligne = New cClicLigne
+        Set ligne.Zone = UILbl(pg, nom & "_zone", "", M + 1, y, iw - 2, h)
+        Set ligne.Formulaire = Me
+        ligne.Liste = "R"
+        ligne.Index = i
+        lignes.Add ligne, nom
+        y = y + h
+    Next i
+    pg.Controls("R_cadre").Height = y + 2 - y0
+    SelectionnerChoix
+    ConstruireChoix = y + 2
+End Function
+
+' Coche les choix contenus dans la réponse
 Private Sub SelectionnerChoix()
     Dim i As Long, morceaux As Variant, morceau As Variant
-    If lstChoix Is Nothing Then Exit Sub
-    If curQ.EstChoixMultiple Then
-        morceaux = Split(curQ.Reponse, ";")
-        For i = 0 To lstChoix.ListCount - 1
-            lstChoix.Selected(i) = False
+    If nbChoixAff = 0 Then Exit Sub
+    morceaux = Split(curQ.Reponse, ";")
+    For i = 0 To nbChoixAff - 1
+        choixCoches(i) = False
+        If curQ.EstChoixMultiple Then
             For Each morceau In morceaux
-                If StrComp(Trim$(morceau), Trim$(lstChoix.List(i)), vbTextCompare) = 0 Then lstChoix.Selected(i) = True
+                If StrComp(Trim$(morceau), Trim$(curQ.Choix(i)), vbTextCompare) = 0 Then choixCoches(i) = True
             Next morceau
+        Else
+            choixCoches(i) = (StrComp(Trim$(curQ.Reponse), Trim$(curQ.Choix(i)), vbTextCompare) = 0)
+        End If
+    Next i
+    AfficherCoches
+End Sub
+
+' Symboles et fond des lignes de choix, mis à jour sur place
+Private Sub AfficherCoches()
+    Dim i As Long, pg As Object, sym As String
+    Set pg = mp.Pages(0)
+    On Error Resume Next
+    For i = 0 To nbChoixAff - 1
+        If curQ.EstChoixMultiple Then
+            sym = IIf(choixCoches(i), ChrW(&H2611), ChrW(&H2610))      ' case cochée / vide
+        Else
+            sym = IIf(choixCoches(i), ChrW(&H25C9), ChrW(&H25CB))      ' rond plein / vide
+        End If
+        pg.Controls("R" & i & "_ico").Caption = sym
+        pg.Controls("R" & i & "_ico").ForeColor = IIf(choixCoches(i), uiAction, uiGris)
+        pg.Controls("R" & i & "_fond").BackColor = IIf(choixCoches(i), uiBleuClair, uiBlanc)
+    Next i
+End Sub
+
+Private Sub ChoixClique(ByVal index As Long)
+    Dim i As Long, s As String
+    If curQ Is Nothing Or index < 0 Or index >= nbChoixAff Then Exit Sub
+    If curQ.Statut = ST_MASQUEE Then Exit Sub
+    If curQ.EstChoixMultiple Then
+        choixCoches(index) = Not choixCoches(index)
+        For i = 0 To nbChoixAff - 1
+            If choixCoches(i) Then s = s & IIf(s = "", "", ";") & curQ.Choix(i)
         Next i
     Else
-        lstChoix.ListIndex = -1
-        For i = 0 To lstChoix.ListCount - 1
-            If StrComp(Trim$(curQ.Reponse), Trim$(lstChoix.List(i)), vbTextCompare) = 0 Then lstChoix.ListIndex = i
+        If choixCoches(index) Then Exit Sub          ' déjà choisi
+        For i = 0 To nbChoixAff - 1
+            choixCoches(i) = (i = index)
         Next i
+        s = curQ.Choix(index)
     End If
+    AfficherCoches
+    ChangerReponse s, True
+End Sub
+
+' -----------------------------------------------------------------------------
+' Saisie agrandie d'un texte long (réponse ou justification) : cadre créé une
+' fois, affiché par-dessus le détail ; jamais supprimé (ses boutons le ferment)
+' -----------------------------------------------------------------------------
+Private Sub ConstruireZoom()
+    Set fraZoom = UICtl(Me, "Forms.Frame.1", "fraZoom", 0, 0, 300, 200)
+    fraZoom.Caption = ""
+    fraZoom.BackColor = uiBlanc
+    fraZoom.SpecialEffect = 0: fraZoom.BorderStyle = 1: fraZoom.BorderColor = RGB(150, 160, 175)
+    UILbl fraZoom, "lblZoomTitre", "", M, 8, 200, UILigneH(-1), True, -1, uiBandeau
+    Set txtZoom = UITxt(fraZoom, "txtZoom", "", M, 12 + UILigneH(-1), 200, 100)
+    txtZoom.MultiLine = True: txtZoom.WordWrap = True: txtZoom.ScrollBars = 2
+    txtZoom.EnterKeyBehavior = True
+    Set btnZoomOK = UIBouton(fraZoom, "btnZoomOK", "Valider", 0, 0, 120, 28, 1, ICO_COCHE)
+    Set btnZoomAnnuler = UIBouton(fraZoom, "btnZoomAnnuler", "Annuler", 0, 0, 100, 28, 0)
+    fraZoom.Visible = False
+End Sub
+
+Private Sub OuvrirZoom(ByVal cible As Object, ByVal titre As String)
+    Dim w As Single, h As Single
+    If cible Is Nothing Then Exit Sub
+    Set zoomCible = cible
+    fraZoom.Left = mp.Left: fraZoom.Top = mp.Top
+    fraZoom.Width = mp.Width: fraZoom.Height = mp.Height
+    w = fraZoom.InsideWidth: h = fraZoom.InsideHeight
+    fraZoom.Controls("lblZoomTitre").Caption = titre
+    fraZoom.Controls("lblZoomTitre").Width = w - 2 * M
+    txtZoom.Width = w - 2 * M
+    txtZoom.Height = UIBorne(h - (12 + UILigneH(-1)) - 46, 60, 3000)
+    txtZoom.Text = cible.Text
+    PlacerBouton fraZoom, "btnZoomOK", w - M - 120, h - 36
+    PlacerBouton fraZoom, "btnZoomAnnuler", w - M - 120 - 8 - 100, h - 36
+    fraZoom.Visible = True
+    fraZoom.ZOrder 0
+    txtZoom.SetFocus
+End Sub
+
+' Déplace un bouton plat (UIBouton : fond, icône, texte et zone cliquable)
+Private Sub PlacerBouton(ByVal parent As Object, ByVal nom As String, ByVal l As Single, ByVal t As Single)
+    Dim dx As Single, dy As Single, suffixe As Variant
+    dx = l - parent.Controls(nom).Left: dy = t - parent.Controls(nom).Top
+    On Error Resume Next
+    For Each suffixe In Array("_fond", "_ico", "_txt", "")
+        parent.Controls(nom & suffixe).Left = parent.Controls(nom & suffixe).Left + dx
+        parent.Controls(nom & suffixe).Top = parent.Controls(nom & suffixe).Top + dy
+    Next suffixe
+End Sub
+
+Private Sub FermerZoom(ByVal garder As Boolean)
+    If fraZoom Is Nothing Then Exit Sub
+    If Not fraZoom.Visible Then Exit Sub
+    fraZoom.Visible = False
+    If garder And Not zoomCible Is Nothing Then
+        If zoomCible.Text <> txtZoom.Text Then zoomCible.Text = txtZoom.Text   ' déclenche l'enregistrement habituel
+    End If
+    Set zoomCible = Nothing
+End Sub
+
+Private Sub btnZoomRep_Click()
+    OuvrirZoom txtRep, "RÉPONSE  ·  " & curQ.Id
+End Sub
+
+Private Sub btnZoomJust_Click()
+    OuvrirZoom txtJustif, "JUSTIFICATION DE LA DÉROGATION  ·  " & curQ.Id
+End Sub
+
+Private Sub btnZoomOK_Click()
+    FermerZoom True
+End Sub
+
+Private Sub btnZoomAnnuler_Click()
+    FermerZoom False
 End Sub
 
 ' =============================================================================
 ' Saisie
 ' =============================================================================
-Private Sub lstChoix_Change()
-    Dim i As Long, s As String
-    If chargement Then Exit Sub
-    If curQ.EstChoixMultiple Then
-        For i = 0 To lstChoix.ListCount - 1
-            If lstChoix.Selected(i) Then s = s & IIf(s = "", "", ";") & lstChoix.List(i)
-        Next i
-    ElseIf lstChoix.ListIndex >= 0 Then
-        s = lstChoix.List(lstChoix.ListIndex)
-    End If
-    ChangerReponse s, True
-End Sub
-
 Private Sub cboChoix_Change()
     If chargement Then Exit Sub
     ChangerReponse cboChoix.Text, True
@@ -1500,7 +1642,7 @@ Private Sub AfficherReponseSurPlace()
     chargement = True
     If Not txtRep Is Nothing Then txtRep.Text = curQ.Reponse
     If Not cboChoix Is Nothing Then cboChoix.Text = curQ.Reponse
-    If Not lstChoix Is Nothing Then SelectionnerChoix
+    SelectionnerChoix
     chargement = False
     MettreAJourDetail
 End Sub
@@ -1648,6 +1790,7 @@ End Sub
 ' Écrit la question courante dans le dossier et enregistre le fichier
 Private Sub Valider()
     On Error GoTo erreur
+    FermerZoom True                                  ' saisie agrandie en cours : gardée, puis enregistrée
     If curQ Is Nothing Or Not sale Then Exit Sub
     EnregistrerQuestion curQ
     DossierEcrire "derniere_question", curQ.Id          ' marque-page

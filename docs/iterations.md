@@ -164,7 +164,8 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
   - **bug** : la règle de masquage par le standard visait tout standard contenant « non applicable ». Elle masquait donc El445 (« Non, ce chapitre est non applicable »), et avec elle tout le chapitre 05 Garantie pour DAI / Matériel et Prestations. Seul « Standard non applicable pour cette offre… » masque désormais une question (valeurs attendues des tests recalculées : 7 changements) ;
   - **bug d'affichage** : barre de défilement de l'onglet Réponse absente tant qu'on ne changeait pas d'onglet ; libellé de la question limité à 6 lignes ;
   - « Rétablir le standard » ; « Non concerné pour votre direction/univers… l'onglet Réponse n'est pas modifiable » ; mention sur la page de garde (ne pas enregistrer le DCO sur le Bureau) ; **marque-page** : le DCO se rouvre sur la dernière question consultée.
-- **Restent** (voir `docs/points_en_attente.md`) : n° 4, 10, 12, 14, 15, 16.
+- **Aussi fait le 16/11** : n° 14a (liste des choix « maison », choix longs sur plusieurs lignes), n° 12 (bouton « Agrandir » pour la réponse texte et la justification), n° 16 (El222 et 9 autres questions : référentiel version 3), avertissement si le DCO a été rempli avec un référentiel plus récent que celui de l'outil.
+- **Restent** (voir `docs/points_en_attente.md`) : n° 4, 10, 14b, 15.
 
 ## Prochaines itérations (indicatif)
 | N° | Contenu |

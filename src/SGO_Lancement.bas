@@ -144,17 +144,25 @@ End Sub
 
 ' Référentiel neuf + réponses du DCO + évaluation
 Public Function InitialiserSession() As Boolean
-    Dim inconnues As Long, msg As String
+    Dim inconnues As Long, msg As String, v As String
     On Error GoTo erreur
     ChargerReferentiel
     gDirection = DossierValeur("standard_direction")
     gUniversChoisi = DossierValeur("standard_univers")
     inconnues = ChargerReponses()
     EvaluerDossier
-    If DossierValeur("version_referentiel") <> gVersionRef Then
-        msg = "Ce DCO a été rempli avec la version " & DossierValeur("version_referentiel") & _
-              " du référentiel ; la version installée est la " & gVersionRef & "."
-        DossierEcrire "version_referentiel", gVersionRef
+    v = DossierValeur("version_referentiel")
+    If v <> gVersionRef Then
+        If Val(v) > Val(gVersionRef) Then
+            ' DCO plus récent que l'outil : on ne le fait pas revenir en arrière
+            msg = "Attention : ce DCO a été rempli avec la version " & v & " du référentiel, plus récente que " & _
+                  "celle de votre outil (version " & gVersionRef & ")." & vbCrLf & _
+                  "Mettez l'outil à jour (nouvelle version de l'outil, ou macro ImporterReferentiel) avant de saisir."
+        Else
+            msg = "Ce DCO a été rempli avec la version " & v & _
+                  " du référentiel ; la version installée est la " & gVersionRef & "."
+            DossierEcrire "version_referentiel", gVersionRef
+        End If
     End If
     If inconnues > 0 Then
         msg = msg & IIf(msg = "", "", vbCrLf) & inconnues & _
