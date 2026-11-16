@@ -49,3 +49,10 @@ Hors périmètre (feuilles non reprises dans SGO) : 10-Entreprises sourcées, 10
 - [ ] 14b : « Autres » absent de la liste nommée ListeEl73 de l'outil d'origine (la colonne « Choix de réponse » l'a) : condition El73b impossible ; correction du référentiel à valider par le CDP.
 - [ ] 15 : « Valider et suivante » fait doublon avec « Question suivante » depuis la 0.8 : décision à prendre.
 - [x] 16 : El222 corrigé (deux listes déroulantes se chevauchaient dans l'outil d'origine ; la plus précise est retenue) ; 9 autres questions corrigées au passage. Référentiel version 3 (16/11/2026).
+
+## Passage en production (.xlam) : à prévoir (16/11/2026)
+
+- [ ] Itération 8 : **lanceur avec copie locale**. Un petit complément installé une fois par poste copie au démarrage la dernière version de `SGO.xlam` depuis le partage vers le profil de l'utilisateur, puis l'ouvre. Le fichier du partage n'est donc jamais verrouillé et l'administrateur peut le remplacer à tout moment. À inclure dans le test d'installation avec la DSI.
+- [ ] Itération 8 : message « DCO plus récent que l'outil » : remplacer la mention « macro ImporterReferentiel » (développement) par « Votre outil SGO n'est pas à jour : contactez … ».
+- [ ] Itération 10 : **référentiel séparé du code**. Fichier de données publié par le CDP sur le partage, lu au démarrage puis refermé, pour corriger une question ou un standard sans republier le complément.
+- [ ] Itération 11 : rapport des changements de référentiel à l'ouverture d'un DCO, avec les questions concernées marquées « À revoir » (cadrage P3).

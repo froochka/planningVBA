@@ -11,7 +11,7 @@ Option Explicit
 ' Les boutons appellent SGONouveauDossier, SGOOuvrirDossier et NoterRemarque.
 ' =============================================================================
 
-Public Const VERSION_TEST As String = "0.8"
+Public Const VERSION_TEST As String = "0.9"
 Private Const FEUILLE_DEMARRER As String = "Démarrer"
 Private Const FEUILLE_REMARQUES As String = "Remarques"
 
