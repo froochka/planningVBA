@@ -95,7 +95,10 @@ Public Function ReponseInitiale(ByVal niv As String, ByVal std As String, ByVal 
     End If
 End Function
 
-' Conformité : formule de l'outil d'origine (colonne « Conformité au standard »)
+' Conformité : formule de l'outil d'origine (colonne « Conformité au standard »).
+' Écart volontaire (16/11/2026) : la comparaison réponse / standard ignore les
+' espaces en début et en fin (EstConforme ; 44 standards se terminent par un
+' espace : une réponse choisie dans la liste était déclarée non conforme).
 Public Function CalculerConformite(ByVal niv As String, ByVal std As String, ByVal rep As String, _
                                    ByVal mode As String, ByVal op As String) As String
     Dim annexe As Boolean
@@ -124,6 +127,7 @@ End Function
 ' Opérateur « = » : égalité (sans tenir compte des majuscules, comme Excel) ;
 ' sinon la réponse doit contenir le standard
 Private Function EstConforme(ByVal rep As String, ByVal std As String, ByVal op As String) As Boolean
+    rep = Trim$(rep): std = Trim$(std)
     If op = "=" Then
         EstConforme = (StrComp(rep, std, vbTextCompare) = 0)
     Else
@@ -131,12 +135,15 @@ Private Function EstConforme(ByVal rep As String, ByVal std As String, ByVal op 
     End If
 End Function
 
-' Standard qui rend la question sans objet : « Non concerné pour la direction/univers »
-' ou « ... non applicable ... ». Renvoie le motif du masquage, ou "".
+' Standard qui rend la question non concernée : « Non concerné pour la
+' direction/univers » ou « Standard non applicable pour cette offre... ». Renvoie
+' le motif du masquage, ou "". Correction du 16/11/2026 : un standard qui contient
+' seulement « non applicable » (« Non, ce chapitre est non applicable », réponse
+' d'El445...) ne masque plus la question.
 Public Function MasqueeParStandard(ByVal std As String) As String
     If InStr(1, std, "direction/", vbTextCompare) > 0 Then
         MasqueeParStandard = NC_DIRECTION
-    ElseIf InStr(1, std, "non applicable", vbTextCompare) > 0 Then
+    ElseIf InStr(1, Trim$(std), "standard non applicable", vbTextCompare) = 1 Then
         MasqueeParStandard = MSG_STANDARD_NON_APPLICABLE
     End If
 End Function
@@ -326,10 +333,10 @@ Public Function RaisonMasquage(ByVal id As String) As String
     If gQuestions.Exists(cle) Then
         Set q = gQuestions(cle)
         If q.Motif = NC_DIRECTION Then
-            RaisonMasquage = "Sans standard pour votre direction/univers"
+            RaisonMasquage = "Non concerné pour votre direction/univers"
             Exit Function
         ElseIf q.Motif = MSG_STANDARD_NON_APPLICABLE Then
-            RaisonMasquage = "Standard non applicable pour votre direction/univers"
+            RaisonMasquage = "Non concerné au regard des réponses précédentes"
             Exit Function
         End If
     End If

@@ -94,6 +94,7 @@ Private Sub UserForm_Initialize()
         Exit Sub
     End If
     Construire
+    If qRetour Is Nothing Then Set qRetour = DerniereQuestion()
     If qRetour Is Nothing Then
         AllerAQuestion PremiereQuestionVisible()
     Else
@@ -110,6 +111,11 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     On Error Resume Next
     If monNum <> gNumSaisie Then Exit Sub
     Valider
+    If Not curQ Is Nothing Then
+        DossierEcrire "derniere_question", curQ.Id      ' marque-page pour la prochaine ouverture
+    ElseIf Not qRetour Is Nothing Then
+        DossierEcrire "derniere_question", qRetour.Id
+    End If
     SauverDossier
     gSaisieReduite = False
     ArreterSurveillance
@@ -956,6 +962,18 @@ Private Sub AllerAQuestion(ByVal q As cQuestionSGO)
     AfficherChapitre chap, q
 End Sub
 
+' Marque-page : question affichée à la dernière fermeture de l'écran (Nothing si
+' aucune, ou si elle n'existe plus dans le référentiel)
+Private Function DerniereQuestion() As cQuestionSGO
+    Dim id As String
+    On Error Resume Next
+    id = DossierValeur("derniere_question")
+    If id = "" Then Exit Function
+    If Not gQuestions.Exists(id) Then Exit Function
+    If gQuestions(id).Systeme Then Exit Function
+    Set DerniereQuestion = gQuestions(id)
+End Function
+
 Private Function PremiereQuestionVisible() As cQuestionSGO
     Dim q As Variant
     For Each q In gOrdre
@@ -1082,14 +1100,14 @@ Private Sub ConstruirePageReponse()
     Set c = UILbl(pg, "lblTypeQ", txt, x + 8, 10, iw - (x - M) - 8, hz, False, -2, uiGris)
     If lesFilles <> "" Then c.ControlTipText = "Votre réponse fait apparaître ou masque : " & lesFilles
     y = 8 + UIBorne(hz, UILigneH(-2) + 4, 200) + 6
-    hz = UIBorne(LignesTexte(curQ.Libelle, iw, 2), 1, 6) * UILigneH(2)
+    hz = UIBorne(LignesTexte(curQ.Libelle, iw * 0.9, 2), 1, 40) * UILigneH(2)   ' gras : 10 % de marge
     UILbl pg, "lblLibelle", curQ.Libelle, M, y, iw, hz, True, 2
     y = y + hz + 10
 
     ' Encadré : standard, spécifique, non concerné, annexe ou standard incomplet
     If masquee Then
         y = Encadre(pg, y, iw, ChrW(&H2298) & "  NON CONCERNÉ POUR CETTE OFFRE", _
-                    RaisonMasquage(curQ.Id) & ". La question reste visible mais n'est pas modifiable." & _
+                    RaisonMasquage(curQ.Id) & ". La question reste visible mais l'onglet Réponse n'est pas modifiable." & _
                     IIf(curQ.AQuelqueChose, " Les réponses déjà saisies sont conservées et seront reprises si la question redevient applicable.", ""), _
                     uiCoulFond, uiGris, uiGris)
     ElseIf curQ.EstAnnexe Then
@@ -1210,6 +1228,18 @@ Private Sub ConstruirePageReponse()
         pg.ScrollBars = 2
         pg.ScrollHeight = y + M
     End If
+    RafraichirDefilement
+End Sub
+
+' Une page de MultiPage n'affiche sa barre de défilement (ScrollBars et
+' ScrollHeight modifiés par le code) qu'après avoir été réaffichée : on passe
+' brièvement sur une autre page puis on revient sur la page en cours
+Private Sub RafraichirDefilement()
+    Dim v As Long
+    On Error Resume Next
+    v = mp.Value
+    mp.Value = IIf(v = 0, 1, 0)
+    mp.Value = v
 End Sub
 
 ' Encadré coloré (titre + texte) ; renvoie la position sous l'encadré
@@ -1226,7 +1256,7 @@ Private Function Encadre(ByVal pg As Object, ByVal y As Single, ByVal iw As Sing
     Set c = UILbl(pg, "lblEncTexte", texte, M + 14, y + 10 + UILigneH(-2), wTexte, hz)
     c.Font.Italic = boutonReprendre             ' la valeur du standard, en italique
     If boutonReprendre Then
-        Set btnReprendre = UIBouton(pg, "btnReprendre", ChrW(&H21BA) & " Reprendre le standard", M + iw - 152, y + 10 + UILigneH(-2), 144, UILigneH() + 10, 0)
+        Set btnReprendre = UIBouton(pg, "btnReprendre", ChrW(&H21BA) & " Rétablir le standard", M + iw - 152, y + 10 + UILigneH(-2), 144, UILigneH() + 10, 0)
         btnReprendre.ControlTipText = "Remplace votre réponse par la valeur du standard"
     End If
     Encadre = y + hz + UILigneH(-2) + 22 + 16
@@ -1620,6 +1650,7 @@ Private Sub Valider()
     On Error GoTo erreur
     If curQ Is Nothing Or Not sale Then Exit Sub
     EnregistrerQuestion curQ
+    DossierEcrire "derniere_question", curQ.Id          ' marque-page
     SauverDossier
     sale = False
     Me.Controls("lblEnregistre").Caption = ChrW(&H2714) & " " & curQ.Id & " enregistrée à " & Format$(Now, "hh:nn")

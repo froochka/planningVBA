@@ -112,6 +112,14 @@ Private Sub Construire()
           "En cas de changement de standard, une analyse d'impact est présentée avant d'appliquer le changement."), _
           xD, y, wCol, 3 * UILigneH(-2), False, -2, uiGris
 
+    ' Emplacement du DCO : sur un Bureau synchronisé avec OneDrive, la copie de
+    ' sauvegarde automatique n'est pas possible (remarque du CDP, 16/11/2026)
+    If gGardeCreation Then
+        Set c = UILbl(Me, "lblEmplacement", "Où enregistrer le DCO : dans un dossier de votre poste ou du réseau " & _
+                      "(C:, S:, Téléchargements...), pas sur le Bureau, où la copie de sauvegarde automatique n'est pas possible.", _
+                      xG, H - 44, W - M - 4 - 238 - 12 - xG, 2 * UILigneH(-1) + 4, True, -1, uiOrange)
+    End If
+
     ' --- Boutons --------------------------------------------------------------------
     Set btnAnnuler = UIBouton(Me, "btnAnnuler", "Annuler", W - M - 4 - 238, H - 40, 110, 30, 0)
     Set btnValider = UIBouton(Me, "btnValider", IIf(gGardeCreation, "Créer le DCO", "Valider"), _

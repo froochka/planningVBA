@@ -34,7 +34,18 @@ Hors périmètre (feuilles non reprises dans SGO) : 10-Entreprises sourcées, 10
 
 ## Retours du CDP (fichier « remarques CDP.xlsx », 10/11/2026)
 
-- [ ] Lignes 31 et suivantes du fichier : à étudier plus tard (dont « Reprendre le standard » → « Rétablir le standard »). La ligne 32 (encadré « Justification de la dérogation » remonté) est faite le 12/11/2026.
+- [x] Lignes 31 et 32 du fichier : « Rétablir le standard » (fait le 16/11/2026) et justification remontée (fait le 12/11/2026). Les lignes suivantes ont été reprises dans « REMARQUES_TEST_DCO.pdf » (16/11/2026).
 - [ ] Onglet « Standards » de l'écran de saisie : à garder pendant le développement, **à retirer en production**.
 - [x] Zone « Comparaison avec l'offre précédente » : tranchée par le CDP le 12/11/2026 (questions spécifiques : Identique par défaut / Différente ; questions avec standard : Non concerné par défaut / Identique / Différente ; mention « (justifier la différence dans l'onglet Commentaire) » à côté de « Différente » ; rappel si le commentaire est vide).
 - [ ] Pas de copie de sauvegarde quand le DCO est sur le Bureau : le CDP doit confirmer s'il a vu le message « Pas de copie de sauvegarde » (Bureau synchronisé avec OneDrive ?).
+
+## Remarques du CDP « REMARQUES_TEST_DCO.pdf » (16/11/2026, testé sur la version 0.7)
+
+- [x] 1, 2, 3, 5, 6, 11, 13 : faits le 16/11/2026 (7, 8, 9 déjà réglés en 0.8).
+- [ ] 4 : utilité de « Rétablir les standards du sous-thème » (garder, renommer, supprimer) : décision à prendre.
+- [ ] 10 : liens vers les autres onglets (cartographie ORECA, annexes) : à cadrer avec les annexes.
+- [ ] 12 : voir en entier une réponse texte longue (bouton « Agrandir »).
+- [ ] 14a : choix trop longs coupés dans la liste (liste « maison » avec retour à la ligne).
+- [ ] 14b : « Autres » absent de la liste d'El73 (condition El73b impossible) : correction du référentiel par le CDP.
+- [ ] 15 : « Valider et suivante » fait doublon avec « Question suivante » depuis la 0.8 : décision à prendre.
+- [ ] 16 : El222, choix Oui/Non au lieu de « sur devis / en pourcentage » : vérifier dans le classeur d'origine.

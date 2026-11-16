@@ -158,6 +158,14 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
 - **En attente du CDP** : absence de copie de sauvegarde sur le Bureau (message vu ?).
 - **Lignes 31 et suivantes** : à voir plus tard (`docs/points_en_attente.md`).
 
+## Remarques du CDP sur la version 0.7 (« REMARQUES_TEST_DCO.pdf », 16/11/2026)
+- **Corrigé** :
+  - **bug** : un standard se terminant par un espace (44 cas, El7, El94…) rendait « non conforme » une réponse choisie dans la liste. La comparaison réponse / standard ignore désormais les espaces en début et en fin (moteurs VBA et Python, écart volontaire avec l'outil d'origine) ;
+  - **bug** : la règle de masquage par le standard visait tout standard contenant « non applicable ». Elle masquait donc El445 (« Non, ce chapitre est non applicable »), et avec elle tout le chapitre 05 Garantie pour DAI / Matériel et Prestations. Seul « Standard non applicable pour cette offre… » masque désormais une question (valeurs attendues des tests recalculées : 7 changements) ;
+  - **bug d'affichage** : barre de défilement de l'onglet Réponse absente tant qu'on ne changeait pas d'onglet ; libellé de la question limité à 6 lignes ;
+  - « Rétablir le standard » ; « Non concerné pour votre direction/univers… l'onglet Réponse n'est pas modifiable » ; mention sur la page de garde (ne pas enregistrer le DCO sur le Bureau) ; **marque-page** : le DCO se rouvre sur la dernière question consultée.
+- **Restent** (voir `docs/points_en_attente.md`) : n° 4, 10, 12, 14, 15, 16.
+
 ## Prochaines itérations (indicatif)
 | N° | Contenu |
 |---|---|

@@ -291,7 +291,7 @@ DAV;VI;El326b;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
 DAV;VI;El327;E;"Dernier prix révisé;Dernier indice révisé";"Dernier prix révisé;Dernier indice révisé";Conforme au standard;
 DAV;VI;El328;E;12 mois;12 mois;Conforme au standard;
 DAV;VI;El328b;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
-DAV;VI;El164a;D;ce chapitre est non applicable;ce chapitre est non applicable;Conforme au standard;Standard non applicable pour cette offre au regard des réponses précédentes apportées
+DAV;VI;El164a;D;ce chapitre est non applicable;ce chapitre est non applicable;Conforme au standard;
 DAV;VI;El164;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAV;VI;El165;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAV;VI;El166;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
@@ -533,7 +533,7 @@ DAI;Logiciels;El136;E;Oui, le délai de modification/résiliation ou d'annulatio
 DAI;Logiciels;El136b;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
 DAI;Logiciels;El138;E;Non, la règle d'annulation/modification ou annulation est conforme aux CGV;Non, la règle d'annulation/modification ou annulation est conforme aux CGV;Conforme au standard;
 DAI;Logiciels;El139;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
-DAI;Logiciels;El445;U;Non,ce chapitre est non applicable;Non,ce chapitre est non applicable;Conforme au standard;Standard non applicable pour cette offre au regard des réponses précédentes apportées
+DAI;Logiciels;El445;U;Non,ce chapitre est non applicable;Non,ce chapitre est non applicable;Conforme au standard;
 DAI;Logiciels;El177;U;Oui, Garantie de bon fonctionnement du logiciel;Oui, Garantie de bon fonctionnement du logiciel;Conforme au standard;Non concerné pour l'offre
 DAI;Logiciels;El488;E;Oui, durée standard applicable;Oui, durée standard applicable;Conforme au standard;Non concerné pour l'offre
 DAI;Logiciels;El178;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
@@ -704,7 +704,7 @@ DAI;Logiciels;El326b;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
 DAI;Logiciels;El327;E;"Dernier prix révisé;Dernier indice révisé";"Dernier prix révisé;Dernier indice révisé";Conforme au standard;
 DAI;Logiciels;El328;E;12 mois;12 mois;Conforme au standard;
 DAI;Logiciels;El328b;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
-DAI;Logiciels;El164a;D;ce chapitre est non applicable;ce chapitre est non applicable;Conforme au standard;Standard non applicable pour cette offre au regard des réponses précédentes apportées
+DAI;Logiciels;El164a;D;ce chapitre est non applicable;ce chapitre est non applicable;Conforme au standard;
 DAI;Logiciels;El164;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAI;Logiciels;El165;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAI;Logiciels;El166;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
@@ -1117,7 +1117,7 @@ DS;Biomedical;El326b;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
 DS;Biomedical;El327;E;"Dernier prix révisé;Dernier indice révisé";"Dernier prix révisé;Dernier indice révisé";Conforme au standard;
 DS;Biomedical;El328;E;12 mois;12 mois;Conforme au standard;
 DS;Biomedical;El328b;sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
-DS;Biomedical;El164a;D;ce chapitre est non applicable;ce chapitre est non applicable;Conforme au standard;Standard non applicable pour cette offre au regard des réponses précédentes apportées
+DS;Biomedical;El164a;D;ce chapitre est non applicable;ce chapitre est non applicable;Conforme au standard;
 DS;Biomedical;El164;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DS;Biomedical;El165;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
 DS;Biomedical;El166;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
@@ -1359,7 +1359,7 @@ DAG_SOFI;Services_aux_batiments;El136;E;Oui, le délai de modification/résiliat
 DAG_SOFI;Services_aux_batiments;El136b;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
 DAG_SOFI;Services_aux_batiments;El138;E;Non, la règle d'annulation/modification ou annulation est conforme aux CGV;Non, la règle d'annulation/modification ou annulation est conforme aux CGV;Conforme au standard;
 DAG_SOFI;Services_aux_batiments;El139;Sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
-DAG_SOFI;Services_aux_batiments;El445;D;Non,ce chapitre est non applicable;Non,ce chapitre est non applicable;Conforme au standard;Standard non applicable pour cette offre au regard des réponses précédentes apportées
+DAG_SOFI;Services_aux_batiments;El445;D;Non,ce chapitre est non applicable;Non,ce chapitre est non applicable;Conforme au standard;
 DAG_SOFI;Services_aux_batiments;El177;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAG_SOFI;Services_aux_batiments;El488;E;Oui, durée standard applicable;Oui, durée standard applicable;Conforme au standard;Non concerné pour l'offre
 DAG_SOFI;Services_aux_batiments;El178;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
@@ -1530,7 +1530,7 @@ DAG_SOFI;Services_aux_batiments;El326b;Sp;;;Renseigner la réponse DCO;Non conce
 DAG_SOFI;Services_aux_batiments;El327;E;"Dernier prix révisé;Dernier indice révisé";"Dernier prix révisé;Dernier indice révisé";Conforme au standard;
 DAG_SOFI;Services_aux_batiments;El328;E;12 mois;12 mois;Conforme au standard;
 DAG_SOFI;Services_aux_batiments;El328b;sp;;;Renseigner la réponse DCO;Non concerné pour l'offre
-DAG_SOFI;Services_aux_batiments;El164a;D;Non,ce chapitre est non applicablE;Non,ce chapitre est non applicablE;Conforme au standard;Standard non applicable pour cette offre au regard des réponses précédentes apportées
+DAG_SOFI;Services_aux_batiments;El164a;D;Non,ce chapitre est non applicablE;Non,ce chapitre est non applicablE;Conforme au standard;
 DAG_SOFI;Services_aux_batiments;El164;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAG_SOFI;Services_aux_batiments;El165;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAG_SOFI;Services_aux_batiments;El166;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
@@ -1543,7 +1543,7 @@ DAG_SOFI;Services_aux_batiments;El174;D;Non concerné pour la direction/univers;
 DAG_SOFI;Services_aux_batiments;El270;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAG_SOFI;Services_aux_batiments;El271;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAG_SOFI;Services_aux_batiments;El271b;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
-DAG_SOFI;Services_aux_batiments;El271c;D;Non,ce chapitre est non applicable;Non,ce chapitre est non applicable;Conforme au standard;Standard non applicable pour cette offre au regard des réponses précédentes apportées
+DAG_SOFI;Services_aux_batiments;El271c;D;Non,ce chapitre est non applicable;Non,ce chapitre est non applicable;Conforme au standard;Non concerné pour l'offre
 DAG_SOFI;Services_aux_batiments;El172;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAG_SOFI;Services_aux_batiments;El172b;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers
 DAG_SOFI;Services_aux_batiments;El172c;D;Non concerné pour la direction/univers;Non concerné pour la direction/univers;Non concerné;Non concerné pour la direction/univers

@@ -81,7 +81,10 @@ def reponse_initiale(niv, std, mode):
 
 
 def conformite(niv, std, rep, mode, op):
-    """Formule de l'outil d'origine (colonne Conformité)."""
+    """Formule de l'outil d'origine (colonne Conformité).
+    Écart volontaire (16/11/2026) : la comparaison réponse / standard ignore les
+    espaces en début et en fin (44 standards se terminent par un espace : une
+    réponse choisie dans la liste était déclarée non conforme)."""
     if (niv == "Titre" or rep[:11].lower() == "non concern" or est_annexe(mode)) and niv != "Sp":
         if std == "" or std[:11].lower() == "non concern":
             return "Non concerné"
@@ -92,20 +95,24 @@ def conformite(niv, std, rep, mode, op):
         return MSG_STANDARD_INCOMPLET
     if rep == "":
         return MSG_REPONSE_NON_SAISIE
+    r, s = rep.strip().lower(), std.strip().lower()
     if op == "=":
-        if rep.lower() == std.lower():
+        if r == s:
             return "Conforme au standard"
-    elif std.lower() in rep.lower():
+    elif s in r:
         return "Conforme au standard"
     return "Non concerné" if rep == MSG_STANDARD_NON_APPLICABLE else "Non conforme au standard"
 
 
 def masquee_par_standard(std):
-    """Standard « non concerné pour la direction/univers » ou « non applicable »."""
-    s = std.lower()
+    """Standard « Non concerné pour la direction/univers » ou « Standard non
+    applicable pour cette offre… ». Correction du 16/11/2026 : un standard qui
+    contient seulement « non applicable » (« Non, ce chapitre est non applicable »,
+    réponse d'El445…) ne masque plus la question."""
+    s = std.strip().lower()
     if "direction/" in s:
         return NC_DIRECTION
-    if "non applicable" in s:
+    if s.startswith("standard non applicable"):
         return MSG_STANDARD_NON_APPLICABLE
     return ""
 
