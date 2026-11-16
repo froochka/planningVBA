@@ -1,6 +1,6 @@
 # Rapport de migration du référentiel
 
-*Généré par `outils/migrer_referentiel.py` le 2026-10-22, à partir de `02_PhaseElaborationOffre_DossierConception_V4_07072026.xlsm`.*
+*Généré par `outils/migrer_referentiel.py` le 2026-11-16, à partir de `02_PhaseElaborationOffre_DossierConception_V4_07072026.xlsm`.*
 
 ## Comptages
 
@@ -41,50 +41,25 @@ Les combinaisons où la formule d'origine renvoie une erreur (`#N/A` : univers s
 
 Le fichier `referentiel/tests/attendus_standards.csv` (2891 lignes, 7 combinaisons) permet de rejouer ce contrôle dans Excel avec la macro `TesterMoteur`.
 
-## Changements par rapport à la version précédente (version 2)
+## Changements par rapport à la version précédente (version 3)
 
-### Questions modifiées (35)
+### Questions modifiées (10)
 
-- El73 : choix
-- El60c : choix
-- El134 : choix
-- El370 : choix
-- El59 : choix
-- El343 : choix
-- El179 : choix
-- El500c : choix
-- El387 : choix
-- El107 : choix
-- El103 : choix
-- El493 : choix
-- El351 : choix
-- El271 : choix
-- El316 : choix
-- El123 : choix
-- El0a : choix
-- El111 : choix
-- El132b : choix
-- El60b : choix
-- El206b : choix
-- El377 : choix
-- El271c : choix
-- El114 : choix
-- El173 : choix
-- El35 : choix
-- El104 : choix
-- El332 : choix
-- El361 : choix
-- El334 : choix
-- El220 : choix
-- El308 : choix
-- El30 : choix
-- El181b : choix
-- El327 : choix
+- El183j : choix
+- El186 : choix
+- El222 : choix
+- El184 : choix
+- El488 : choix
+- El183e : choix
+- El137 : choix
+- El510c : choix
+- El270 : choix
+- El224d : choix
 
 
 ## Anomalies et choix faits pendant la migration
 
-### Liste retenue différente du texte « Choix de réponse » (84)
+### Liste retenue différente du texte « Choix de réponse » (77)
 
 - El0a (liste nommée ListeEl0a retenue)
 - El30 (liste nommée ListeEl30 retenue)
@@ -111,17 +86,13 @@ Le fichier `referentiel/tests/attendus_standards.csv` (2891 lignes, 7 combinaiso
 - El132 (liste déroulante retenue)
 - El132b (liste nommée ListeEl132b retenue)
 - El138 (liste déroulante retenue)
-- El488 (liste déroulante retenue)
 - El179 (liste nommée ListeEl179 retenue)
 - El181b (liste nommée ListeEl181b retenue)
 - El191 (liste déroulante retenue)
 - El183l (liste déroulante retenue)
 - El183b (liste déroulante retenue)
 - El183e (liste déroulante retenue)
-- El183j (liste déroulante retenue)
-- El184 (liste déroulante retenue)
 - El185 (liste déroulante retenue)
-- El186 (liste déroulante retenue)
 - El134 (liste nommée ListeEl134 retenue)
 - El370 (liste nommée ListeEl370 retenue)
 - El377 (liste nommée ListeEl377 retenue)
@@ -141,10 +112,8 @@ Le fichier `referentiel/tests/attendus_standards.csv` (2891 lignes, 7 combinaiso
 - El268 (liste déroulante retenue)
 - El308 (liste nommée ListeEl308 retenue)
 - El220 (liste nommée ListeEl220 retenue)
-- El222 (liste déroulante retenue)
 - El224a (liste déroulante retenue)
 - El224c (liste déroulante retenue)
-- El224d (liste déroulante retenue)
 - El314 (liste déroulante retenue)
 - El316 (liste nommée ListeEl316 retenue)
 - El316a (liste déroulante retenue)
@@ -153,7 +122,6 @@ Le fichier `referentiel/tests/attendus_standards.csv` (2891 lignes, 7 combinaiso
 - El321 (liste déroulante retenue)
 - El327 (liste nommée ListeEl327 retenue)
 - El328 (liste déroulante retenue)
-- El270 (liste déroulante retenue)
 - El271 (liste nommée ListeEl271 retenue)
 - El173 (liste nommée ListeEl173 retenue)
 - El332 (liste nommée ListeEl332 retenue)

@@ -76,8 +76,11 @@ def lire(classeur):
     listes = wb_f["120-REF Listes"]
 
     # Listes de choix : validations de données de la colonne Réponses (I)
+    # Quand deux listes se chevauchent sur une cellule (El222 : « sur devis, en
+    # pourcentage » sur I297 seule, et « Oui,Non » sur I296:I297), on garde celle
+    # dont la plage est la plus petite, la plus précise (16/11/2026)
     ws = wb_f["3-Elaboration.O"]
-    dv_par_ligne = {}
+    dv_par_ligne, taille = {}, {}
     for dv in ws.data_validations.dataValidation:
         if dv.type != "list" or not dv.formula1:
             continue
@@ -86,7 +89,9 @@ def lire(classeur):
             if m:
                 a = int(m.group(1)); b = int(m.group(2) or a)
                 for i in range(a, b + 1):
-                    dv_par_ligne[i] = dv.formula1
+                    if i not in taille or (b - a) < taille[i]:
+                        dv_par_ligne[i] = dv.formula1
+                        taille[i] = b - a
 
     def resoudre(formule):
         f = formule.strip()
