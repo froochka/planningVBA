@@ -166,6 +166,7 @@ Modifications dans `src/Maquette_Ecrans.bas` (même mode de test : `MaquetteEcra
   - « Rétablir le standard » ; « Non concerné pour votre direction/univers… l'onglet Réponse n'est pas modifiable » ; mention sur la page de garde (ne pas enregistrer le DCO sur le Bureau) ; **marque-page** : le DCO se rouvre sur la dernière question consultée.
 - **Aussi fait le 16/11** : n° 14a (liste des choix « maison », choix longs sur plusieurs lignes), n° 12 (bouton « Agrandir » pour la réponse texte et la justification), n° 16 (El222 et 9 autres questions : référentiel version 3), avertissement si le DCO a été rempli avec un référentiel plus récent que celui de l'outil.
 - **Restent** (voir `docs/points_en_attente.md`) : n° 4, 10, 14b, 15.
+- **17/11/2026** : le bloc « Justification de la dérogation » n'apparaît plus qu'en cas de dérogation au standard, ou si un texte a déjà été saisi (mention « plus nécessaire : la réponse est conforme ») ; il apparaît et disparaît sur place pendant la saisie. Proposition faite plus tôt à l'utilisateur, restée sans réponse et oubliée : désormais, ce type de proposition est noté dans `docs/points_en_attente.md`.
 
 ## Prochaines itérations (indicatif)
 | N° | Contenu |

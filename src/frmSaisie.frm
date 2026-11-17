@@ -61,6 +61,11 @@ Private txtZoom As MSForms.TextBox
 Private zoomCible As Object             ' zone de texte agrandie (réponse ou justification)
 Private choixCoches() As Boolean        ' choix cochés de la liste « maison » des choix (ligne R)
 Private nbChoixAff As Long              ' nombre de choix affichés (0 : pas de liste de choix)
+Private justifHaut As Single            ' hauteur du bloc Justification (0 : pas de bloc)
+Private justifTop As Single             ' haut du bloc Justification dans la page Réponse
+Private justifAffiche As Boolean        ' bloc Justification actuellement visible
+Private basPage As Single               ' bas du contenu de la page Réponse (défilement)
+Private enSaisieJustif As Boolean       ' saisie en cours dans la justification
 
 ' --- État -----------------------------------------------------------------------
 Private curChap As cCategorieSGO
@@ -1086,7 +1091,7 @@ End Sub
 
 Private Sub ConstruirePageReponse()
     Dim pg As MSForms.Page, iw As Single, y As Single, c As Object, hz As Single, txt As String
-    Dim masquee As Boolean, i As Long, sp As Boolean, avecStd As Boolean, lesFilles As String, x As Single
+    Dim masquee As Boolean, i As Long, sp As Boolean, avecStd As Boolean, lesFilles As String, x As Single, n0 As Long
 
     Set pg = mp.Pages(0)
     LibererDetail
@@ -1182,15 +1187,21 @@ Private Sub ConstruirePageReponse()
     If Not masquee Then
         ' Conformité calculée
         y = BandeauConformite(pg, y, iw)
-        ' Justification : obligatoire pour une dérogation au standard (cas 2). Une
-        ' question spécifique n'en a pas besoin (décision du 09/11/2026) ; on
-        ' montre seulement une justification déjà saisie avec l'ancienne règle.
-        If Not sp Or Trim$(curQ.Justification) <> "" Then
+        ' Justification : seulement pour une dérogation au standard (cas 2), ou si
+        ' un texte a déjà été saisi (il n'est jamais caché). Le bloc est toujours
+        ' construit pour une question avec standard, puis affiché ou masqué sur
+        ' place (MettreAJourJustif) : il peut apparaître pendant la saisie de la
+        ' réponse sans reconstruire la page. Une question spécifique n'en a pas
+        ' besoin (décision du 09/11/2026), sauf texte saisi avec l'ancienne règle.
+        justifHaut = 0
+        If avecStd Or Trim$(curQ.Justification) <> "" Then
+            n0 = pg.Controls.Count
+            justifTop = y
             txt = IIf(sp, "JUSTIFICATION (SAISIE AVEC L'ANCIENNE RÈGLE)", "JUSTIFICATION DE LA DÉROGATION AU STANDARD")
             UISection pg, "secJustif", ChrW(&H270D) & "  " & txt, M, y, iw, True
-            Set c = UILbl(pg, "lblOblig", "obligatoire", M + 24 + Len(txt) * (uiTaille - 2) * 0.66, y, 90, UILigneH(-2), True, -2, RGB(176, 107, 0))
+            Set c = UILbl(pg, "lblOblig", "obligatoire", M + 24 + Len(txt) * (uiTaille - 2) * 0.66, y, _
+                          UIBorne(iw - 24 - Len(txt) * (uiTaille - 2) * 0.66, 90, 400), UILigneH(-2), True, -2, RGB(176, 107, 0))
             c.WordWrap = False
-            c.Visible = (curQ.Statut = ST_A_JUSTIFIER)
             y = y + 26
             hz = UIBorne(LignesTexte(curQ.Justification, iw, 0) + 1, 3, 8) * UILigneH() + 8
             Set txtJustif = UITxt(pg, "txtJustif", curQ.Justification, M, y, iw, hz)
@@ -1201,6 +1212,18 @@ Private Sub ConstruirePageReponse()
             Set btnZoomJust = UIBouton(pg, "btnZoomJust", "Agrandir", M + iw - 96, y, 96, UILigneH() + 4, 0, ICO_AGRANDIR)
             btnZoomJust.ControlTipText = "Lire et saisir la justification dans une grande zone"
             y = y + UILigneH() + 4 + 14
+            justifHaut = y - justifTop
+            For i = n0 To pg.Controls.Count - 1
+                pg.Controls(i).Tag = "J"                 ' contrôles du bloc Justification
+            Next i
+            justifAffiche = JustifVisible()
+            If Not justifAffiche Then
+                For i = n0 To pg.Controls.Count - 1
+                    pg.Controls(i).Visible = False
+                Next i
+                y = justifTop                            ' la suite remonte à la place du bloc
+            End If
+            MettreAJourOblig
         End If
 
         ' Comparaison avec l'offre précédente (information, sans justification)
@@ -1234,11 +1257,66 @@ Private Sub ConstruirePageReponse()
         End If
     End If
 
+    basPage = y
     If y > hDet Then
         pg.ScrollBars = 2
         pg.ScrollHeight = y + M
     End If
     RafraichirDefilement
+End Sub
+
+' Le bloc Justification doit-il être visible ? Dérogation au standard, ou texte
+' déjà saisi (jamais caché)
+Private Function JustifVisible() As Boolean
+    If curQ Is Nothing Then Exit Function
+    JustifVisible = (curQ.Conformite = CONF_NON_CONFORME) Or (Trim$(curQ.Justification) <> "")
+End Function
+
+' Mention à côté du titre : « obligatoire » (dérogation non justifiée) ou
+' « plus nécessaire » (réponse redevenue conforme, texte encore présent)
+Private Sub MettreAJourOblig()
+    Dim c As Object
+    On Error Resume Next
+    Set c = mp.Pages(0).Controls("lblOblig")
+    On Error GoTo 0
+    If c Is Nothing Then Exit Sub
+    If curQ.Statut = ST_A_JUSTIFIER Then
+        c.Caption = "obligatoire": c.ForeColor = RGB(176, 107, 0): c.Visible = justifAffiche
+    ElseIf curQ.Conformite <> CONF_NON_CONFORME And Trim$(curQ.Justification) <> "" Then
+        c.Caption = "plus nécessaire : la réponse est conforme": c.ForeColor = uiGris: c.Visible = justifAffiche
+    Else
+        c.Visible = False
+    End If
+End Sub
+
+' Affiche ou masque le bloc Justification sur place, et fait glisser ce qui est
+' en dessous (aucun contrôle n'est supprimé : appelé pendant la saisie). Quand
+' la saisie a lieu dans la justification elle-même, le bloc n'est pas masqué.
+Private Sub MettreAJourJustif(ByVal depuisJustif As Boolean)
+    Dim pg As Object, c As Object, voir As Boolean, dy As Single, i As Long
+    If justifHaut = 0 Then Exit Sub
+    voir = JustifVisible()
+    If depuisJustif And Not voir Then voir = True
+    If voir = justifAffiche Then Exit Sub
+    Set pg = mp.Pages(0)
+    dy = IIf(voir, justifHaut, -justifHaut)
+    For i = 0 To pg.Controls.Count - 1
+        Set c = pg.Controls(i)
+        If c.Tag = "J" Then
+            c.Visible = voir
+        ElseIf c.Top >= justifTop - 0.5 Then
+            c.Top = c.Top + dy                       ' ce qui est sous le bloc
+        End If
+    Next i
+    justifAffiche = voir
+    basPage = basPage + dy
+    If basPage > hDet Then
+        pg.ScrollBars = 2
+        pg.ScrollHeight = basPage + M
+    Else
+        pg.ScrollBars = 0
+        pg.ScrollTop = 0
+    End If
 End Sub
 
 ' Une page de MultiPage n'affiche sa barre de défilement (ScrollBars et
@@ -1699,8 +1777,9 @@ Private Sub MettreAJourDetail()
     On Error Resume Next
     pg.Controls("lblRepComplete").Caption = "Réponse retenue : " & IIf(curQ.Reponse = "", "(aucune)", curQ.Reponse)
     pg.Controls("lblModifiee").Visible = ReponseModifiee()
-    pg.Controls("lblOblig").Visible = (curQ.Statut = ST_A_JUSTIFIER)
     On Error GoTo 0
+    MettreAJourJustif enSaisieJustif
+    MettreAJourOblig
     MettreAJourBandeau
     StyleJustification
     MettreAJourMsgDiff
@@ -1771,7 +1850,9 @@ Private Sub txtJustif_Change()
     curQ.StandardModifie = False
     sale = True
     EvaluerDossier
+    enSaisieJustif = True                            ' le bloc ne se masque pas pendant qu'on y écrit
     RafraichirApresSaisie
+    enSaisieJustif = False
 End Sub
 
 Private Sub txtCom_Change()
