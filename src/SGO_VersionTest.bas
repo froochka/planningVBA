@@ -107,7 +107,8 @@ Private Sub ConstruireDemarrer(ByVal versionRef As String)
 
     ws.Range("B15").Value = "Bon à savoir"
     ws.Range("B15").Font.Bold = True: ws.Range("B15").Font.Color = RGB(22, 54, 92)
-    ws.Range("B16").Value = "· À la création, vous choisissez où enregistrer le DCO (un fichier .xlsx par offre)."
+    ws.Range("B16").Value = "· À la création, vous choisissez où enregistrer le DCO (hors emplacement « Bureau » dès lors qu'il est connecté à OneDrive, " & _
+                         "sinon le sous-dossier « Sauvegardes DCO » mentionné ci-dessous ne se crée pas)."
     ws.Range("B17").Value = "· Les réponses sont enregistrées automatiquement à chaque passage d'une question à une autre."
     ws.Range("B18").Value = "· Le DCO s'ouvre uniquement avec ce classeur : double-cliquer dessus n'affiche qu'une page d'accueil."
     ws.Range("B19").Value = "· Une copie de sauvegarde est faite à chaque ouverture (sous-dossier « Sauvegardes DCO »)."

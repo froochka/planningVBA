@@ -32,10 +32,8 @@ Private WithEvents txtRecherche As MSForms.TextBox
 Private WithEvents lstRes As MSForms.ListBox
 Private WithEvents btnPageGarde As MSForms.Label
 Private WithEvents btnRech As MSForms.Label
-Private WithEvents btnRetablir As MSForms.Label
 Private WithEvents btnReprendre As MSForms.Label
 Private WithEvents btnNC As MSForms.Label
-Private WithEvents btnValSuiv As MSForms.Label
 Private WithEvents btnPrec As MSForms.Label
 Private WithEvents btnSuiv As MSForms.Label
 Private WithEvents btnSuivTraiter As MSForms.Label
@@ -239,7 +237,6 @@ Private Sub Construire()
     chkSansObjet.ControlTipText = "Afficher les questions non concernées (grisées, non modifiables)"
     UILbl Me, "lblCompteur", "", xIn, yIn + 24 + UILigneH() + 12, wQ, UILigneH(-2), False, -2, uiGris
     Set fraQ = NouvelleListe("fraQ", xIn, yIn + 60, wQ, 100, uiBlanc)
-    Set btnRetablir = UIBouton(Me, "btnRetablir", "Rétablir les standards du sous-thème", xIn, yBas - 28, wQ, 28, 0, ICO_COCHE)
 
     ' --- Détail (fil d'Ariane au-dessus) ----------------------------------------------
     xD = xIn + wQ + 2 * M
@@ -256,22 +253,28 @@ Private Sub Construire()
     mp.Value = 0
     wDet = mp.Width - 6
     hDet = mp.Height - mp.TabFixedHeight - 10
-    ' Boutons d'action de la question : hors des pages, car les pages sont reconstruites
-    Set btnValSuiv = UIBouton(Me, "btnValSuiv", "Valider et suivante", xD + mp.Width - 196, yBas - 30, 196, 30, 1, ICO_SUIVANT)
-    Set btnNC = UIBouton(Me, "btnNC", "Non concerné", xD + mp.Width - 196 - 8 - 128, yBas - 30, 128, 30, 0)
-    btnNC.ControlTipText = "Répond « " & NC_OFFRE & " » (même règle que l'outil d'origine)"
-
-    ' --- Pied de page (largeur des boutons selon la taille du texte) ---------------------
-    y = H - hPied + 8
-    x0 = M
-    Set btnPrec = UIBouton(Me, "btnPrec", "Question précédente", x0, y, LargeurBouton("Question précédente"), 28, 0, ICO_PRECEDENT)
+    ' Boutons de navigation et d'action, sous la réponse (demande du CDP, 25/11/2026 :
+    ' « Valider et suivante » supprimé, doublon de « Question suivante »). Hors des
+    ' pages, car les pages sont reconstruites. Alignés à droite sous le détail ; ils
+    ' débordent sous la liste des questions si la place manque.
+    x0 = LargeurBouton("Question précédente") + LargeurBouton("Question suivante") + _
+         LargeurBouton("Question suivante à traiter") + LargeurBouton("Non concerné") + 3 * 8
+    x0 = UIBorne(xD + mp.Width - x0, xIn, xD + mp.Width)
+    Set btnPrec = UIBouton(Me, "btnPrec", "Question précédente", x0, yBas - 30, LargeurBouton("Question précédente"), 30, 0, ICO_PRECEDENT)
     x0 = x0 + LargeurBouton("Question précédente") + 8
-    Set btnSuiv = UIBouton(Me, "btnSuiv", "Question suivante", x0, y, LargeurBouton("Question suivante"), 28, 0, ICO_SUIVANT)
+    Set btnSuiv = UIBouton(Me, "btnSuiv", "Question suivante", x0, yBas - 30, LargeurBouton("Question suivante"), 30, 1, ICO_SUIVANT)
+    btnSuiv.ControlTipText = "Question suivante dans l'ordre du DCO (la réponse est enregistrée)"
     x0 = x0 + LargeurBouton("Question suivante") + 8
-    Set btnSuivTraiter = UIBouton(Me, "btnSuivTraiter", "Question suivante à traiter", x0, y, _
-                                  LargeurBouton("Question suivante à traiter"), 28, 0, ICO_SUIVANT)
+    Set btnSuivTraiter = UIBouton(Me, "btnSuivTraiter", "Question suivante à traiter", x0, yBas - 30, _
+                                  LargeurBouton("Question suivante à traiter"), 30, 0, ICO_SUIVANT)
     btnSuivTraiter.ControlTipText = "Question suivante en attente de réponse ou dérogation à justifier"
     x0 = x0 + LargeurBouton("Question suivante à traiter") + 8
+    Set btnNC = UIBouton(Me, "btnNC", "Non concerné", x0, yBas - 30, LargeurBouton("Non concerné"), 30, 0)
+    btnNC.ControlTipText = "Répond « " & NC_OFFRE & " » (même règle que l'outil d'origine)"
+
+    ' --- Pied de page : taille du texte, confirmation d'enregistrement, Fermer -------------
+    y = H - hPied + 8
+    x0 = M
     Set btnAmoins = UIBouton(Me, "btnAmoins", "A-", x0, y, 34, 28, 0)
     btnAmoins.ControlTipText = "Réduire la taille du texte"
     Set btnAplus = UIBouton(Me, "btnAplus", "A+", x0 + 38, y, 34, 28, 0)
@@ -1077,7 +1080,6 @@ Private Sub AfficherQuestion(ByVal q As cQuestionSGO)
     ConstruirePageStandards
     ConstruirePageCommentaire
     chargement = False
-    UIBoutonActif Me, "btnRetablir", Not curSST Is Nothing
     MettreAJourBoutons
 End Sub
 
@@ -1085,7 +1087,6 @@ Private Sub MettreAJourBoutons()
     Dim modifiable As Boolean
     If Not curQ Is Nothing Then modifiable = (curQ.Statut <> ST_MASQUEE And Not curQ.EstAnnexe)
     UIBoutonActif Me, "btnNC", modifiable
-    UIBoutonActif Me, "btnValSuiv", Not curQ Is Nothing
     If Not btnReprendre Is Nothing Then UIBoutonActif mp.Pages(0), "btnReprendre", curQ.Saisie
 End Sub
 
@@ -1863,11 +1864,6 @@ Private Sub txtCom_Change()
     MettreAJourMsgDiff
 End Sub
 
-Private Sub btnValSuiv_Click()
-    If curQ Is Nothing Then Exit Sub
-    Aller Voisine(1, False), "Dernière question atteinte."
-End Sub
-
 ' Écrit la question courante dans le dossier et enregistre le fichier
 Private Sub Valider()
     On Error GoTo erreur
@@ -1884,32 +1880,8 @@ erreur:
            "Vérifiez que le DCO n'est pas ouvert en lecture seule.", vbExclamation, "SGO"
 End Sub
 
-' Questions du sous-thème remises au standard
-Private Sub btnRetablir_Click()
-    Dim q As Variant, n As Long
-    If curSST Is Nothing Then Exit Sub
-    Valider
-    For Each q In curSST.Questions
-        If q.Statut <> ST_MASQUEE And q.Saisie And (q.Niveau = "E" Or q.Niveau = "D" Or q.Niveau = "U") Then n = n + 1
-    Next q
-    If n = 0 Then
-        MsgBox "Toutes les questions avec standard de ce sous-thème sont déjà au standard.", vbInformation, "SGO"
-        Exit Sub
-    End If
-    If MsgBox(n & " réponse(s) de ce sous-thème vont être remplacées par la valeur du standard." & vbCrLf & _
-              "Les justifications et commentaires sont conservés." & vbCrLf & vbCrLf & "Continuer ?", _
-              vbYesNo + vbQuestion, "SGO") = vbNo Then Exit Sub
-    For Each q In curSST.Questions
-        If q.Statut <> ST_MASQUEE And q.Saisie And (q.Niveau = "E" Or q.Niveau = "D" Or q.Niveau = "U") Then
-            q.Saisie = False: q.ReponseSaisie = "": q.StandardModifie = False
-            EnregistrerQuestion q
-        End If
-    Next q
-    EvaluerDossier
-    SauverDossier
-    RafraichirNavigation
-    AfficherQuestionCourante
-End Sub
+' (Bouton « Rétablir les standards du sous-thème » supprimé le 25/11/2026, demande du CDP :
+' « Rétablir le standard » existe pour chaque question.)
 
 ' =============================================================================
 ' Page de garde, taille du texte

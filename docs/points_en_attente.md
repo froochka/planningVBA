@@ -42,12 +42,12 @@ Hors périmètre (feuilles non reprises dans SGO) : 10-Entreprises sourcées, 10
 ## Remarques du CDP « REMARQUES_TEST_DCO.pdf » (16/11/2026, testé sur la version 0.7)
 
 - [x] 1, 2, 3, 5, 6, 11, 13 : faits le 16/11/2026 (7, 8, 9 déjà réglés en 0.8).
-- [ ] 4 : utilité de « Rétablir les standards du sous-thème » (garder, renommer, supprimer) : décision à prendre.
+- [x] 4 : « Rétablir les standards du sous-thème » supprimé (décision du CDP, 25/11/2026).
 - [ ] 10 : liens vers les autres onglets (cartographie ORECA, annexes) : à cadrer avec les annexes.
 - [x] 12 : bouton « Agrandir » sous la réponse texte et la justification (16/11/2026).
 - [x] 14a : liste des choix « maison », les choix longs passent à la ligne (16/11/2026).
 - [ ] 14b : « Autres » absent de la liste nommée ListeEl73 de l'outil d'origine (la colonne « Choix de réponse » l'a) : condition El73b impossible ; correction du référentiel à valider par le CDP.
-- [ ] 15 : « Valider et suivante » fait doublon avec « Question suivante » depuis la 0.8 : décision à prendre.
+- [x] 15 : « Valider et suivante » supprimé ; Question précédente / suivante / suivante à traiter / Non concerné sous la réponse (décision du CDP, 25/11/2026).
 - [x] 16 : El222 corrigé (deux listes déroulantes se chevauchaient dans l'outil d'origine ; la plus précise est retenue) ; 9 autres questions corrigées au passage. Référentiel version 3 (16/11/2026).
 
 ## Passage en production (.xlam) : à prévoir (16/11/2026)
@@ -56,3 +56,11 @@ Hors périmètre (feuilles non reprises dans SGO) : 10-Entreprises sourcées, 10
 - [ ] Itération 8 : message « DCO plus récent que l'outil » : remplacer la mention « macro ImporterReferentiel » (développement) par « Votre outil SGO n'est pas à jour : contactez … ».
 - [ ] Itération 10 : **référentiel séparé du code**. Fichier de données publié par le CDP sur le partage, lu au démarrage puis refermé, pour corriger une question ou un standard sans republier le complément.
 - [ ] Itération 11 : rapport des changements de référentiel à l'ouverture d'un DCO, avec les questions concernées marquées « À revoir » (cadrage P3).
+
+## Remarques du CDP du 25/11/2026 (« REMARQUES_TEST_DCO_du_25_nov.docx »)
+
+- [x] Page Démarrer : texte sur l'emplacement du DCO (hors Bureau connecté à OneDrive).
+- [x] Boutons sous la réponse, « Valider et suivante » et « Rétablir les standards du sous-thème » supprimés.
+- [ ] Légende « non concerné (réponse) » à supprimer, et réponse « Non concerné » de l'acheteur affichée grisée avec ⊘, mais modifiable : proposition faite, à valider.
+- [ ] Atelier : questions avec un lien vers un autre onglet Excel (cartographie ORECA, annexes).
+- [ ] El73 : « Autres » absent (correction du référentiel à valider par le CDP).
