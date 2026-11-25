@@ -51,7 +51,7 @@ Pour chaque fichier `.bas`, `.cls`, `.frm` de `src\` :
 
 Enfin, les modules standards et de classe **présents dans le classeur mais absents de `src\`** sont listés, et la macro propose de les supprimer.
 
-Puis la macro **compile le projet** (commande *Débogage > Compiler* de l'éditeur VBA) et l'annonce dans son message final : « Compilation OK » ou « ERREUR DE COMPILATION » (l'éditeur VBA montre alors la ligne en cause). Une compilation réussie grise la commande *Compiler* : c'est ce qui permet de le savoir.
+Puis la macro **compile le projet** (commande *Débogage > Compiler* de l'éditeur VBA) et l'annonce dans son message final : « Compilation OK », ou « Compilation non confirmée » (vérifier alors avec *Débogage > Compiler* : l'éditeur VBA montre une éventuelle erreur et sa ligne). Une compilation réussie grise la commande *Compiler* : c'est ce qui permet de le savoir.
 
 `ExporterVBA` fait l'inverse : chaque composant est écrit dans `src\` (UTF-8 sans BOM, sans en-têtes), et les fichiers de `src\` qui ne correspondent plus à aucun module sont supprimés.
 
@@ -436,7 +436,7 @@ End Sub
 ' Compiler est grisee : c'est ce qui permet de savoir si elle a reussi. En cas
 ' d'erreur, l'editeur VBA affiche lui-meme le message et la ligne en cause.
 Private Function ResultatCompilation(wb As Workbook) As String
-    Dim ctl As Object
+    Dim ctl As Object, i As Long, t As Single
     On Error GoTo erreur
     Set Application.VBE.ActiveVBProject = wb.VBProject
     Set ctl = Application.VBE.CommandBars.FindControl(ID:=ID_COMPILER)
@@ -444,9 +444,21 @@ Private Function ResultatCompilation(wb As Workbook) As String
         ResultatCompilation = "Compilation non verifiee : lancez Debogage > Compiler dans l'editeur VBA."
         Exit Function
     End If
-    If ctl.Enabled Then ctl.Execute
     If ctl.Enabled Then
-        ResultatCompilation = "ERREUR DE COMPILATION : voir la ligne surlignee dans l'editeur VBA (Alt+F11)."
+        ctl.Execute
+        ' La commande ne se grise pas immediatement : on laisse l'editeur se mettre a jour
+        For i = 1 To 20
+            DoEvents
+            If Not ctl.Enabled Then Exit For
+            t = Timer
+            Do While Timer < t + 0.1 And Timer >= t   ' 0,1 s (Timer repart a 0 a minuit)
+                DoEvents
+            Loop
+        Next i
+    End If
+    If ctl.Enabled Then
+        ResultatCompilation = "Compilation non confirmee : verifiez avec Debogage > Compiler dans l'editeur VBA (Alt+F11)." & _
+                              vbCrLf & "(Une erreur eventuelle y est affichee avec la ligne en cause.)"
     Else
         ResultatCompilation = "Compilation OK."
     End If
