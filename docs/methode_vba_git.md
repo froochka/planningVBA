@@ -250,8 +250,20 @@ End Sub
 Public Sub OuvrirDossierProjet()
     Dim wb As Workbook
     Set wb = ActiveWorkbook
-    If wb Is Nothing Then Exit Sub
-    If wb.Path = "" Then Exit Sub
+    If wb Is Nothing Then
+        MsgBox "Aucun classeur actif : ouvrez d'abord le classeur du projet.", vbExclamation, "VbaSync"
+        Exit Sub
+    End If
+    If wb.Path = "" Then
+        MsgBox "Le classeur actif (" & wb.Name & ") n'est pas encore enregistre : ouvrez le classeur du projet.", _
+               vbExclamation, "VbaSync"
+        Exit Sub
+    End If
+    If LCase$(Left$(wb.Path, 4)) = "http" Then
+        MsgBox "Le classeur actif est vu par Excel comme un fichier en ligne (OneDrive / SharePoint) :" & vbCrLf & _
+               wb.Path & vbCrLf & "Rangez le depot hors de OneDrive.", vbExclamation, "VbaSync"
+        Exit Sub
+    End If
     Shell "explorer.exe """ & wb.Path & """", vbNormalFocus
 End Sub
 
