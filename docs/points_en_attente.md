@@ -64,3 +64,5 @@ Hors périmètre (feuilles non reprises dans SGO) : 10-Entreprises sourcées, 10
 - [ ] Légende « non concerné (réponse) » à supprimer, et réponse « Non concerné » de l'acheteur affichée grisée avec ⊘, mais modifiable : proposition faite, à valider.
 - [ ] Atelier : questions avec un lien vers un autre onglet Excel (cartographie ORECA, annexes).
 - [ ] El73 : « Autres » absent (correction du référentiel à valider par le CDP).
+- [ ] Chapitre 05 Garantie (El445) : la matrice dit « Non, ce chapitre est non applicable » pour **tous** les univers DAI ; en 0.9 le chapitre est fermé par défaut et s'ouvre si l'acheteur répond « Oui » à El445. Question au CDP : est-ce le comportement voulu, ou faut-il corriger la matrice (El445 = « Oui » par défaut pour DAI / Matériel et Prestations) ?
+- [ ] Bloc « Justification » : quand le texte est effacé après retour au standard, il reste visible jusqu'à l'action suivante (choix de l'utilisateur, 25/11/2026). Option possible si le CDP le demande : le masquer dès qu'on quitte la zone.
