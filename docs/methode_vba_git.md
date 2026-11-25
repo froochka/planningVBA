@@ -72,7 +72,7 @@ Puis la macro **compile le projet** (commande *Débogage > Compiler* de l'édite
 5. Créer sur le Bureau un **raccourci vers le `menu.bat`** de chaque projet (clic droit › Envoyer vers › Bureau), renommé avec le nom du projet.
 
 ### Récupérer le travail de Claude
-1. Fermer le classeur, puis **menu.bat › 1 Récupérer** : le menu vérifie qu'Excel n'a pas le classeur ouvert, propose d'annuler les changements du `.xlsm` dus au dernier import (cas habituel), fait le `git pull` et affiche la version reçue.
+1. Dans Excel, classeur du projet actif : **Compléments › VbaSync › Récupérer les mises à jour** (git pull sans fichier `.bat`, utile si les `.bat` sont bloqués sur le poste : le classeur est fermé sans être enregistré, mis à jour, rouvert, puis le code est importé). Ou bien : fermer le classeur, puis **menu.bat › 1 Récupérer** : le menu vérifie qu'Excel n'a pas le classeur ouvert, propose d'annuler les changements du `.xlsm` dus au dernier import (cas habituel), fait le `git pull` et affiche la version reçue.
 2. **menu.bat › 5** (ouvrir le classeur) → **Compléments › VbaSync › Importer le code** : le message final doit dire « Compilation OK ».
 3. Tester.
 
@@ -175,8 +175,9 @@ Attribute VB_Name = "VbaSync"
 '   CompilerVBA : Debogage > Compiler sur le projet du classeur actif
 '
 ' Menu "VbaSync" dans l'onglet Complements du ruban, cree a chaque demarrage
-' d'Excel (Auto_Open) : Importer, Exporter, Compiler, Menu Git du projet
-' (menu.bat a la racine du depot), Ouvrir le dossier du projet.
+' d'Excel (Auto_Open) : Recuperer les mises a jour (git pull, sans fichier
+' .bat), Importer, Exporter, Compiler, Menu Git du projet (menu.bat a la racine
+' du depot), Ouvrir le dossier du projet.
 '
 ' Installation : importer ce fichier dans PERSONAL.XLSB (voir README.md).
 ' Si PERSONAL.XLSB a deja une macro Auto_Open, y ajouter l'appel
@@ -217,7 +218,8 @@ Public Sub CreerMenuVbaSync()
     Set barre = Application.CommandBars("Worksheet Menu Bar")
     Set menu = barre.Controls.Add(Type:=10, Temporary:=True)       ' 10 : menu deroulant
     menu.Caption = MENU_NOM
-    AjouterEntree menu, "Importer le code (src -> classeur) et compiler", "ImporterVBA", 1952, False
+    AjouterEntree menu, "Recuperer les mises a jour (git pull), puis importer", "RecupererGit", 1977, False
+    AjouterEntree menu, "Importer le code (src -> classeur) et compiler", "ImporterVBA", 1952, True
     AjouterEntree menu, "Exporter le code (classeur -> src)", "ExporterVBA", 1953, False
     AjouterEntree menu, "Compiler le projet", "CompilerVBA", 2950, False
     AjouterEntree menu, "Menu Git du projet (mise a jour, envoi...)", "OuvrirMenuGit", 2645, True
@@ -232,6 +234,79 @@ Private Sub AjouterEntree(menu As Object, texte As String, macro As String, ByVa
     b.BeginGroup = separe
     On Error Resume Next
     b.FaceId = icone
+End Sub
+
+' -----------------------------------------------------------------------------
+' Recuperer les mises a jour : git pull sur le depot du classeur actif, sans
+' passer par un fichier .bat (bloques sur certains postes). Le classeur est
+' ferme sans etre enregistre (Git doit pouvoir le remplacer), ses modifications
+' locales sont annulees (en general un simple import du code), puis il est
+' rouvert et le code est importe.
+' -----------------------------------------------------------------------------
+Public Sub RecupererGit()
+    Dim wb As Workbook, dossier As String, nom As String, chemin As String
+    Dim sortie As String, cmd As String, texte As String, ok As Boolean
+
+    Set wb = ActiveWorkbook
+    If wb Is Nothing Then
+        MsgBox "Ouvrez d'abord le classeur du projet.", vbExclamation, "VbaSync"
+        Exit Sub
+    End If
+    dossier = wb.Path: nom = wb.Name: chemin = wb.FullName
+    If dossier = "" Or LCase$(Left$(dossier, 4)) = "http" Then
+        MsgBox "Le classeur actif n'est pas dans un dossier du poste :" & vbCrLf & chemin, vbExclamation, "VbaSync"
+        Exit Sub
+    End If
+    If Dir(dossier & "\.git", vbDirectory) = "" Then
+        MsgBox "Le dossier du classeur actif n'est pas un depot Git :" & vbCrLf & dossier, vbExclamation, "VbaSync"
+        Exit Sub
+    End If
+    If MsgBox("Recuperer les mises a jour du depot :" & vbCrLf & dossier & vbCrLf & vbCrLf & _
+              "Le classeur " & nom & " va etre ferme SANS etre enregistre : ses modifications locales " & _
+              "(en general un simple import du code) seront annulees. Il sera rouvert ensuite." & vbCrLf & vbCrLf & _
+              "Continuer ?", vbOKCancel + vbQuestion, "VbaSync") = vbCancel Then Exit Sub
+
+    ' Fermer le classeur : Git doit pouvoir le remplacer
+    Application.DisplayAlerts = False
+    wb.Close SaveChanges:=False
+    Application.DisplayAlerts = True
+    Set wb = Nothing
+
+    ' git checkout (annule les changements du classeur), git pull, derniere version
+    sortie = Environ$("TEMP") & "\vbasync_git.txt"
+    On Error Resume Next
+    Kill sortie
+    On Error GoTo 0
+    cmd = "cmd /s /c "" cd /d """ & dossier & """ && (git checkout -- """ & nom & """ 2>nul & " & _
+          "git pull && echo VBASYNC_PULL_OK & git log --oneline -1) > """ & sortie & """ 2>&1 """
+    CreateObject("WScript.Shell").Run cmd, 0, True
+    If Dir(sortie) <> "" Then texte = LireUtf8(sortie)
+    ok = (InStr(1, texte, "VBASYNC_PULL_OK", vbBinaryCompare) > 0)
+    texte = Replace(texte, "VBASYNC_PULL_OK" & vbCrLf, "")
+    texte = Replace(texte, "VBASYNC_PULL_OK", "")
+    If Len(texte) > 900 Then texte = Left$(texte, 900) & vbCrLf & "(...)"
+
+    ' Rouvrir le classeur
+    On Error Resume Next
+    Set wb = Workbooks.Open(chemin)
+    On Error GoTo 0
+    If wb Is Nothing Then
+        MsgBox "Le classeur n'a pas pu etre rouvert :" & vbCrLf & chemin & vbCrLf & vbCrLf & texte, vbExclamation, "VbaSync"
+        Exit Sub
+    End If
+    wb.Activate
+
+    If Not ok Then
+        MsgBox "La recuperation a echoue (rien n'a ete importe) :" & vbCrLf & vbCrLf & texte & vbCrLf & vbCrLf & _
+               "Si Git n'est pas trouve : installez-le, puis redemarrez Excel." & vbCrLf & _
+               "Si des fichiers de src\ sont modifies localement : exportez ou annulez-les d'abord.", _
+               vbExclamation, "VbaSync"
+        Exit Sub
+    End If
+    If MsgBox("Mises a jour recuperees :" & vbCrLf & vbCrLf & texte & vbCrLf & vbCrLf & _
+              "Importer maintenant le code dans " & wb.Name & " ?", vbYesNo + vbQuestion, "VbaSync") = vbYes Then
+        ImporterVBA
+    End If
 End Sub
 
 ' Lance menu.bat (racine du depot, a cote du classeur actif)
