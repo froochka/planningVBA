@@ -257,7 +257,8 @@ Public Sub RecupererGit()
         MsgBox "Le classeur actif n'est pas dans un dossier du poste :" & vbCrLf & chemin, vbExclamation, "VbaSync"
         Exit Sub
     End If
-    If Dir(dossier & "\.git", vbDirectory) = "" Then
+    ' .git est un dossier cache : Dir ne le voit pas, FileSystemObject si
+    If Not CreateObject("Scripting.FileSystemObject").FolderExists(dossier & "\.git") Then
         MsgBox "Le dossier du classeur actif n'est pas un depot Git :" & vbCrLf & dossier, vbExclamation, "VbaSync"
         Exit Sub
     End If
